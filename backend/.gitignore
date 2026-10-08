@@ -1,0 +1,21 @@
+# Compiled output
+/dist
+/node_modules
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Database & Uploads
+/prisma/dev.db
+/prisma/dev.db-journal
+/uploads/*
+!/uploads/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

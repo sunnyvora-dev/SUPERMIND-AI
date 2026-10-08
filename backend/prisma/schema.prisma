@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String?
+  name          String?
+  avatarUrl     String?
+  role          String         @default("USER") // USER, ADMIN, PRO
+  authProvider  String         @default("LOCAL") // LOCAL, GOOGLE, FACEBOOK, APPLE, PHONE
+  providerId    String?
+  emailVerified Boolean        @default(false)
+  phone         String?
+  tier          String         @default("PRO") // FREE, PRO, ENTERPRISE
+  tokensUsed    Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  lastLoginAt   DateTime?
+  conversations Conversation[]
+  messages      Message[]
+  files         File[]
+  images        Image[]
+  usageRecords  UsageRecord[]
+  documents     Document[]
+
+  @@map("users")
+}
+
+model Conversation {
+  id           String        @id @default(uuid())
+  userId       String
+  title        String
+  taskType     String        @default("GENERAL_CHAT") // GENERAL_CHAT, CODE_GEN, MATH, ANALYSIS, IMAGE_GEN
+  category     String        @default("Chat")
+  modelUsed    String        @default("GPT-4o")
+  isPinned     Boolean       @default(false)
+  isArchived   Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages     Message[]
+  usageRecords UsageRecord[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id              String       @id @default(uuid())
+  conversationId  String
+  userId          String?
+  role            String       // user, assistant, system
+  content         String
+  messageType     String       @default("TEXT") // TEXT, CODE, IMAGE, DATA
+  model           String?
+  latencyMs       Int?
+  costUsd         Float?
+  qualityScore    Float?
+  codeSnippet     String?
+  sources         String?      // JSON stringified array of sources
+  supervisorTrace String?      // JSON stringified routing decision
+  createdAt       DateTime     @default(now())
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user            User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("messages")
+}
+
+model Document {
+  id        String          @id @default(uuid())
+  userId    String
+  filename  String
+  fileType  String
+  fileSize  Int
+  filePath  String
+  status    String          @default("pending") // pending, processing, ready, failed
+  errorMsg  String?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chunks    DocumentChunk[]
+
+  @@map("documents")
+}
+
+model DocumentChunk {
+  id         String   @id @default(uuid())
+  documentId String
+  userId     String
+  chunkIndex Int
+  pageNumber Int      @default(1)
+  content    String
+  embedding  String   // Vector embedding JSON array string
+  createdAt  DateTime @default(now())
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([documentId])
+  @@map("document_chunks")
+}
+
+model File {
+  id         String   @id @default(uuid())
+  userId     String
+  filename   String
+  originalName String
+  mimeType   String
+  fileSize   Int
+  filePath   String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("files")
+}
+
+model Image {
+  id         String   @id @default(uuid())
+  userId     String
+  prompt     String
+  imageUrl   String
+  aspectRatio String  @default("1:1")
+  model      String   @default("DALL-E 3")
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("images")
+}
+
+model UsageRecord {
+  id               String        @id @default(uuid())
+  userId           String
+  conversationId   String?
+  provider         String        // OpenAI, Google, Anthropic
+  model            String
+  promptTokens     Int
+  completionTokens Int
+  totalTokens      Int
+  latencyMs        Int
+  costUsd          Float
+  createdAt        DateTime      @default(now())
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation     Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@map("usage_records")
+}
+
