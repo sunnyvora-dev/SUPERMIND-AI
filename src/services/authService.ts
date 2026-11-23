@@ -66,20 +66,11 @@ export const authService = {
     const token = this.getToken();
     const stored = localStorage.getItem('supermind_user');
 
-    if (!token && !stored) {
-      // Default demo user so Dashboard always loads cleanly
-      const demoUser: User = {
-        id: 'usr_demo_101',
-        name: 'Alex Developer',
-        email: 'demo@supermind.ai',
-        planTier: 'Pro',
-        tokensUsed: 624000,
-        tokenBudget: 5000000,
-        createdAt: new Date().toISOString(),
-      };
-      localStorage.setItem('supermind_token', 'mock_jwt_token_2026');
-      localStorage.setItem('supermind_user', JSON.stringify(demoUser));
-      return demoUser;
+    // If no token or invalid mock token, clean up and return null (triggers clean login)
+    if (!token || token === 'mock_jwt_token_2026') {
+      localStorage.removeItem('supermind_token');
+      localStorage.removeItem('supermind_user');
+      return null;
     }
 
     if (this.isTokenExpired()) {
@@ -88,18 +79,19 @@ export const authService = {
     }
 
     try {
-      if (token) {
-        const res = await fetch(`${API_CONFIG.BASE_URL}/users/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      const res = await fetch(`${API_CONFIG.BASE_URL}/users/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        if (res.ok) {
-          const user = await res.json();
-          localStorage.setItem('supermind_user', JSON.stringify(user));
-          return user;
-        }
+      if (res.ok) {
+        const user = await res.json();
+        localStorage.setItem('supermind_user', JSON.stringify(user));
+        return user;
+      } else if (res.status === 401) {
+        await this.logout();
+        return null;
       }
     } catch (err) {
       // Fallback to local stored session if offline

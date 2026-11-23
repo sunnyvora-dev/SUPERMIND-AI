@@ -27,16 +27,36 @@ async function bootstrap() {
   // Static Assets Serving for Uploads and Generated Images (/uploads)
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-  // Strict CORS Configuration (Restricted Origins in Production)
-
-
+  // Robust CORS Configuration (Auto-allows all Vercel domains, local dev, and custom ALLOWED_ORIGINS)
   const isProduction = process.env.NODE_ENV === 'production';
-  const allowedOrigins = process.env.ALLOWED_ORIGINS
+  const envAllowed = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
-    : ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'];
+    : [];
 
   app.enableCors({
-    origin: isProduction ? allowedOrigins : true,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true);
+
+      // Check explicit ALLOWED_ORIGINS
+      if (envAllowed.length > 0) {
+        if (envAllowed.includes(origin) || envAllowed.includes('*')) {
+          return callback(null, true);
+        }
+      }
+
+      // Automatically allow all Vercel deployment domains (*.vercel.app) and localhost
+      if (origin.endsWith('.vercel.app') || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+        return callback(null, true);
+      }
+
+      // Fallback: if no custom origin is set, allow to avoid deployment lockout
+      if (envAllowed.length === 0) {
+        return callback(null, true);
+      }
+
+      callback(new Error('Blocked by CORS policy'));
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization,X-Requested-With,Accept',
     credentials: true,

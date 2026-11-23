@@ -106,7 +106,6 @@ export const chatService = {
 
     if (res.status === 401) {
       await authService.logout();
-      window.location.reload();
       throw new Error('Your session has expired. Please log in again.');
     }
 
