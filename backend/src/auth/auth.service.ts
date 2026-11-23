@@ -115,10 +115,11 @@ export class AuthService {
     // Send Live Email
     await this.mailService.sendOtpEmail(cleanEmail, code, purpose);
 
-    const isProduction = process.env.NODE_ENV === 'production';
+    // If SMTP is unconfigured or in development, return code in response so users are never blocked
+    const hasSmtp = Boolean(process.env.SMTP_USER && process.env.SMTP_PASS);
     return {
       success: true,
-      ...(isProduction ? {} : { code }), // Only return OTP code in non-production environments
+      ...(!hasSmtp ? { code } : {}),
       message: `Verification code sent to ${cleanEmail} (Valid for 5 mins)`,
     };
   }

@@ -60,21 +60,23 @@ export const RegisterPage: React.FC = () => {
     setError('');
 
     const targetIdentifier = authMethod === 'phone' ? phone : email;
-
-    // Check if User Already Exists
-    if (authService.checkUserExists(targetIdentifier)) {
-      setError(`An account with this ${authMethod === 'phone' ? 'phone number' : 'email'} already exists.`);
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const res = await authService.sendVerificationCode(targetIdentifier, 'register');
-      setDemoCodeHint(res.code);
-      setStep('verify');
+      if (authMethod === 'phone') {
+        const res = await authService.sendVerificationCode(targetIdentifier, 'register');
+        setDemoCodeHint(res.code || '123456');
+        setStep('verify');
+      } else {
+        // Direct account creation via live Supabase API
+        await register(name || 'SuperMind User', email, password);
+        setStep('verified');
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 800);
+      }
     } catch (err: any) {
-      setError(err.message || 'Failed to send OTP verification code');
+      setError(err.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -329,7 +331,7 @@ export const RegisterPage: React.FC = () => {
               </div>
 
               <Button type="submit" isLoading={loading} className="w-full pt-1">
-                {authMethod === 'phone' ? 'Send Phone SMS OTP Code' : 'Continue to Email Verification'}
+                {authMethod === 'phone' ? 'Send Phone SMS OTP Code' : 'Create Account'}
               </Button>
             </form>
           </div>
