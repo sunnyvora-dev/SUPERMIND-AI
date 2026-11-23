@@ -134,8 +134,27 @@ export class ImagesService {
     }
 
     const latencyMs = Date.now() - startTime;
+    let dbImageId = `img_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    let dbCreatedAt = new Date().toISOString();
 
-    if (this.prisma && userId) {
+    if (this.prisma && userId && userId !== 'anon') {
+      try {
+        const saved = await this.prisma.image.create({
+          data: {
+            userId,
+            prompt: dto.prompt,
+            imageUrl,
+            aspectRatio,
+            model: modelUsed,
+          },
+        });
+        dbImageId = saved.id;
+        dbCreatedAt = saved.createdAt.toISOString();
+        this.logger.log(`Image saved to user account gallery: ${saved.id}`);
+      } catch (saveErr: any) {
+        this.logger.warn(`Failed to persist image to database: ${saveErr.message}`);
+      }
+
       try {
         await this.prisma.usageRecord.create({
           data: {
@@ -155,14 +174,48 @@ export class ImagesService {
     }
 
     return {
-      id: `img_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`,
+      id: dbImageId,
       prompt: dto.prompt,
       imageUrl,
       aspectRatio,
       style,
       modelUsed,
-      createdAt: new Date().toISOString(),
+      createdAt: dbCreatedAt,
       latencyMs,
     };
+  }
+
+  async getUserImages(userId: string) {
+    if (!this.prisma || !userId) return [];
+    try {
+      const records = await this.prisma.image.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+      });
+      return records.map((r) => ({
+        id: r.id,
+        prompt: r.prompt,
+        imageUrl: r.imageUrl,
+        aspectRatio: r.aspectRatio,
+        modelUsed: r.model,
+        createdAt: r.createdAt.toISOString(),
+      }));
+    } catch (err: any) {
+      this.logger.warn(`Failed to query user images: ${err.message}`);
+      return [];
+    }
+  }
+
+  async deleteImage(userId: string, imageId: string) {
+    if (!this.prisma || !userId) return { success: false };
+    try {
+      await this.prisma.image.deleteMany({
+        where: { id: imageId, userId },
+      });
+      return { success: true };
+    } catch (err: any) {
+      this.logger.warn(`Failed to delete user image ${imageId}: ${err.message}`);
+      return { success: false, message: err.message };
+    }
   }
 }

@@ -11,7 +11,13 @@ export const TaskDetailsPanel: React.FC<TaskDetailsPanelProps> = ({ taskDetails,
   if (!taskDetails) return null;
 
   return (
-    <aside className="w-80 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 h-full flex flex-col p-4 space-y-4 select-none">
+    <>
+      {/* Mobile Backdrop */}
+      <div
+        onClick={onClose}
+        className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 md:hidden"
+      />
+      <aside className="fixed inset-y-0 right-0 z-50 md:static md:z-auto w-full max-w-[320px] sm:w-80 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 h-full flex flex-col p-4 space-y-4 select-none shadow-2xl md:shadow-none animate-fadeIn">
       <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <div className="flex items-center space-x-2">
           <Activity className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
@@ -77,5 +83,6 @@ export const TaskDetailsPanel: React.FC<TaskDetailsPanelProps> = ({ taskDetails,
         </div>
       </div>
     </aside>
+    </>
   );
 };

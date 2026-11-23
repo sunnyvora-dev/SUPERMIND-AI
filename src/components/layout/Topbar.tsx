@@ -55,7 +55,17 @@ export const Topbar: React.FC = () => {
 
 
       {/* Command Search, Theme, Notifications & Profile */}
-      <div className="flex items-center space-x-2.5">
+      <div className="flex items-center space-x-2 sm:space-x-2.5">
+        {/* Mobile Search Icon */}
+        <button
+          onClick={() => setActiveModal('command')}
+          className="sm:hidden p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+          title="Search"
+        >
+          <Search className="h-4 w-4" />
+        </button>
+
+        {/* Desktop Command Search */}
         <button
           onClick={() => setActiveModal('command')}
           className="hidden sm:flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-indigo-500/40 transition-all cursor-pointer shadow-xs"

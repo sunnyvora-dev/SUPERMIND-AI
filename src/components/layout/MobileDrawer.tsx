@@ -1,11 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../../context/ChatContext';
-import { X, Plus, Home, MessageSquare, History, FileText, Image as ImageIcon, BarChart2, Settings, HelpCircle, ShieldAlert } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { X, Plus, Home, MessageSquare, History, FileText, Image as ImageIcon, BarChart2, Settings, HelpCircle, ShieldAlert, LogOut } from 'lucide-react';
 
 export const MobileDrawer: React.FC = () => {
   const navigate = useNavigate();
   const { isMobileDrawerOpen, setIsMobileDrawerOpen, createNewChat } = useChat();
+  const { user, logout } = useAuth();
 
   if (!isMobileDrawerOpen) return null;
 
@@ -74,6 +76,38 @@ export const MobileDrawer: React.FC = () => {
             );
           })}
         </nav>
+
+        {/* User Profile Footer on Mobile */}
+        {user && (
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <button
+              onClick={() => {
+                navigate('/profile');
+                setIsMobileDrawerOpen(false);
+              }}
+              className="flex items-center space-x-2.5 min-w-0 flex-1 text-left cursor-pointer"
+            >
+              <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-600 text-white font-semibold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                {user.name.slice(0, 2).toUpperCase()}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-semibold text-slate-900 dark:text-slate-200 truncate">{user.name}</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{user.email}</div>
+              </div>
+            </button>
+
+            <button
+              onClick={async () => {
+                setIsMobileDrawerOpen(false);
+                await logout();
+              }}
+              className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors ml-1 cursor-pointer"
+              title="Sign Out"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

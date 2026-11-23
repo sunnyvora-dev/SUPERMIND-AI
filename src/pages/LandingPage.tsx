@@ -127,14 +127,14 @@ export const LandingPage: React.FC = () => {
       <div className="fixed bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-violet-600/15 via-indigo-600/10 to-fuchsia-500/10 rounded-full blur-[190px] pointer-events-none animate-float z-0" />
 
       {/* Futuristic Classic Navbar */}
-      <header className="h-16 px-6 max-w-7xl mx-auto w-full flex items-center justify-between border-b border-white/10 backdrop-blur-2xl bg-[#02040a]/85 sticky top-0 z-50">
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-indigo-600 to-violet-600 text-white font-bold flex items-center justify-center text-sm shadow-lg shadow-indigo-500/30 animate-float font-display">
+      <header className="h-16 px-4 sm:px-6 max-w-7xl mx-auto w-full flex items-center justify-between border-b border-white/10 backdrop-blur-2xl bg-[#02040a]/85 sticky top-0 z-50">
+        <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div className="h-8 sm:h-9 w-8 sm:w-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-indigo-600 to-violet-600 text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow-lg shadow-indigo-500/30 animate-float font-display">
             S
           </div>
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-lg tracking-tight text-white font-display">SuperMind</span>
-            <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] font-mono font-bold">
+            <span className="font-extrabold text-base sm:text-lg tracking-tight text-white font-display">SuperMind</span>
+            <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] font-mono font-bold">
               AI ORCHESTRATOR
             </span>
           </div>
