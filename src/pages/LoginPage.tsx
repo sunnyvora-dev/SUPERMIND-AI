@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { Button } from '../components/ui/Button';
 import { VerificationCodePanel } from '../components/auth/VerificationCodePanel';
-import { Mail, Lock, ArrowRight, Sparkles, CheckCircle2, Phone } from 'lucide-react';
+import { Mail, Lock, ArrowRight, CheckCircle2, Phone } from 'lucide-react';
 
 import { googleAuthService } from '../services/googleAuth';
 
@@ -19,7 +19,6 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('password123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [demoCodeHint, setDemoCodeHint] = useState<string | null>(null);
 
   // Handle Social Login (Google OAuth, Facebook, Apple)
   const handleSocialLogin = async (provider: 'google' | 'facebook' | 'apple') => {
@@ -51,8 +50,7 @@ export const LoginPage: React.FC = () => {
 
     try {
       if (authMethod === 'phone') {
-        const res = await authService.sendVerificationCode(phone, 'login');
-        setDemoCodeHint(res.code || '123456');
+        await authService.sendVerificationCode(phone, 'login');
         setStep('otp');
       } else {
         // Direct email & password login against live API
@@ -277,18 +275,6 @@ export const LoginPage: React.FC = () => {
         {/* STEP 2: Login OTP Verification Code Slide (Email & Phone SMS) */}
         {step === 'otp' && (
           <div className="space-y-4">
-            {demoCodeHint && (
-              <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-between text-xs text-indigo-300">
-                <div className="flex items-center space-x-1.5">
-                  <Sparkles className="h-4 w-4 text-indigo-400 animate-spin" />
-                  <span>{authMethod === 'phone' ? 'SMS OTP Code:' : 'Login OTP Code:'}</span>
-                </div>
-                <span className="font-mono font-bold tracking-widest text-white px-2.5 py-0.5 bg-indigo-500/30 rounded border border-indigo-400/30">
-                  {demoCodeHint}
-                </span>
-              </div>
-            )}
-
             <VerificationCodePanel
               email={authMethod === 'phone' ? phone : email}
               title={authMethod === 'phone' ? 'Phone SMS OTP Verification' : '2-Factor Login Verification'}
@@ -296,8 +282,7 @@ export const LoginPage: React.FC = () => {
               onVerify={handleVerifyLoginOtp}
               onResend={async () => {
                 const targetIdentifier = authMethod === 'phone' ? phone : email;
-                const res = await authService.sendVerificationCode(targetIdentifier, 'register');
-                setDemoCodeHint(res.code);
+                await authService.sendVerificationCode(targetIdentifier, 'register');
               }}
               onBack={() => setStep('login')}
               isLoading={loading}

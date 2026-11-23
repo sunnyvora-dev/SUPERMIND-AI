@@ -96,7 +96,17 @@ export class AuthService {
     email: string,
     purpose: 'login' | 'register' | 'forgot_password' = 'forgot_password',
   ): Promise<{ success: boolean; code?: string; message: string }> {
-    const cleanEmail = email.toLowerCase();
+    const cleanEmail = (email || '').toLowerCase().trim();
+
+    // Check if user already exists when registering
+    if (purpose === 'register') {
+      const existing = await this.prisma.user.findUnique({
+        where: { email: cleanEmail },
+      });
+      if (existing) {
+        throw new ConflictException('An account with this email already exists. Please log in.');
+      }
+    }
 
     // Rate limit: max 5 requests per 10 minutes per email
     const rateCheck = await this.redisService.rateLimit(`send_otp:${cleanEmail}`, 5, 600);

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { Button } from '../components/ui/Button';
 import { VerificationCodePanel } from '../components/auth/VerificationCodePanel';
-import { Mail, CheckCircle2, Lock, KeyRound, Sparkles } from 'lucide-react';
+import { Mail, CheckCircle2, Lock, KeyRound } from 'lucide-react';
 
 export const ForgotPasswordPage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,7 +14,6 @@ export const ForgotPasswordPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [demoCodeHint, setDemoCodeHint] = useState<string | null>(null);
 
   // Step 1: Send Verification Code
   const handleSendCode = async (e: React.FormEvent) => {
@@ -22,8 +21,7 @@ export const ForgotPasswordPage: React.FC = () => {
     setError('');
     setLoading(true);
     try {
-      const res = await authService.sendVerificationCode(email, 'forgot_password');
-      setDemoCodeHint(res.code);
+      await authService.sendVerificationCode(email, 'forgot_password');
       setStep('code');
     } catch (err: any) {
       setError(err.message || 'Failed to send verification code');
@@ -151,26 +149,13 @@ export const ForgotPasswordPage: React.FC = () => {
         {/* STEP 2: 6-Digit Verification Code Slide */}
         {step === 'code' && (
           <div className="space-y-4">
-            {demoCodeHint && (
-              <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-between text-xs text-indigo-300">
-                <div className="flex items-center space-x-1.5">
-                  <Sparkles className="h-4 w-4 text-indigo-400 animate-spin" />
-                  <span>Demo Verification Code:</span>
-                </div>
-                <span className="font-mono font-bold tracking-widest text-white px-2 py-0.5 bg-indigo-500/30 rounded border border-indigo-400/30">
-                  {demoCodeHint}
-                </span>
-              </div>
-            )}
-
             <VerificationCodePanel
               email={email}
               title="Enter Verification Code"
               subtitle="We sent a 6-digit code to"
               onVerify={handleVerifyCode}
               onResend={async () => {
-                const res = await authService.sendVerificationCode(email, 'forgot_password');
-                setDemoCodeHint(res.code);
+                await authService.sendVerificationCode(email, 'forgot_password');
               }}
               onBack={() => setStep('email')}
               isLoading={loading}

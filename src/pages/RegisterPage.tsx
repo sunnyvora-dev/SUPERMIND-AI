@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { Button } from '../components/ui/Button';
 import { VerificationCodePanel } from '../components/auth/VerificationCodePanel';
-import { User as UserIcon, Mail, Lock, Sparkles, CheckCircle2, Phone } from 'lucide-react';
+import { User as UserIcon, Mail, Lock, CheckCircle2, Phone } from 'lucide-react';
 
 import { googleAuthService } from '../services/googleAuth';
 
@@ -22,7 +22,6 @@ export const RegisterPage: React.FC = () => {
   const [terms, setTerms] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [demoCodeHint, setDemoCodeHint] = useState<string | null>(null);
 
   // Handle Social Registration (Google OAuth, Facebook, Apple)
   const handleSocialRegister = async (provider: 'google' | 'facebook' | 'apple') => {
@@ -70,8 +69,7 @@ export const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await authService.sendVerificationCode(targetIdentifier, 'register');
-      setDemoCodeHint(res.code);
+      await authService.sendVerificationCode(targetIdentifier, 'register');
       setStep('verify');
     } catch (err: any) {
       setError(err.message || 'Failed to send OTP verification code');
@@ -86,23 +84,24 @@ export const RegisterPage: React.FC = () => {
     try {
       const targetIdentifier = authMethod === 'phone' ? phone : email;
       const isValid = await authService.verifyCode(targetIdentifier, code);
-      if (isValid) {
-        authService.registerUserInRegistry(targetIdentifier);
-        if (authMethod === 'phone') {
-          await loginWithPhone(phone);
-        } else {
-          await register(name || 'SuperMind User', email, password);
-        }
-        setStep('verified');
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 1200);
-        return true;
+      if (!isValid) {
+        return false;
       }
-      return false;
+      
+      authService.registerUserInRegistry(targetIdentifier);
+      if (authMethod === 'phone') {
+        await loginWithPhone(phone);
+      } else {
+        await register(name || 'SuperMind User', email, password);
+      }
+      setStep('verified');
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1200);
+      return true;
     } catch (err: any) {
-      setError(err.message || 'Registration OTP verification failed');
-      return false;
+      setError(err.message || 'Registration failed');
+      throw new Error(err.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -338,18 +337,6 @@ export const RegisterPage: React.FC = () => {
         {/* STEP 2: 6-Digit OTP Verification Code Slide (Email & Phone) */}
         {step === 'verify' && (
           <div className="space-y-4">
-            {demoCodeHint && (
-              <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-between text-xs text-indigo-300">
-                <div className="flex items-center space-x-1.5">
-                  <Sparkles className="h-4 w-4 text-indigo-400 animate-spin" />
-                  <span>{authMethod === 'phone' ? 'SMS OTP Code:' : 'Email OTP Code:'}</span>
-                </div>
-                <span className="font-mono font-bold tracking-widest text-white px-2.5 py-0.5 bg-indigo-500/30 rounded border border-indigo-400/30">
-                  {demoCodeHint}
-                </span>
-              </div>
-            )}
-
             <VerificationCodePanel
               email={authMethod === 'phone' ? phone : email}
               title={authMethod === 'phone' ? 'Verify Phone Number' : 'Verify Email Address'}
@@ -357,8 +344,7 @@ export const RegisterPage: React.FC = () => {
               onVerify={handleVerifyCode}
               onResend={async () => {
                 const targetIdentifier = authMethod === 'phone' ? phone : email;
-                const res = await authService.sendVerificationCode(targetIdentifier, 'register');
-                setDemoCodeHint(res.code);
+                await authService.sendVerificationCode(targetIdentifier, 'register');
               }}
               onBack={() => setStep('form')}
               isLoading={loading}

@@ -181,53 +181,37 @@ export const authService = {
   },
 
   async register(name: string, email: string, password: string): Promise<User> {
-    try {
-      const res = await fetch(`${API_CONFIG.BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      });
+    const res = await fetch(`${API_CONFIG.BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email: email.trim(), password }),
+    });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
-
-      localStorage.setItem('supermind_token', data.accessToken);
-      localStorage.setItem('supermind_user', JSON.stringify(data.user));
-      return data.user;
-    } catch (err: any) {
-      const mockUser: User = {
-        id: `usr_${Date.now()}`,
-        name,
-        email,
-        planTier: 'Pro',
-        tokensUsed: 0,
-        tokenBudget: 5000000,
-        createdAt: new Date().toISOString(),
-      };
-      localStorage.setItem('supermind_token', 'mock_jwt_token_2026');
-      localStorage.setItem('supermind_user', JSON.stringify(mockUser));
-      return mockUser;
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || 'Registration failed');
     }
+
+    localStorage.setItem('supermind_token', data.accessToken);
+    localStorage.setItem('supermind_user', JSON.stringify(data.user));
+    return data.user;
   },
 
   async sendVerificationCode(
     email: string,
     purpose: 'login' | 'register' | 'forgot_password' = 'forgot_password',
-  ): Promise<{ code: string }> {
+  ): Promise<{ success: boolean; message: string }> {
     try {
       const res = await fetch(`${API_CONFIG.BASE_URL}/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, purpose }),
+        body: JSON.stringify({ email: email.trim(), purpose }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to send OTP email');
-      return { code: data.code || '123456' };
-    } catch (err) {
-      // Fallback code for local frontend preview
-      return { code: '123456' };
+      if (!res.ok) throw new Error(data.message || 'Failed to send verification code');
+      return { success: true, message: data.message };
+    } catch (err: any) {
+      throw new Error(err.message || 'Could not send verification code. Please check your network.');
     }
   },
 
@@ -236,14 +220,13 @@ export const authService = {
       const res = await fetch(`${API_CONFIG.BASE_URL}/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code }),
+        body: JSON.stringify({ email: email.trim(), code: code.trim() }),
       });
       const data = await res.json();
       if (!res.ok) return false;
       return !!data.valid;
     } catch (err) {
-      // Local fallback testing: accepts 123456 or any 6 digits
-      return code.length === 6 && (code === '123456' || /^\d{6}$/.test(code));
+      return false;
     }
   },
 
