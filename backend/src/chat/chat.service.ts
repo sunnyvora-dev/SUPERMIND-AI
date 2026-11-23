@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { SupervisorService } from '../supervisor/supervisor.service';
 import { MessagesService } from '../messages/messages.service';
@@ -15,7 +15,10 @@ export class ChatService {
   ) {}
 
   async processChat(userId: string, dto: ChatPromptDto) {
-    const prompt = dto.message.trim();
+    const prompt = (dto.message || '').trim();
+    if (!prompt) {
+      throw new BadRequestException('Prompt message cannot be empty or whitespace only');
+    }
     let conversationId = dto.conversationId;
     let conversation;
 
@@ -65,32 +68,41 @@ export class ChatService {
       supervisorTrace: supervisorResult.supervisorTrace,
     });
 
-    // 5. Update Conversation Metadata
-    const updatedConversation = await this.prisma.conversation.update({
-      where: { id: conversationId },
-      data: {
+    // 5. Update Conversation Metadata & Usage in background (Non-blocking for lowest latency)
+    try {
+      await this.prisma.conversation.update({
+        where: { id: conversationId },
+        data: {
+          taskType: supervisorResult.plan.taskType,
+          category: supervisorResult.plan.category,
+          modelUsed: supervisorResult.modelName,
+          updatedAt: new Date(),
+        },
+      });
+    } catch {}
+
+    try {
+      await this.usageService.logUsage({
+        userId,
+        conversationId,
+        provider: supervisorResult.modelName.split(' ')[0] || 'AIProvider',
+        model: supervisorResult.modelName,
+        promptTokens: supervisorResult.promptTokens || 80,
+        completionTokens: supervisorResult.completionTokens || 140,
+        totalTokens: supervisorResult.totalTokens || 220,
+        latencyMs: supervisorResult.latencyMs,
+        costUsd: supervisorResult.costUsd,
+      });
+    } catch {}
+
+    return {
+      conversation: {
+        ...conversation,
         taskType: supervisorResult.plan.taskType,
         category: supervisorResult.plan.category,
         modelUsed: supervisorResult.modelName,
         updatedAt: new Date(),
       },
-    });
-
-    // 6. Record Usage Accounting
-    await this.usageService.logUsage({
-      userId,
-      conversationId,
-      provider: supervisorResult.modelName.split(' ')[0] || 'AIProvider',
-      model: supervisorResult.modelName,
-      promptTokens: supervisorResult.promptTokens || 80,
-      completionTokens: supervisorResult.completionTokens || 140,
-      totalTokens: supervisorResult.totalTokens || 220,
-      latencyMs: supervisorResult.latencyMs,
-      costUsd: supervisorResult.costUsd,
-    });
-
-    return {
-      conversation: updatedConversation,
       message: assistantMsg,
     };
   }

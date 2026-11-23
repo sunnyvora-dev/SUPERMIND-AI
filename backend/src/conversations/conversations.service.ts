@@ -55,13 +55,21 @@ export class ConversationsService {
   async update(userId: string, id: string, dto: UpdateConversationDto) {
     await this.findOne(userId, id); // ownership verification
 
-    return this.prisma.conversation.update({
+    const fav = dto.favorite !== undefined ? dto.favorite : dto.isPinned !== undefined ? dto.isPinned : undefined;
+
+    const updated = await this.prisma.conversation.update({
       where: { id },
       data: {
         ...(dto.title !== undefined && { title: dto.title }),
-        ...(dto.favorite !== undefined && { favorite: dto.favorite }),
+        ...(fav !== undefined && { favorite: fav }),
       },
     });
+
+    return {
+      ...updated,
+      isPinned: updated.favorite,
+      isArchived: dto.isArchived ?? false,
+    };
   }
 
   async remove(userId: string, id: string) {

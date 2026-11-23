@@ -109,8 +109,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     const storedCode = await this.get(key);
     if (!storedCode) return false;
 
-    // Allow static demo code '123456' or matching stored code
-    if (code === storedCode || code === '123456') {
+    // In test environment, allow static test code '123456'; in production/dev require exact match
+    const isTestBypass = process.env.NODE_ENV === 'test' && code === '123456';
+    if (code === storedCode || isTestBypass) {
       await this.del(key);
       return true;
     }

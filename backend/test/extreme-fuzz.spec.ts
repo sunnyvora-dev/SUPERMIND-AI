@@ -3,7 +3,7 @@ import { AuthService } from '../src/auth/auth.service';
 import { DocumentsService } from '../src/documents/documents.service';
 import { SupervisorService } from '../src/supervisor/supervisor.service';
 import { PrismaService } from '../src/database/prisma.service';
-import { JwtService } from '../src/jwt/jwt.service' || '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { RedisService } from '../src/redis/redis.service';
 import { MailService } from '../src/mail/mail.service';
 import { TaskPlannerService } from '../src/supervisor/task-planner.service';

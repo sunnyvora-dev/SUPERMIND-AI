@@ -20,10 +20,11 @@ export const AnalyticsPage: React.FC = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3.5">
         {[
           { label: 'Total Requests', value: data.totalRequests, icon: Activity, color: 'text-indigo-600 dark:text-indigo-400' },
           { label: 'Messages', value: data.totalMessages, icon: BarChart2, color: 'text-purple-600 dark:text-purple-400' },
+          { label: 'Tokens Used', value: (data.tokensConsumed || 0).toLocaleString(), icon: Zap, color: 'text-emerald-600 dark:text-emerald-400' },
           { label: 'Images Created', value: data.imagesGenerated, icon: Zap, color: 'text-cyan-600 dark:text-cyan-400' },
           { label: 'Documents Analyzed', value: data.documentsAnalyzed, icon: Cpu, color: 'text-amber-600 dark:text-amber-400' },
           { label: 'Success Rate', value: `${data.successRatePercentage}%`, icon: ShieldCheck, color: 'text-emerald-600 dark:text-emerald-400' },
@@ -41,6 +42,29 @@ export const AnalyticsPage: React.FC = () => {
           );
         })}
       </div>
+
+      {/* Task Distribution Breakdown */}
+      {data.taskDistribution && data.taskDistribution.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white">Task Type Distribution</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+            {data.taskDistribution.map((item, idx) => (
+              <div key={idx} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
+                <div className="flex justify-between text-xs text-slate-500 font-medium">
+                  <span>{item.task}</span>
+                  <span className="font-bold text-slate-700 dark:text-slate-300">{item.percentage}%</span>
+                </div>
+                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-indigo-600 dark:bg-indigo-500 h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${Math.min(item.percentage, 100)}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Provider Performance Breakdown */}
       <div className="space-y-3">

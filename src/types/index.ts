@@ -67,6 +67,7 @@ export interface DocumentItem {
   uploadedAt: string;
   status: 'Ready' | 'Processing' | 'Error';
   summary?: string;
+  text?: string;
 }
 
 export interface ImageItem {
@@ -86,6 +87,10 @@ export interface AnalyticsSummary {
   tokensConsumed: number;
   successRatePercentage: number;
   averageLatencyMs: number;
+  taskDistribution?: Array<{
+    task: string;
+    percentage: number;
+  }>;
   providerStats: Array<{
     provider: string;
     model: string;

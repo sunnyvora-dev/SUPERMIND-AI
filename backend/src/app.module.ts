@@ -19,6 +19,7 @@ import { ImagesModule } from './images/images.module';
 import { DocumentsModule } from './documents/documents.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { UsageModule } from './usage/usage.module';
+import { HealthModule } from './health/health.module';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 
 @Module({
@@ -45,6 +46,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     DocumentsModule,
     AnalyticsModule,
     UsageModule,
+    HealthModule,
   ],
   providers: [
     {

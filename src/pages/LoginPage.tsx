@@ -49,13 +49,6 @@ export const LoginPage: React.FC = () => {
     setError('');
 
     const targetIdentifier = authMethod === 'phone' ? phone : email;
-
-    // Check if Account Exists
-    if (!authService.checkUserExists(targetIdentifier)) {
-      setError(`No account found for this ${authMethod === 'phone' ? 'phone number' : 'email'}. Please create an account first.`);
-      return;
-    }
-
     setLoading(true);
 
     try {

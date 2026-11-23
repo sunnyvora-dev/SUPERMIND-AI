@@ -1,0 +1,40 @@
+services:
+  # ---------------------------------------------------------
+  # SuperMind AI - NestJS Backend Web Service
+  # ---------------------------------------------------------
+  - type: web
+    name: supermind-backend
+    env: node
+    rootDir: backend
+    plan: starter
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: supermind-postgres
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: ALLOWED_ORIGINS
+        sync: false # Set to your Vercel frontend URL, e.g. https://supermind-ai.vercel.app
+      - key: BASE_URL
+        value: https://api.scalemax.pro/token/v1
+      - key: SCALEMAX_API_KEY
+        sync: false # Injected privately via Render Dashboard
+
+# ---------------------------------------------------------
+# Managed PostgreSQL Database
+# ---------------------------------------------------------
+databases:
+  - name: supermind-postgres
+    databaseName: supermind_db
+    user: supermind_user
+    plan: starter

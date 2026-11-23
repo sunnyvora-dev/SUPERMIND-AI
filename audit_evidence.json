@@ -1,0 +1,30 @@
+{
+  "testResults": {
+    "total": 12,
+    "passed": 11,
+    "failed": 1,
+    "blocked": 0
+  },
+  "metrics": {
+    "avgLatency": 48,
+    "p95Latency": 62,
+    "p99Latency": 77,
+    "totalBatchDuration": 83
+  },
+  "findings": [
+    {
+      "category": "SECURITY_AUTH",
+      "testName": "OTP code must NOT be returned in API response body",
+      "severity": "CRITICAL",
+      "details": "API returned OTP code directly in JSON response: 150031",
+      "evidence": {
+        "endpoint": "/api/auth/send-otp",
+        "response": {
+          "success": true,
+          "code": "150031",
+          "message": "Verification code sent to audit_user_a_1795351038476@supermind.ai (Valid for 5 mins)"
+        }
+      }
+    }
+  ]
+}

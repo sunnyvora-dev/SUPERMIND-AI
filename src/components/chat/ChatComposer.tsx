@@ -46,34 +46,57 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({ onSend, disabled = f
       const extractedTexts: string[] = [];
 
       for (const file of attachedFiles) {
-        // Upload to Document RAG Studio store for vector index search
+        // Upload to Document RAG Studio store for parsing and vector index search
+        let parsedText = '';
         try {
-          await documentService.uploadDocument(file);
+          const uploaded = await documentService.uploadDocument(file);
+          if (uploaded && uploaded.text && uploaded.text.trim()) {
+            parsedText = uploaded.text.trim();
+          }
         } catch (e) {
-          // Fallback read text
+          // Fallback read client-side if upload error
         }
 
-        const isBinaryDoc = file.name.toLowerCase().endsWith('.docx') || file.name.toLowerCase().endsWith('.pdf') || file.name.toLowerCase().endsWith('.doc');
-
-        if (isBinaryDoc) {
-          extractedTexts.push(`[Attached Document: ${file.name} (${Math.round(file.size / 1024)} KB)]`);
+        if (parsedText) {
+          // Injected extracted readable content directly into the model context
+          extractedTexts.push(`[Document Content: ${file.name}]\n${parsedText.slice(0, 20000)}`);
         } else {
-          // Read text files (.txt, .json, .csv, .js, .py, .md) directly
-          try {
-            const text = await new Promise<string>((resolve) => {
-              const reader = new FileReader();
-              reader.onload = (e) => resolve((e.target?.result as string) || '');
-              reader.onerror = () => resolve('');
-              reader.readAsText(file);
-            });
+          const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|webp|gif|svg)$/i.test(file.name);
+          const isBinaryDoc = file.name.toLowerCase().endsWith('.docx') || file.name.toLowerCase().endsWith('.pdf') || file.name.toLowerCase().endsWith('.doc');
 
-            if (text.trim() && !text.includes('PK\x03\x04')) {
-              extractedTexts.push(`[Document Context: ${file.name}]\n${text.slice(0, 15000)}`);
-            } else {
-              extractedTexts.push(`[Attached Document: ${file.name} (${Math.round(file.size / 1024)} KB)]`);
+          if (isImage) {
+            // Read visual chart / diagram / image as Base64 Data URL for Vision models
+            try {
+              const dataUrl = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve((e.target?.result as string) || '');
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(file);
+              });
+              extractedTexts.push(`[Attached Chart/Image: ${file.name}]\n${dataUrl}`);
+            } catch {
+              extractedTexts.push(`[Attached Chart/Image: ${file.name} (${Math.round(file.size / 1024)} KB)]`);
             }
-          } catch {
-            extractedTexts.push(`[Attached Document: ${file.name}]`);
+          } else if (isBinaryDoc) {
+            extractedTexts.push(`[Attached Document: ${file.name} (${Math.round(file.size / 1024)} KB)]`);
+          } else {
+            // Read text files (.txt, .json, .csv, .js, .py, .md) directly
+            try {
+              const text = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve((e.target?.result as string) || '');
+                reader.onerror = () => resolve('');
+                reader.readAsText(file);
+              });
+
+              if (text.trim() && !text.includes('PK\x03\x04')) {
+                extractedTexts.push(`[Document Content: ${file.name}]\n${text.slice(0, 15000)}`);
+              } else {
+                extractedTexts.push(`[Attached Document: ${file.name} (${Math.round(file.size / 1024)} KB)]`);
+              }
+            } catch {
+              extractedTexts.push(`[Attached Document: ${file.name}]`);
+            }
           }
         }
       }

@@ -3,12 +3,16 @@ import { AIProviderRegistryService } from './provider-registry.service';
 import { OpenAIProvider } from './openai.provider';
 import { GeminiProvider } from './gemini.provider';
 import { AnthropicProvider } from './anthropic.provider';
+import { DeepSeekProvider } from './deepseek.provider';
+import { KimiProvider } from './kimi.provider';
 
 describe('AIProviderRegistryService', () => {
   let registry: AIProviderRegistryService;
   let openaiMock: any;
   let geminiMock: any;
   let anthropicMock: any;
+  let deepseekMock: any;
+  let kimiMock: any;
 
   beforeEach(async () => {
     openaiMock = {
@@ -32,12 +36,28 @@ describe('AIProviderRegistryService', () => {
       generate: jest.fn().mockResolvedValue({ content: 'Claude output', modelName: 'Claude 3.5 Sonnet', costUsd: 0.002 }),
     };
 
+    deepseekMock = {
+      getProviderName: () => 'DeepSeek',
+      isAvailable: jest.fn().mockReturnValue(true),
+      getCapabilities: () => ['code', 'math', 'reasoning'],
+      generate: jest.fn().mockResolvedValue({ content: 'DeepSeek output', modelName: 'DeepSeek Flash', costUsd: 0.0002 }),
+    };
+
+    kimiMock = {
+      getProviderName: () => 'Kimi',
+      isAvailable: jest.fn().mockReturnValue(true),
+      getCapabilities: () => ['long_context', 'documents'],
+      generate: jest.fn().mockResolvedValue({ content: 'Kimi output', modelName: 'Kimi K3.1 Pro', costUsd: 0.0012 }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AIProviderRegistryService,
         { provide: OpenAIProvider, useValue: openaiMock },
         { provide: GeminiProvider, useValue: geminiMock },
         { provide: AnthropicProvider, useValue: anthropicMock },
+        { provide: DeepSeekProvider, useValue: deepseekMock },
+        { provide: KimiProvider, useValue: kimiMock },
       ],
     }).compile();
 
@@ -48,6 +68,8 @@ describe('AIProviderRegistryService', () => {
     expect(registry.getProvider('gemini').getProviderName()).toBe('Gemini');
     expect(registry.getProvider('claude').getProviderName()).toBe('Anthropic');
     expect(registry.getProvider('gpt-4o').getProviderName()).toBe('OpenAI');
+    expect(registry.getProvider('deepseek').getProviderName()).toBe('DeepSeek');
+    expect(registry.getProvider('kimi').getProviderName()).toBe('Kimi');
   });
 
   it('should execute primary provider if healthy', async () => {
@@ -62,14 +84,15 @@ describe('AIProviderRegistryService', () => {
     const res = await registry.executeWithFallback({ prompt: 'Hello' }, 'OpenAI');
 
     expect(res.content).toBeDefined();
-    // It should have fallen back to Gemini or Anthropic
-    expect(res.content).toMatch(/Gemini output|Claude output/);
+    expect(res.content).toMatch(/Gemini output|Claude output|DeepSeek output|Kimi output/);
   });
 
   it('should throw Error if all providers fail', async () => {
     openaiMock.generate.mockRejectedValue(new Error('Fail 1'));
     geminiMock.generate.mockRejectedValue(new Error('Fail 2'));
     anthropicMock.generate.mockRejectedValue(new Error('Fail 3'));
+    deepseekMock.generate.mockRejectedValue(new Error('Fail 4'));
+    kimiMock.generate.mockRejectedValue(new Error('Fail 5'));
 
     await expect(registry.executeWithFallback({ prompt: 'Hello' }, 'OpenAI')).rejects.toThrow(
       'SuperMind is temporarily unable to complete this request across all AI providers.',

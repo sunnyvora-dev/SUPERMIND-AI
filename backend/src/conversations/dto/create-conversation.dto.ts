@@ -32,5 +32,15 @@ export class UpdateConversationDto {
   @ApiPropertyOptional({ example: true })
   @IsOptional()
   @IsBoolean()
+  isPinned?: boolean;
+
+  @ApiPropertyOptional({ example: false })
+  @IsOptional()
+  @IsBoolean()
+  isArchived?: boolean;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  @IsBoolean()
   favorite?: boolean;
 }

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { TaskPlannerService } from './task-planner.service';
 import { ModelRouterService } from './model-router.service';
 import { AIProviderRegistryService } from '../ai/providers/provider-registry.service';
@@ -7,6 +7,7 @@ import { SearchTool } from '../tools/search.tool';
 import { ResponseAggregatorService } from '../responses/response-aggregator.service';
 import { CorrectionService } from '../responses/correction.service';
 import { DocumentsService } from '../documents/documents.service';
+import { ImagesService } from '../images/images.service';
 import { AIResponse } from '../ai/providers/ai-provider.interface';
 
 @Injectable()
@@ -22,6 +23,7 @@ export class SupervisorService {
     private aggregator: ResponseAggregatorService,
     private correctionService: CorrectionService,
     private documentsService: DocumentsService,
+    @Optional() private imagesService?: ImagesService,
   ) {}
 
   async processPrompt(prompt: string, userHistory?: { role: string; content: string }[], userId?: string) {
@@ -52,9 +54,67 @@ export class SupervisorService {
       };
     }
 
-    // 3. Document RAG Context Retrieval & Web Search Integration
+    // 2.5 AI Image Studio Generation (Direct visual diffusion synthesis)
+    if (plan.taskType === 'IMAGE_GENERATION' && this.imagesService) {
+      try {
+        const cleanPrompt = prompt
+          .replace(/^(please\s+)?(can\s+you\s+)?(generate|create|draw|paint|render|make)\s+(an?\s+)?(image|picture|photo|illustration|graphic)\s+(of\s+)?/i, '')
+          .trim();
+        const imgRes = await this.imagesService.generate(userId || 'anon', {
+          prompt: cleanPrompt || prompt,
+          aspectRatio: '1:1',
+          style: 'Digital Art',
+        });
+
+        return {
+          content: `### 🎨 AI Generated Image\n\n![${cleanPrompt || prompt}](${imgRes.imageUrl})\n\n**Prompt:** *${cleanPrompt || prompt}*\n**Style:** ${imgRes.style} • **Aspect Ratio:** ${imgRes.aspectRatio} • **Model:** ${imgRes.modelUsed}`,
+          modelName: imgRes.modelUsed,
+          plan,
+          latencyMs: Date.now() - startTime,
+          costUsd: 0.002,
+          supervisorTrace: {
+            intent: plan.intent,
+            complexity: plan.complexity,
+            capabilities: ['Visual Diffusion Synthesis', 'Grok Image Engine'],
+            providers: [imgRes.modelUsed],
+            status: 'Completed',
+            latencyMs: Date.now() - startTime,
+            costUsd: 0.002,
+          },
+        };
+      } catch (imgErr: any) {
+        this.logger.warn(`Direct image generation error: ${imgErr.message}. Continuing fallback.`);
+      }
+    }
+
+    // 3. Gemini Meta-Supervisor: Intelligent Decision & Prompt Optimization
+    let selectedModel = 'Google Gemini';
+    let routingRationale = 'Gemini dynamic routing decision';
+    let optimizedPrompt = prompt;
+    let requiresMulti = plan.requiresMultiModel;
+
+    if (this.modelRouter && typeof this.modelRouter.routeWithGemini === 'function') {
+      try {
+        const decision = await this.modelRouter.routeWithGemini(prompt, plan);
+        selectedModel = decision.selectedModel;
+        routingRationale = decision.rationale;
+        optimizedPrompt = decision.optimizedPrompt || prompt;
+        if (decision.requiresMultiModel) {
+          requiresMulti = true;
+        }
+      } catch (err: any) {
+        this.logger.warn(`routeWithGemini failed: ${err.message}. Falling back.`);
+        const models = this.modelRouter.selectModels(plan);
+        selectedModel = models[0] || 'Google Gemini';
+      }
+    } else if (this.modelRouter && typeof this.modelRouter.selectModels === 'function') {
+      const models = this.modelRouter.selectModels(plan);
+      selectedModel = models[0] || 'Google Gemini';
+    }
+
+    // 4. Document RAG Context Retrieval & Web Search Integration
     let sources: { title: string; url: string }[] | undefined = undefined;
-    let augmentedPrompt = prompt;
+    let augmentedPrompt = optimizedPrompt;
 
     if (userId) {
       try {
@@ -76,32 +136,30 @@ export class SupervisorService {
       augmentedPrompt = `${augmentedPrompt}\n\n[Web Search Context]\n${searchResults.map((s) => `- ${s.title}: ${s.snippet}`).join('\n')}`;
     }
 
-    // 4. Model Routing & Execution
-    const selectedProviderNames = this.modelRouter.selectModels(plan);
-
+    // 5. Model Execution
     let finalResponse: AIResponse;
-    if (plan.requiresMultiModel && selectedProviderNames.length > 1) {
+    if (requiresMulti) {
+      const targetModels = [selectedModel, selectedModel === 'Google Gemini' ? 'DeepSeek' : 'Google Gemini'];
       const responses = await Promise.all(
-        selectedProviderNames.map((pName) =>
+        targetModels.map((pName) =>
           this.providerRegistry.executeWithFallback({ prompt: augmentedPrompt, conversationHistory: userHistory }, pName),
         ),
       );
       finalResponse = this.aggregator.aggregate(responses);
     } else {
-      const targetProvider = selectedProviderNames[0];
       finalResponse = await this.providerRegistry.executeWithFallback(
         { prompt: augmentedPrompt, conversationHistory: userHistory },
-        targetProvider,
+        selectedModel,
       );
     }
 
-    // 5. Validation & Self-Correction (Max 2 retries)
+    // 6. Validation & Self-Correction (Max 2 retries)
     finalResponse = await this.correctionService.autoCorrect(
       finalResponse,
       (feedback) =>
         this.providerRegistry.executeWithFallback(
           { prompt: `${augmentedPrompt}\n\n[Feedback]: ${feedback}`, conversationHistory: userHistory },
-          selectedProviderNames[0],
+          selectedModel,
         ),
       plan.taskType,
     );
@@ -120,7 +178,12 @@ export class SupervisorService {
       supervisorTrace: {
         intent: plan.intent,
         complexity: plan.complexity,
-        capabilities: ['Intent Classification', 'Model Routing', 'Quality Validation'],
+        capabilities: [
+          'Gemini Prompt Optimization',
+          `Gemini Decision: ${selectedModel}`,
+          routingRationale,
+          'Quality Validation',
+        ],
         providers: [finalResponse.modelName],
         status: 'Completed',
         latencyMs: Date.now() - startTime,

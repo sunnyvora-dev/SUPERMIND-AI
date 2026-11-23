@@ -1,0 +1,20 @@
+# Dependency directories
+node_modules/
+
+# Build artifacts
+dist/
+
+# Local Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Local SQLite databases & uploads
+*.db
+uploads/
+
+# Version control & OS metadata
+.git
+.gitignore
+.DS_Store
+Thumbs.db

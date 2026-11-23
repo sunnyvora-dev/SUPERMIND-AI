@@ -81,17 +81,8 @@ export const chatService = {
     const token = authService.getToken();
     if (!token) throw new Error('Unauthorized session. Please login again.');
 
-    if (onProgress) {
-      onProgress(1, 'Understanding request & classifying intent...');
-      await new Promise((r) => setTimeout(r, 150));
-      onProgress(2, 'Building task plan & capability requirements...');
-      await new Promise((r) => setTimeout(r, 150));
-      onProgress(3, 'Selecting optimal AI providers...');
-      await new Promise((r) => setTimeout(r, 150));
-      onProgress(4, 'Dispatching to NestJS Supervisor Engine...');
-    }
-
-    const res = await fetch(`${API_CONFIG.BASE_URL}/chat`, {
+    // Fire the network request immediately with zero artificial delay
+    const requestPromise = fetch(`${API_CONFIG.BASE_URL}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -104,7 +95,13 @@ export const chatService = {
     });
 
     if (onProgress) {
-      onProgress(5, 'Quality audit & markdown synthesis complete.');
+      onProgress(1, 'Fast-Path routing to optimal AI engine...');
+    }
+
+    const res = await requestPromise;
+
+    if (onProgress) {
+      onProgress(5, 'Quality audit & response complete.');
     }
 
     if (res.status === 401) {

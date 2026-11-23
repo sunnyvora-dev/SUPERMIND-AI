@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { OpenAIProvider } from './providers/openai.provider';
 import { GeminiProvider } from './providers/gemini.provider';
 import { AnthropicProvider } from './providers/anthropic.provider';
+import { DeepSeekProvider } from './providers/deepseek.provider';
+import { KimiProvider } from './providers/kimi.provider';
 import { AIProviderRegistryService } from './providers/provider-registry.service';
 
 @Module({
@@ -9,6 +11,8 @@ import { AIProviderRegistryService } from './providers/provider-registry.service
     OpenAIProvider,
     GeminiProvider,
     AnthropicProvider,
+    DeepSeekProvider,
+    KimiProvider,
     AIProviderRegistryService,
   ],
   exports: [
@@ -16,7 +20,8 @@ import { AIProviderRegistryService } from './providers/provider-registry.service
     OpenAIProvider,
     GeminiProvider,
     AnthropicProvider,
+    DeepSeekProvider,
+    KimiProvider,
   ],
 })
 export class AiModule {}
-

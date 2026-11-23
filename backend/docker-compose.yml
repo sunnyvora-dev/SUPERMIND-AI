@@ -5,34 +5,57 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
-      - DATABASE_URL=postgresql://supermind:supermind_secret@postgres:5432/supermind_db?schema=public
-      - JWT_SECRET=supermind_production_jwt_secret_key_2026
+      - NODE_ENV=production
       - PORT=3000
-      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=${DATABASE_URL:-file:./prisma/dev.db}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET must be set}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-https://yourdomain.com}
+      - BASE_URL=${BASE_URL:-https://api.scalemax.pro/token/v1}
+      - SCALEMAX_API_KEY=${SCALEMAX_API_KEY:-}
     depends_on:
-      - postgres
-      - redis
-
-  postgres:
-    image: postgres:16-alpine
-    container_name: supermind_postgres
-    environment:
-      POSTGRES_USER: supermind
-      POSTGRES_PASSWORD: supermind_secret
-      POSTGRES_DB: supermind_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      redis:
+        condition: service_healthy
+    networks:
+      - internal_net
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2048M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   redis:
     image: redis:7-alpine
     container_name: supermind_redis
-    ports:
-      - "6379:6379"
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD:-}"
+    # Redis port kept strictly internal - never exposed to public internet
+    networks:
+      - internal_net
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
 
 volumes:
-  postgres_data:
+  redis_data:
+
+networks:
+  internal_net:
+    driver: bridge

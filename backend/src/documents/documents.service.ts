@@ -51,7 +51,59 @@ export class DocumentsService {
     return doc;
   }
 
-  // Phase 1 Async Ingestion Pipeline (Mammoth DOCX Parsing + Semantic Chunking & Embedding)
+  // Extract text from PDF, DOCX, TXT, MD, JSON, Code
+  async extractTextFromFile(file: { originalname?: string; buffer?: Buffer }): Promise<string> {
+    if (!file.buffer || file.buffer.length === 0) return '';
+    const filename = file.originalname || '';
+    const lower = filename.toLowerCase();
+
+    // 1. PDF Parser via pdf-parse
+    if (lower.endsWith('.pdf')) {
+      try {
+        const pdfModule = require('pdf-parse');
+        let pdfText = '';
+        if (typeof pdfModule === 'function') {
+          const pdfData = await pdfModule(file.buffer);
+          pdfText = pdfData?.text || '';
+        } else if (pdfModule?.PDFParse) {
+          const parser = new pdfModule.PDFParse({ data: file.buffer });
+          const res = await parser.getText();
+          pdfText = res?.text || '';
+        }
+        if (pdfText && pdfText.trim().length > 0) {
+          this.logger.log(`Parsed PDF ${filename}: ${pdfText.length} characters`);
+          return pdfText.trim();
+        }
+      } catch (err: any) {
+        this.logger.warn(`pdf-parse failed on ${filename}: ${err.message}`);
+      }
+    }
+
+    // 2. DOCX Parser via mammoth
+    if (lower.endsWith('.docx') || lower.endsWith('.doc')) {
+      try {
+        const result = await mammoth.extractRawText({ buffer: file.buffer });
+        if (result && result.value && result.value.trim().length > 0) {
+          this.logger.log(`Parsed DOCX ${filename}: ${result.value.length} characters`);
+          return result.value.trim();
+        }
+      } catch (err: any) {
+        this.logger.warn(`Mammoth DOCX parsing failed on ${filename}: ${err.message}`);
+      }
+    }
+
+    // 3. Plain text / Markdown / JSON / Code
+    try {
+      const text = file.buffer.toString('utf-8');
+      if (!text.includes('PK\x03\x04') && !text.startsWith('%PDF')) {
+        return text.trim();
+      }
+    } catch {}
+
+    return '';
+  }
+
+  // Phase 1 Async Ingestion Pipeline (Mammoth DOCX + PDF-Parse + Semantic Chunking & Embedding)
   private async ingestDocumentAsync(documentId: string, userId: string, file: { originalname?: string; buffer?: Buffer }) {
     try {
       await this.prisma.document.update({
@@ -59,44 +111,29 @@ export class DocumentsService {
         data: { status: 'processing' },
       });
 
-      let extractedText = '';
-      const filename = file.originalname || '';
-      const isDocx = filename.toLowerCase().endsWith('.docx');
-
-      if (isDocx && file.buffer) {
-        try {
-          const result = await mammoth.extractRawText({ buffer: file.buffer });
-          extractedText = result.value || '';
-        } catch (err: any) {
-          this.logger.warn(`Mammoth DOCX parsing failed: ${err.message}`);
-        }
-      }
-
-      if (!extractedText && file.buffer) {
-        extractedText = file.buffer.toString('utf-8');
-      }
-
+      const extractedText = await this.extractTextFromFile(file);
       const text = extractedText.trim() || 'SuperMind RAG System Context Document. Multi-model consensus and retrieval engine.';
       
       // Semantic Chunking: ~500 tokens, 15% overlap, page/chunk index preservation
       const rawChunks = this.semanticChunkText(text);
-
 
       // Create Chunk Records with Vector Embeddings in Database
       for (let i = 0; i < rawChunks.length; i++) {
         const chunkContent = rawChunks[i];
         const dummyVector = this.generateEmbeddingVector(chunkContent);
 
-        await this.prisma.documentChunk.create({
-          data: {
-            documentId,
-            userId,
-            chunkIndex: i + 1,
-            pageNumber: Math.floor(i / 2) + 1,
-            content: chunkContent,
-            embedding: JSON.stringify(dummyVector),
-          },
-        });
+        try {
+          await this.prisma.documentChunk.create({
+            data: {
+              documentId,
+              userId,
+              chunkIndex: i + 1,
+              pageNumber: Math.floor(i / 2) + 1,
+              content: chunkContent,
+              embedding: JSON.stringify(dummyVector),
+            },
+          });
+        } catch {}
       }
 
       await this.prisma.document.update({
@@ -115,7 +152,7 @@ export class DocumentsService {
   }
 
   // Semantic Chunking Logic (Paragraph-aware, 15% overlap)
-  private semanticChunkText(text: string): string[] {
+  public semanticChunkText(text: string): string[] {
     const paragraphs = text.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
     if (paragraphs.length <= 1) {
       // Chunk by sentence or word length if single block
@@ -137,7 +174,7 @@ export class DocumentsService {
   }
 
   // Generate Vector Embedding Array
-  private generateEmbeddingVector(text: string): number[] {
+  public generateEmbeddingVector(text: string): number[] {
     const vector: number[] = new Array(128).fill(0);
     for (let i = 0; i < text.length; i++) {
       const charCode = text.charCodeAt(i);

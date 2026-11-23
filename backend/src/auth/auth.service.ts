@@ -95,7 +95,7 @@ export class AuthService {
   async sendOtp(
     email: string,
     purpose: 'login' | 'register' | 'forgot_password' = 'forgot_password',
-  ): Promise<{ success: boolean; code: string; message: string }> {
+  ): Promise<{ success: boolean; code?: string; message: string }> {
     const cleanEmail = email.toLowerCase();
     
     // Rate limit: max 5 requests per 10 minutes per email
@@ -115,9 +115,10 @@ export class AuthService {
     // Send Live Email
     await this.mailService.sendOtpEmail(cleanEmail, code, purpose);
 
+    const isProduction = process.env.NODE_ENV === 'production';
     return {
       success: true,
-      code, // returned for frontend demo hint if desired
+      ...(isProduction ? {} : { code }), // Only return OTP code in non-production environments
       message: `Verification code sent to ${cleanEmail} (Valid for 5 mins)`,
     };
   }

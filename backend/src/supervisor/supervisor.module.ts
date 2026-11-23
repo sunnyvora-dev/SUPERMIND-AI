@@ -6,9 +6,10 @@ import { AiModule } from '../ai/ai.module';
 import { ToolsModule } from '../tools/tools.module';
 import { ResponsesModule } from '../responses/responses.module';
 import { DocumentsModule } from '../documents/documents.module';
+import { ImagesModule } from '../images/images.module';
 
 @Module({
-  imports: [AiModule, ToolsModule, ResponsesModule, DocumentsModule],
+  imports: [AiModule, ToolsModule, ResponsesModule, DocumentsModule, ImagesModule],
   providers: [TaskPlannerService, ModelRouterService, SupervisorService],
   exports: [SupervisorService, TaskPlannerService, ModelRouterService],
 })

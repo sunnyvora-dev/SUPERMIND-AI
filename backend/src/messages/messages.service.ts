@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 
@@ -6,7 +6,21 @@ import { CreateMessageDto } from './dto/create-message.dto';
 export class MessagesService {
   constructor(private prisma: PrismaService) {}
 
-  async findByConversation(conversationId: string) {
+  async findByConversation(userId: string, conversationId: string) {
+    // IDOR Defense: verify that the target conversation belongs to the authenticated user
+    const conversation = await this.prisma.conversation.findUnique({
+      where: { id: conversationId },
+      select: { userId: true },
+    });
+
+    if (!conversation) {
+      throw new NotFoundException('Conversation not found');
+    }
+
+    if (conversation.userId !== userId) {
+      throw new ForbiddenException('Access to conversation denied');
+    }
+
     const messages = await this.prisma.message.findMany({
       where: { conversationId },
       orderBy: { createdAt: 'asc' },

@@ -138,6 +138,35 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onToggleTaskD
         return;
       }
 
+      // Markdown Image Rendering ![alt](url)
+      const imgMatch = trimmed.match(/^!\[(.*?)\]\((.*?)\)/);
+      if (imgMatch) {
+        flushList(`list_${idx}`);
+        const alt = imgMatch[1] || 'AI Generated Image';
+        const src = imgMatch[2];
+        elements.push(
+          <div key={`img_${idx}`} className="my-3.5 rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-xl max-w-md sm:max-w-lg bg-slate-900 group">
+            <div className="relative overflow-hidden">
+              <img src={src} alt={alt} className="w-full h-auto max-h-[420px] object-cover transition-transform duration-300 group-hover:scale-[1.02]" loading="lazy" />
+            </div>
+            <div className="p-3 bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200 dark:border-white/5 flex justify-between items-center text-xs">
+              <span className="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[240px] sm:max-w-[300px]">{alt}</span>
+              <a
+                href={src}
+                download="supermind-art.png"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-semibold text-[11px] shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
+              >
+                <FileDown className="h-3.5 w-3.5" />
+                <span>Download</span>
+              </a>
+            </div>
+          </div>
+        );
+        return;
+      }
+
       if (trimmed.startsWith('# ')) {
         flushList(`list_${idx}`);
         elements.push(

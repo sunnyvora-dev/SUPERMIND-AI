@@ -1,5 +1,11 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+
+enum Role {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+  PRO = 'PRO',
+}
 
 const prisma = new PrismaClient();
 
@@ -20,9 +26,8 @@ async function main() {
       email: 'demo@supermind.ai',
       passwordHash,
       role: Role.USER,
-      planTier: 'Pro',
+      tier: 'PRO',
       tokensUsed: 624000,
-      tokenBudget: 5000000,
       avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
     },
   });
@@ -37,9 +42,8 @@ async function main() {
       email: 'admin@supermind.ai',
       passwordHash,
       role: Role.ADMIN,
-      planTier: 'Enterprise',
+      tier: 'ENTERPRISE',
       tokensUsed: 120000,
-      tokenBudget: 100000000,
       avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
     },
   });
