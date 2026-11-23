@@ -7,11 +7,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(RedisService.name);
   private client: Redis | null = null;
   private isConnected = false;
-  
+
   // In-memory fallback cache if Redis server is offline
   private fallbackMap = new Map<string, { value: string; expiresAt?: number }>();
 
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService) { }
 
   onModuleInit() {
     const redisUrl = this.configService.get<string>('REDIS_URL') || 'redis://localhost:6379';
@@ -100,17 +100,19 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   // OTP Helper Methods
   async setOtp(email: string, code: string, ttlSeconds = 300): Promise<void> {
-    const key = `otp:${(email || '').toLowerCase().trim()}`;
-    await this.set(key, (code || '').toString().trim(), ttlSeconds);
+    const key = `otp:${email.toLowerCase()}`;
+    await this.set(key, code, ttlSeconds);
   }
 
   async verifyOtp(email: string, code: string): Promise<boolean> {
-    const key = `otp:${(email || '').toLowerCase().trim()}`;
+    const key = `otp:${email.toLowerCase()}`;
     const storedCode = await this.get(key);
-    const cleanCode = (code || '').toString().trim();
+    if (!storedCode) return false;
 
-    // Accept exact stored code OR universal demo code '123456'
-    if (cleanCode && (cleanCode === storedCode || cleanCode === '123456')) {
+    // In test environment, allow static test code '123456'; in production/dev require exact match
+    const isTestBypass = process.env.NODE_ENV === 'test' && code === '123456';
+    if (code === storedCode || isTestBypass) {
+      await this.del(key);
       return true;
     }
     return false;

@@ -23,6 +23,9 @@ export class MailService implements OnModuleInit {
           port,
           secure: port === 465,
           auth: { user, pass },
+          connectionTimeout: 5000,
+          greetingTimeout: 5000,
+          socketTimeout: 5000,
         });
         this.isConfigured = true;
         this.logger.log(`Live Mail Service initialized with SMTP server: ${host}:${port}`);

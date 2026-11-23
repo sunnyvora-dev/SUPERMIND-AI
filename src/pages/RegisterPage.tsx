@@ -83,34 +83,25 @@ export const RegisterPage: React.FC = () => {
   // Step 2: 6-Digit OTP Verification -> Create Account
   const handleVerifyCode = async (code: string): Promise<boolean> => {
     setLoading(true);
-    setError('');
     try {
-      const targetIdentifier = (authMethod === 'phone' ? phone : email).trim();
-      const cleanCode = code.trim();
-      const isValid = await authService.verifyCode(targetIdentifier, cleanCode);
-      if (!isValid) {
-        setError('Invalid verification code. Please enter the 6-digit code from your email or 123456.');
-        return false;
-      }
-
-      // Code is verified - now create account in Supabase
-      try {
+      const targetIdentifier = authMethod === 'phone' ? phone : email;
+      const isValid = await authService.verifyCode(targetIdentifier, code);
+      if (isValid) {
+        authService.registerUserInRegistry(targetIdentifier);
         if (authMethod === 'phone') {
           await loginWithPhone(phone);
         } else {
-          await register(name || 'SuperMind User', email.trim(), password);
+          await register(name || 'SuperMind User', email, password);
         }
         setStep('verified');
         setTimeout(() => {
           navigate('/dashboard');
-        }, 1000);
+        }, 1200);
         return true;
-      } catch (regErr: any) {
-        setError(regErr.message || 'Account creation failed. If this email is already registered, please log in.');
-        return false;
       }
+      return false;
     } catch (err: any) {
-      setError(err.message || 'Registration verification failed');
+      setError(err.message || 'Registration OTP verification failed');
       return false;
     } finally {
       setLoading(false);

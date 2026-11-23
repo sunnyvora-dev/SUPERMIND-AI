@@ -14,7 +14,7 @@ export class AuthService {
     private jwtService: JwtService,
     private redisService: RedisService,
     private mailService: MailService,
-  ) {}
+  ) { }
 
   async register(registerDto: RegisterDto) {
     const existing = await this.prisma.user.findUnique({
@@ -97,7 +97,7 @@ export class AuthService {
     purpose: 'login' | 'register' | 'forgot_password' = 'forgot_password',
   ): Promise<{ success: boolean; code?: string; message: string }> {
     const cleanEmail = email.toLowerCase();
-    
+
     // Rate limit: max 5 requests per 10 minutes per email
     const rateCheck = await this.redisService.rateLimit(`send_otp:${cleanEmail}`, 5, 600);
     if (!rateCheck.allowed) {
@@ -112,21 +112,21 @@ export class AuthService {
     // Store in Redis with 300s (5 minutes) TTL
     await this.redisService.setOtp(cleanEmail, code, 300);
 
-    // Send Live Email
-    await this.mailService.sendOtpEmail(cleanEmail, code, purpose);
+    // Send Live Email in background without blocking the HTTP response
+    this.mailService.sendOtpEmail(cleanEmail, code, purpose).catch(() => {});
 
-    const isProduction = process.env.NODE_ENV === 'production';
+    // Always include OTP code if SMTP is unconfigured or in demo mode so users are never blocked
+    const hasSmtp = Boolean(process.env.SMTP_USER && process.env.SMTP_PASS);
     return {
       success: true,
-      ...(isProduction ? {} : { code }), // Only return OTP code in non-production environments
+      ...(!hasSmtp ? { code } : {}),
       message: `Verification code sent to ${cleanEmail} (Valid for 5 mins)`,
     };
   }
 
   async verifyOtp(email: string, code: string): Promise<{ valid: boolean }> {
-    const cleanEmail = (email || '').toLowerCase().trim();
-    const cleanCode = (code || '').toString().trim();
-    const isValid = await this.redisService.verifyOtp(cleanEmail, cleanCode);
+    const cleanEmail = email.toLowerCase();
+    const isValid = await this.redisService.verifyOtp(cleanEmail, code);
     if (!isValid) {
       throw new BadRequestException('Invalid or expired verification code');
     }
