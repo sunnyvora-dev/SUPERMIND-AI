@@ -43,20 +43,27 @@ export const LoginPage: React.FC = () => {
   };
 
 
-  // Step 1: Submit Credentials & Request 6-Digit OTP Code (Email or Phone SMS)
+  // Step 1: Submit Credentials & Direct Login (or Phone SMS OTP)
   const handleCredentialsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    const targetIdentifier = authMethod === 'phone' ? phone : email;
     setLoading(true);
 
     try {
-      const res = await authService.sendVerificationCode(targetIdentifier, 'register');
-      setDemoCodeHint(res.code);
-      setStep('otp');
+      if (authMethod === 'phone') {
+        const res = await authService.sendVerificationCode(phone, 'login');
+        setDemoCodeHint(res.code || '123456');
+        setStep('otp');
+      } else {
+        // Direct email & password login against live API
+        await login(email, password);
+        setStep('success');
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 600);
+      }
     } catch (err: any) {
-      setError(err.message || 'Failed to send OTP verification code');
+      setError(err.message || 'Invalid email or password');
     } finally {
       setLoading(false);
     }
@@ -260,7 +267,7 @@ export const LoginPage: React.FC = () => {
               )}
 
               <Button type="submit" isLoading={loading} className="w-full pt-1">
-                <span>{authMethod === 'phone' ? 'Send SMS OTP Code' : 'Continue with OTP Verification'}</span>
+                <span>{authMethod === 'phone' ? 'Send SMS OTP Code' : 'Sign In'}</span>
                 <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             </form>
