@@ -26,13 +26,29 @@ export class MessagesService {
       orderBy: { createdAt: 'asc' },
     });
 
-    return messages.map((m) => ({
-      ...m,
-      codeSnippet: m.codeSnippet ? JSON.parse(m.codeSnippet) : undefined,
-      sources: m.sources ? JSON.parse(m.sources) : undefined,
-      supervisorTrace: m.supervisorTrace ? JSON.parse(m.supervisorTrace) : undefined,
-      timestamp: m.createdAt.toISOString(),
-    }));
+    return messages.map((m) => {
+      let codeSnippet: any = undefined;
+      let sources: any = undefined;
+      let supervisorTrace: any = undefined;
+
+      try {
+        if (m.codeSnippet) codeSnippet = JSON.parse(m.codeSnippet);
+      } catch {}
+      try {
+        if (m.sources) sources = JSON.parse(m.sources);
+      } catch {}
+      try {
+        if (m.supervisorTrace) supervisorTrace = JSON.parse(m.supervisorTrace);
+      } catch {}
+
+      return {
+        ...m,
+        codeSnippet,
+        sources,
+        supervisorTrace,
+        timestamp: m.createdAt.toISOString(),
+      };
+    });
   }
 
   async create(dto: CreateMessageDto & {

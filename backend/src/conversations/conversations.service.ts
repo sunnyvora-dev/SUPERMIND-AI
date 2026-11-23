@@ -7,7 +7,7 @@ export class ConversationsService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(userId: string) {
-    return this.prisma.conversation.findMany({
+    const list = await this.prisma.conversation.findMany({
       where: { userId },
       include: {
         messages: {
@@ -17,6 +17,18 @@ export class ConversationsService {
       },
       orderBy: { updatedAt: 'desc' },
     });
+
+    return list.map((c) => ({
+      id: c.id,
+      title: c.title,
+      taskType: c.taskType,
+      category: c.category,
+      modelUsed: c.modelUsed,
+      favorite: Boolean(c.favorite),
+      createdAt: c.createdAt.toISOString(),
+      updatedAt: c.updatedAt.toISOString(),
+      lastMessage: c.messages?.[0]?.content || 'No messages yet',
+    }));
   }
 
   async findOne(userId: string, id: string) {

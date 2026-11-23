@@ -29,9 +29,21 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [activeConvId, setActiveConvId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  // 1. Instant Fast-Start (0ms): Initialize from local cache so user sees history instantly
+  const [conversations, setConversations] = useState<Conversation[]>(() => {
+    return chatService.getStoredLocalConversations();
+  });
+  const [activeConvId, setActiveConvId] = useState<string | null>(() => {
+    const list = chatService.getStoredLocalConversations();
+    return list.length > 0 ? list[0].id : null;
+  });
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const list = chatService.getStoredLocalConversations();
+    if (list.length > 0) {
+      return chatService.getStoredLocalMessages(list[0].id);
+    }
+    return [];
+  });
   const [isThinking, setIsThinking] = useState(false);
   const [thinkingProgress, setThinkingProgress] = useState<{ step: number; label: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -58,11 +70,19 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     reloadConversations();
   }, []);
 
+  // Fast Select: Display cached messages instantly (0ms), then revalidate in background
   const selectConversation = async (id: string) => {
     setActiveConvId(id);
-    const msgs = await chatService.getMessages(id);
-    setMessages(msgs);
+    const cachedMsgs = chatService.getStoredLocalMessages(id);
+    if (cachedMsgs.length > 0) {
+      setMessages(cachedMsgs);
+    }
     setIsMobileDrawerOpen(false);
+
+    try {
+      const freshMsgs = await chatService.getMessages(id);
+      setMessages(freshMsgs);
+    } catch {}
   };
 
   const sendPrompt = async (prompt: string) => {
@@ -88,34 +108,45 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-
-
   const createNewChat = () => {
     setActiveConvId(null);
     setMessages([]);
     setIsMobileDrawerOpen(false);
   };
 
+  // Optimistic Delete: Immediate UI removal (0ms) + background sync
   const deleteConv = async (id: string) => {
-    await chatService.deleteConversation(id);
-    const list = await chatService.getConversations();
-    setConversations(list);
+    const updated = conversations.filter((c) => c.id !== id);
+    setConversations(updated);
+    chatService.saveLocalConversations(updated);
     if (activeConvId === id) {
-      if (list.length > 0) selectConversation(list[0].id);
-      else createNewChat();
+      if (updated.length > 0) {
+        selectConversation(updated[0].id);
+      } else {
+        createNewChat();
+      }
     }
     showToast('Conversation deleted', 'info');
+    await chatService.deleteConversation(id);
   };
 
+  // Optimistic Rename: Immediate UI title change (0ms) + background sync
   const renameConv = async (id: string, title: string) => {
-    await chatService.renameConversation(id, title);
-    reloadConversations();
+    const cleanTitle = title.trim();
+    if (!cleanTitle) return;
+    const updated = conversations.map((c) => (c.id === id ? { ...c, title: cleanTitle } : c));
+    setConversations(updated);
+    chatService.saveLocalConversations(updated);
     showToast('Conversation renamed', 'success');
+    await chatService.renameConversation(id, cleanTitle);
   };
 
+  // Optimistic Toggle Favorite: Immediate star update (0ms) + background sync
   const toggleFav = async (id: string) => {
+    const updated = conversations.map((c) => (c.id === id ? { ...c, favorite: !c.favorite } : c));
+    setConversations(updated);
+    chatService.saveLocalConversations(updated);
     await chatService.toggleFavorite(id);
-    reloadConversations();
   };
 
   return (

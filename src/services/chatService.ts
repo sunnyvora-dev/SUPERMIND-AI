@@ -44,11 +44,23 @@ export const chatService = {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
-        const remoteList: Conversation[] = await res.json();
-        this.saveLocalConversations(remoteList);
-        return remoteList;
+        const rawList: any[] = await res.json();
+        const normalizedList: Conversation[] = (Array.isArray(rawList) ? rawList : []).map((c: any) => ({
+          id: c.id,
+          title: c.title || 'Untitled Session',
+          lastMessage: c.lastMessage || c.messages?.[0]?.content || 'No messages yet',
+          updatedAt: c.updatedAt || new Date().toISOString(),
+          createdAt: c.createdAt || new Date().toISOString(),
+          favorite: Boolean(c.favorite),
+          modelUsed: c.modelUsed || 'Supervisor AI',
+          category: c.category || 'Chat',
+        }));
+        this.saveLocalConversations(normalizedList);
+        return normalizedList;
       }
-    } catch (err) {}
+    } catch (err) {
+      console.warn('Network issue fetching conversations, using local cache:', err);
+    }
 
     return localList;
   },

@@ -22,7 +22,10 @@ export const HistoryPage: React.FC = () => {
   const [editingTitle, setEditingTitle] = useState('');
 
   const filtered = conversations.filter((c) => {
-    const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) || c.lastMessage.toLowerCase().includes(search.toLowerCase());
+    const title = (c.title || '').toLowerCase();
+    const lastMsg = (c.lastMessage || '').toLowerCase();
+    const q = search.toLowerCase();
+    const matchesSearch = title.includes(q) || lastMsg.includes(q);
     const matchesCategory = filterCategory === 'All' || c.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
@@ -35,9 +38,10 @@ export const HistoryPage: React.FC = () => {
     const older: typeof filtered = [];
 
     list.forEach((conv) => {
-      const d = new Date(conv.updatedAt);
-      const diffDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
-      if (diffDays === 0) today.push(conv);
+      const d = conv.updatedAt ? new Date(conv.updatedAt) : new Date(conv.createdAt || Date.now());
+      const diffMs = now.getTime() - d.getTime();
+      const diffDays = isNaN(diffMs) ? 0 : Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      if (diffDays <= 0) today.push(conv);
       else if (diffDays === 1) yesterday.push(conv);
       else if (diffDays <= 7) last7Days.push(conv);
       else older.push(conv);
@@ -98,6 +102,30 @@ export const HistoryPage: React.FC = () => {
 
       {/* Grouped History Lists */}
       <div className="space-y-6">
+        {filtered.length === 0 && (
+          <div className="p-12 rounded-3xl border-2 border-dashed border-slate-200 dark:border-white/10 text-center space-y-4 bg-white/40 dark:bg-white/5">
+            <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 flex items-center justify-center mx-auto shadow-inner">
+              <MessageSquare className="h-6 w-6" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                {search ? `No conversations matching "${search}"` : 'No chat history found'}
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
+                {search ? 'Try clearing your search query or selecting another category.' : 'Start a new prompt session in Chat Studio to orchestrate multi-LLM workflows.'}
+              </p>
+            </div>
+            {!search && (
+              <button
+                onClick={() => navigate('/chat')}
+                className="py-2 px-4 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white text-xs font-semibold shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
+              >
+                Start New Chat Session
+              </button>
+            )}
+          </div>
+        )}
+
         {[
           { title: 'Today', list: groups.today },
           { title: 'Yesterday', list: groups.yesterday },
