@@ -100,17 +100,17 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   // OTP Helper Methods
   async setOtp(email: string, code: string, ttlSeconds = 300): Promise<void> {
-    const key = `otp:${email.toLowerCase()}`;
-    await this.set(key, code, ttlSeconds);
+    const key = `otp:${(email || '').toLowerCase().trim()}`;
+    await this.set(key, (code || '').toString().trim(), ttlSeconds);
   }
 
   async verifyOtp(email: string, code: string): Promise<boolean> {
-    const key = `otp:${email.toLowerCase()}`;
+    const key = `otp:${(email || '').toLowerCase().trim()}`;
     const storedCode = await this.get(key);
+    const cleanCode = (code || '').toString().trim();
 
-    // Accept exact stored code, universal fallback demo code '123456'
-    if (code === storedCode || code === '123456') {
-      await this.del(key);
+    // Accept exact stored code OR universal demo code '123456'
+    if (cleanCode && (cleanCode === storedCode || cleanCode === '123456')) {
       return true;
     }
     return false;

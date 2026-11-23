@@ -115,18 +115,18 @@ export class AuthService {
     // Send Live Email
     await this.mailService.sendOtpEmail(cleanEmail, code, purpose);
 
-    // If SMTP is unconfigured or in development, return code in response so users are never blocked
-    const hasSmtp = Boolean(process.env.SMTP_USER && process.env.SMTP_PASS);
+    const isProduction = process.env.NODE_ENV === 'production';
     return {
       success: true,
-      ...(!hasSmtp ? { code } : {}),
+      ...(isProduction ? {} : { code }), // Only return OTP code in non-production environments
       message: `Verification code sent to ${cleanEmail} (Valid for 5 mins)`,
     };
   }
 
   async verifyOtp(email: string, code: string): Promise<{ valid: boolean }> {
-    const cleanEmail = email.toLowerCase();
-    const isValid = await this.redisService.verifyOtp(cleanEmail, code);
+    const cleanEmail = (email || '').toLowerCase().trim();
+    const cleanCode = (code || '').toString().trim();
+    const isValid = await this.redisService.verifyOtp(cleanEmail, cleanCode);
     if (!isValid) {
       throw new BadRequestException('Invalid or expired verification code');
     }

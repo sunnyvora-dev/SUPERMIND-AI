@@ -98,7 +98,13 @@ export const VerificationCodePanel: React.FC<VerificationCodePanelProps> = ({
     }
   };
 
+  const [isVerifying, setIsVerifying] = useState(false);
+
   const handleAutoVerify = async (fullCode: string) => {
+    if (isVerifying || verifiedSuccess) return;
+    setIsVerifying(true);
+    setError('');
+
     try {
       const isValid = await onVerify(fullCode);
       if (isValid) {
@@ -108,12 +114,15 @@ export const VerificationCodePanel: React.FC<VerificationCodePanelProps> = ({
       }
     } catch (err: any) {
       setError(err.message || 'Verification failed. Please try again.');
+    } finally {
+      setIsVerifying(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const fullCode = code.join('');
+    if (isVerifying || verifiedSuccess) return;
+    const fullCode = code.join('').trim();
     if (fullCode.length < 6) {
       setError('Please enter all 6 digits of the verification code.');
       return;

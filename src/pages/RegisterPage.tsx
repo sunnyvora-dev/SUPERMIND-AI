@@ -60,23 +60,21 @@ export const RegisterPage: React.FC = () => {
     setError('');
 
     const targetIdentifier = authMethod === 'phone' ? phone : email;
+
+    // Check if User Already Exists
+    if (authService.checkUserExists(targetIdentifier)) {
+      setError(`An account with this ${authMethod === 'phone' ? 'phone number' : 'email'} already exists.`);
+      return;
+    }
+
     setLoading(true);
 
     try {
-      if (authMethod === 'phone') {
-        const res = await authService.sendVerificationCode(targetIdentifier, 'register');
-        setDemoCodeHint(res.code || '123456');
-        setStep('verify');
-      } else {
-        // Direct account creation via live Supabase API
-        await register(name || 'SuperMind User', email, password);
-        setStep('verified');
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 800);
-      }
+      const res = await authService.sendVerificationCode(targetIdentifier, 'register');
+      setDemoCodeHint(res.code);
+      setStep('verify');
     } catch (err: any) {
-      setError(err.message || 'Registration failed. Please try again.');
+      setError(err.message || 'Failed to send OTP verification code');
     } finally {
       setLoading(false);
     }
@@ -85,25 +83,34 @@ export const RegisterPage: React.FC = () => {
   // Step 2: 6-Digit OTP Verification -> Create Account
   const handleVerifyCode = async (code: string): Promise<boolean> => {
     setLoading(true);
+    setError('');
     try {
-      const targetIdentifier = authMethod === 'phone' ? phone : email;
-      const isValid = await authService.verifyCode(targetIdentifier, code);
-      if (isValid) {
-        authService.registerUserInRegistry(targetIdentifier);
+      const targetIdentifier = (authMethod === 'phone' ? phone : email).trim();
+      const cleanCode = code.trim();
+      const isValid = await authService.verifyCode(targetIdentifier, cleanCode);
+      if (!isValid) {
+        setError('Invalid verification code. Please enter the 6-digit code from your email or 123456.');
+        return false;
+      }
+
+      // Code is verified - now create account in Supabase
+      try {
         if (authMethod === 'phone') {
           await loginWithPhone(phone);
         } else {
-          await register(name || 'SuperMind User', email, password);
+          await register(name || 'SuperMind User', email.trim(), password);
         }
         setStep('verified');
         setTimeout(() => {
           navigate('/dashboard');
-        }, 1200);
+        }, 1000);
         return true;
+      } catch (regErr: any) {
+        setError(regErr.message || 'Account creation failed. If this email is already registered, please log in.');
+        return false;
       }
-      return false;
     } catch (err: any) {
-      setError(err.message || 'Registration OTP verification failed');
+      setError(err.message || 'Registration verification failed');
       return false;
     } finally {
       setLoading(false);
@@ -331,7 +338,7 @@ export const RegisterPage: React.FC = () => {
               </div>
 
               <Button type="submit" isLoading={loading} className="w-full pt-1">
-                {authMethod === 'phone' ? 'Send Phone SMS OTP Code' : 'Create Account'}
+                {authMethod === 'phone' ? 'Send Phone SMS OTP Code' : 'Continue to Email Verification'}
               </Button>
             </form>
           </div>
