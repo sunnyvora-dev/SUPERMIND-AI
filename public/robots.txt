@@ -1,0 +1,9 @@
+# Robots.txt for SuperMind AI
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# Host & Sitemap
+Host: https://supermind-ai-six.vercel.app
+Sitemap: https://supermind-ai-six.vercel.app/sitemap.xml
