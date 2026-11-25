@@ -156,6 +156,25 @@
   40%, 80% { transform: translateX(4px); }
 }
 
+@keyframes cyberScan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1200%); }
+}
+
+@keyframes holographicShimmer {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.cyber-scanline {
+  background: linear-gradient(180deg, transparent 0%, rgba(36, 87, 214, 0.2) 50%, transparent 100%);
+  animation: cyberScan 6s linear infinite;
+}
+
+.holographic-shimmer {
+  animation: holographicShimmer 4s ease-in-out infinite;
+}
+
 .animate-fadeIn {
   animation: fadeIn 0.25s ease-out forwards;
 }
