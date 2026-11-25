@@ -41,12 +41,90 @@ export const LandingPage: React.FC = () => {
   const [tokenCounter, setTokenCounter] = useState(3429810);
   const [demoIndex, setDemoIndex] = useState(0);
 
-  // Mouse Movement Autoplay & Parallax State
+  // Mouse Movement Autoplay & Stop State
   const [isMouseMoving, setIsMouseMoving] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
+  const [canvasReady, setCanvasReady] = useState(false);
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const framesRef = useRef<HTMLImageElement[]>([]);
+  const frameIndexRef = useRef(0);
+  const animFrameIdRef = useRef<number | null>(null);
+  const lastAdvanceTimeRef = useRef<number>(0);
   const stopTimerRef = useRef<any>(null);
 
-  // Mouse Move Event Listener for Dynamic Tilt & Interactive Glow
+  const TOTAL_FRAMES = 39;
+
+  // 1. Preload Globe Frames for Instant Canvas Scrubbing & Playback
+  useEffect(() => {
+    let loadedCount = 0;
+    const images: HTMLImageElement[] = [];
+
+    for (let i = 0; i < TOTAL_FRAMES; i++) {
+      const img = new Image();
+      const numStr = i.toString().padStart(2, '0');
+      img.src = `/globe-frames/frame_${numStr}.webp`;
+      img.onload = () => {
+        loadedCount++;
+        if (loadedCount >= Math.min(10, TOTAL_FRAMES)) {
+          setCanvasReady(true);
+        }
+      };
+      images.push(img);
+    }
+    framesRef.current = images;
+
+    return () => {
+      images.length = 0;
+    };
+  }, []);
+
+  // 2. Render Frame to Canvas with Full-Bleed Cover Math
+  const drawFrame = (frameIdx: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const frameImg = framesRef.current[frameIdx];
+    if (!frameImg || !frameImg.complete || frameImg.naturalWidth === 0) return;
+
+    const cw = canvas.width;
+    const ch = canvas.height;
+    const iw = frameImg.naturalWidth;
+    const ih = frameImg.naturalHeight;
+
+    // Object-fit: cover math
+    const hRatio = cw / iw;
+    const vRatio = ch / ih;
+    const ratio = Math.max(hRatio, vRatio);
+    const nw = iw * ratio;
+    const nh = ih * ratio;
+    const nx = (cw - nw) / 2;
+    const ny = (ch - nh) / 2;
+
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(frameImg, nx, ny, nw, nh);
+  };
+
+  // Resize canvas to match display size
+  useEffect(() => {
+    const handleResize = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      drawFrame(frameIndexRef.current);
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, [canvasReady]);
+
+  // 3. Mouse Movement Autoplay & Stop Automatically
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const normX = (e.clientX / window.innerWidth) * 2 - 1;
@@ -54,10 +132,11 @@ export const LandingPage: React.FC = () => {
       setMousePos({ x: normX, y: normY });
       setIsMouseMoving(true);
 
+      // Reset inactivity stop timer
       if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
       stopTimerRef.current = setTimeout(() => {
         setIsMouseMoving(false);
-      }, 200);
+      }, 160);
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
@@ -66,6 +145,53 @@ export const LandingPage: React.FC = () => {
       if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
     };
   }, []);
+
+  // 4. Kinetic Autoplay Loop: Runs ONLY while mouse is moving
+  useEffect(() => {
+    if (!isMouseMoving || !canvasReady) {
+      if (animFrameIdRef.current) {
+        cancelAnimationFrame(animFrameIdRef.current);
+        animFrameIdRef.current = null;
+      }
+      return;
+    }
+
+    const fpsInterval = 1000 / 24; // 24 FPS smooth playback
+    const loop = (timestamp: number) => {
+      if (timestamp - lastAdvanceTimeRef.current >= fpsInterval) {
+        frameIndexRef.current = (frameIndexRef.current + 1) % TOTAL_FRAMES;
+        setCurrentFrameIndex(frameIndexRef.current);
+        drawFrame(frameIndexRef.current);
+        lastAdvanceTimeRef.current = timestamp;
+      }
+      animFrameIdRef.current = requestAnimationFrame(loop);
+    };
+
+    animFrameIdRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      if (animFrameIdRef.current) {
+        cancelAnimationFrame(animFrameIdRef.current);
+      }
+    };
+  }, [isMouseMoving, canvasReady]);
+
+  // 5. Scroll-Driven Scrubbing: When user scrolls, scrub frames
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScrollable = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalScrollable <= 0) return;
+      const progress = Math.min(Math.max(window.scrollY / totalScrollable, 0), 1);
+      const targetFrame = Math.floor(progress * (TOTAL_FRAMES - 1));
+      
+      frameIndexRef.current = targetFrame;
+      setCurrentFrameIndex(targetFrame);
+      drawFrame(targetFrame);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [canvasReady]);
 
   // Live Token & Scenario Cycling Animations
   useEffect(() => {
@@ -196,20 +322,35 @@ export const LandingPage: React.FC = () => {
     <div className="min-h-screen text-[#F4F0E6] bg-transparent flex flex-col font-sans select-none overflow-x-hidden relative">
       
       {/* ========================================================================= */}
-      {/* 1. FIXED BACKGROUND: STRETCHED ANIMATED CYBER GLOBE GIF                   */}
-      {/* This background stays FIXED in place; all text & sections scroll OVER it  */}
+      {/* 1. FIXED BACKGROUND: FULL-STRETCH KINETIC CYBER GLOBE CANVAS & GIF        */}
+      {/* Autoplays when mouse moves, stops automatically when mouse stops           */}
+      {/* Stays 100% FIXED in place; all text & sections scroll OVER it with no blank space */}
       {/* ========================================================================= */}
       <div className="fixed inset-0 w-full h-full pointer-events-none -z-10 overflow-hidden bg-[#05070e]">
-        {/* Full-bleed stretched animated GIF playing continuously */}
+        {/* Instant fallback GIF */}
         <img
           src="/hero_orchestration_globe.gif"
           alt="SuperMind AI Global Orchestration Core"
           loading="eager"
           decoding="async"
-          className="absolute inset-0 w-full h-full object-cover will-change-transform"
+          className={`absolute inset-0 w-full h-full object-cover will-change-transform transition-opacity duration-500 ${
+            canvasReady ? 'opacity-0' : 'opacity-100'
+          }`}
           style={{
-            transform: `scale(${isMouseMoving ? 1.03 : 1}) translate3d(${mousePos.x * 10}px, ${mousePos.y * 8}px, 0)`,
-            transition: 'transform 0.3s ease-out, filter 0.3s ease-out',
+            transform: `scale(${isMouseMoving ? 1.03 : 1}) translate3d(${mousePos.x * 8}px, ${mousePos.y * 6}px, 0)`,
+            transition: 'transform 0.3s ease-out, opacity 0.5s ease',
+          }}
+        />
+
+        {/* Dynamic HTML5 Canvas Frame Player: Autoplays on mouse move, stops when mouse halts, scrubs on scroll */}
+        <canvas
+          ref={canvasRef}
+          className={`absolute inset-0 w-full h-full object-cover will-change-transform transition-opacity duration-500 ${
+            canvasReady ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{
+            transform: `scale(${isMouseMoving ? 1.03 : 1}) translate3d(${mousePos.x * 8}px, ${mousePos.y * 6}px, 0)`,
+            transition: 'transform 0.3s ease-out',
             filter: isMouseMoving ? 'brightness(1.1) saturate(1.15)' : 'brightness(1) saturate(1.05)',
           }}
         />
@@ -286,11 +427,11 @@ export const LandingPage: React.FC = () => {
             <span className="text-[#C7D83D] font-bold">LIVE ONLINE</span>
           </div>
 
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0a0e1a]/85 border border-white/20 backdrop-blur-xl font-mono text-[11px] text-[#DCD6CA] shadow-editorial">
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0a0e1a]/85 border border-white/20 backdrop-blur-xl font-mono text-[11px] text-[#DCD6CA] shadow-editorial">
             <MousePointer2 className={`h-3.5 w-3.5 transition-colors ${isMouseMoving ? 'text-[#C7D83D] animate-spin' : 'text-[#77736B]'}`} />
             <span className="text-[#A8A49C]">KINETIC AUTOPLAY:</span>
-            <span className={isMouseMoving ? 'text-[#C7D83D] font-bold' : 'text-[#77736B] font-semibold'}>
-              {isMouseMoving ? 'ACTIVE (ACCELERATED)' : 'PLAYING AMBIENT (MOVE MOUSE)'}
+            <span className={isMouseMoving ? 'text-[#C7D83D] font-bold' : 'text-[#A8A49C] font-semibold'}>
+              {isMouseMoving ? `PLAYING (FRAME ${currentFrameIndex + 1}/39)` : 'STOPPED (MOVE MOUSE)'}
             </span>
           </div>
         </div>
