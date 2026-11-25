@@ -25,6 +25,12 @@ export const RegisterPage: React.FC = () => {
 
   // Handle Social Registration (Google OAuth, Facebook, Apple)
   const handleSocialRegister = async (provider: 'google' | 'facebook' | 'apple') => {
+    if (provider === 'apple' || provider === 'facebook') {
+      const name = provider === 'apple' ? 'Apple' : 'Facebook';
+      setError(`${name} sign-up is currently not available. Please sign up with Google or Email.`);
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {

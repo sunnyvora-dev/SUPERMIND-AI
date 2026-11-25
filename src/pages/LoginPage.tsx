@@ -22,6 +22,12 @@ export const LoginPage: React.FC = () => {
 
   // Handle Social Login (Google OAuth, Facebook, Apple)
   const handleSocialLogin = async (provider: 'google' | 'facebook' | 'apple') => {
+    if (provider === 'apple' || provider === 'facebook') {
+      const name = provider === 'apple' ? 'Apple' : 'Facebook';
+      setError(`${name} sign-in is currently not available. Please sign in with Google or Email.`);
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {

@@ -187,11 +187,10 @@ export const VerificationCodePanel: React.FC<VerificationCodePanelProps> = ({
                 value={digit}
                 onChange={(e) => handleChange(idx, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(idx, e)}
-                className={`w-11 h-13 text-center text-xl font-bold bg-white/5 border rounded-xl text-white outline-none transition-all shadow-sm ${
-                  digit
-                    ? 'border-indigo-500 ring-2 ring-indigo-500/30 bg-indigo-500/10'
-                    : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
-                }`}
+                className={`w-11 h-13 text-center text-xl font-bold bg-white/5 border rounded-xl text-white outline-none transition-all shadow-sm ${digit
+                  ? 'border-indigo-500 ring-2 ring-indigo-500/30 bg-indigo-500/10'
+                  : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
+                  }`}
               />
             ))}
           </div>
@@ -208,11 +207,10 @@ export const VerificationCodePanel: React.FC<VerificationCodePanelProps> = ({
           onClick={handleResendClick}
           disabled={!canResend || resending}
           type="button"
-          className={`inline-flex items-center font-semibold transition-all ${
-            canResend && !resending
-              ? 'text-indigo-400 hover:text-indigo-300 underline cursor-pointer'
-              : 'text-slate-600 cursor-not-allowed'
-          }`}
+          className={`inline-flex items-center font-semibold transition-all ${canResend && !resending
+            ? 'text-indigo-400 hover:text-indigo-300 underline cursor-pointer'
+            : 'text-slate-600 cursor-not-allowed'
+            }`}
         >
           {resending ? (
             <>
