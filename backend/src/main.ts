@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as express from 'express';
 import * as path from 'path';
 import helmet from 'helmet';
+import * as compression from 'compression';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
@@ -16,6 +17,9 @@ async function bootstrap() {
     crossOriginEmbedderPolicy: false,
     contentSecurityPolicy: false, // Allows Swagger UI and local development assets
   }));
+
+  // Enable Gzip / Deflate payload compression for low network latency
+  app.use(compression());
 
   // Global Prefix for REST endpoints: /api
   app.setGlobalPrefix('api');
