@@ -16,12 +16,12 @@ model User {
   passwordHash  String?
   name          String?
   avatarUrl     String?
-  role          String         @default("USER") // USER, ADMIN, PRO
+  role          String         @default("USER") // USER, ADMIN
   authProvider  String         @default("LOCAL") // LOCAL, GOOGLE, FACEBOOK, APPLE, PHONE
   providerId    String?
   emailVerified Boolean        @default(false)
   phone         String?
-  tier          String         @default("PRO") // FREE, PRO, ENTERPRISE
+  tier          String         @default("FREE_TRIAL") // FREE_TRIAL, STARTER, PRO, ENTERPRISE
   tokensUsed    Int            @default(0)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt

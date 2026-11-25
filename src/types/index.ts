@@ -5,15 +5,15 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
-  role?: 'USER' | 'ADMIN' | 'PRO';
+  role?: 'USER' | 'ADMIN';
   authProvider?: 'LOCAL' | 'GOOGLE' | 'FACEBOOK' | 'APPLE' | 'PHONE';
   providerId?: string;
-  planTier: 'Starter' | 'Pro' | 'Enterprise';
+  tier?: string;
+  planTier: 'Free Trial' | 'Starter' | 'Pro' | 'Enterprise';
   tokensUsed: number;
   tokenBudget: number;
   createdAt: string;
 }
-
 
 export interface SupervisorTraceStep {
   step: number;

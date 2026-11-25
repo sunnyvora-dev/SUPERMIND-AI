@@ -180,9 +180,13 @@ export const ProfilePage: React.FC = () => {
           <div className="p-4 rounded-xl bg-[#EAE5D9]/40 dark:bg-[#171717]/60 border border-[#DCD6CA]/80 dark:border-[#33312B] space-y-1">
             <div className="text-[#77736B] dark:text-[#A8A49C] font-mono text-[11px] uppercase tracking-wider">Monthly Allocation</div>
             <div className="font-mono font-bold text-lg text-[#2457D6] dark:text-[#88A9FF]">
-              {(user.tokenBudget / 1000000).toFixed(0)} Million Tokens
+              {user.tokenBudget >= 1000000
+                ? `${(user.tokenBudget / 1000000).toFixed(0)} Million Tokens`
+                : `${(user.tokenBudget / 1000).toFixed(0)}k Free Trial Tokens`}
             </div>
-            <div className="text-[11px] text-[#77736B] dark:text-[#A8A49C] mt-1">Resets on the 1st of every month</div>
+            <div className="text-[11px] text-[#77736B] dark:text-[#A8A49C] mt-1">
+              {user.planTier === 'Free Trial' ? 'Upgrade to Pro or Enterprise for higher limits' : 'Resets on the 1st of every month'}
+            </div>
           </div>
 
           <div className="p-4 rounded-xl bg-[#EAE5D9]/40 dark:bg-[#171717]/60 border border-[#DCD6CA]/80 dark:border-[#33312B] space-y-1">

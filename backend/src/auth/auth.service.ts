@@ -33,6 +33,8 @@ export class AuthService {
         name: registerDto.name,
         email: registerDto.email.toLowerCase(),
         passwordHash,
+        role: 'USER',
+        tier: 'FREE_TRIAL',
         ...({ emailVerified: true } as any),
         avatarUrl: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150`,
       },

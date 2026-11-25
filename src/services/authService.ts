@@ -29,7 +29,6 @@ export const authService = {
   },
 
   getToken(): string | null {
-
     return localStorage.getItem('supermind_token');
   },
 
@@ -62,11 +61,44 @@ export const authService = {
     return remaining > 0 ? remaining : 0;
   },
 
+  normalizeUser(user: any): User {
+    const rawTier = (user.tier || user.planTier || '').toUpperCase();
+    let planTier: 'Free Trial' | 'Starter' | 'Pro' | 'Enterprise' = 'Free Trial';
+    let tokenBudget = 100000; // 100,000 free trial tokens
+
+    if (rawTier === 'STARTER') {
+      planTier = 'Starter';
+      tokenBudget = 500000;
+    } else if (rawTier === 'PRO') {
+      planTier = 'Pro';
+      tokenBudget = 5000000;
+    } else if (rawTier === 'ENTERPRISE') {
+      planTier = 'Enterprise';
+      tokenBudget = 50000000;
+    } else if (user.planTier) {
+      planTier = user.planTier;
+      tokenBudget = user.tokenBudget || (planTier === 'Enterprise' ? 50000000 : planTier === 'Pro' ? 5000000 : planTier === 'Starter' ? 500000 : 100000);
+    }
+
+    return {
+      id: user.id || `usr_${Date.now()}`,
+      name: user.name || 'User',
+      email: user.email,
+      role: (user.role?.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER') as 'USER' | 'ADMIN',
+      planTier,
+      tokensUsed: typeof user.tokensUsed === 'number' ? user.tokensUsed : 0,
+      tokenBudget,
+      createdAt: user.createdAt || new Date().toISOString(),
+      avatarUrl: user.avatarUrl,
+      authProvider: user.authProvider,
+      providerId: user.providerId,
+    };
+  },
+
   async getCurrentUser(): Promise<User | null> {
     const token = this.getToken();
     const stored = localStorage.getItem('supermind_user');
 
-    // If no token or invalid mock token, clean up and return null (triggers clean login)
     if (!token || token === 'mock_jwt_token_2026') {
       localStorage.removeItem('supermind_token');
       localStorage.removeItem('supermind_user');
@@ -86,7 +118,8 @@ export const authService = {
       });
 
       if (res.ok) {
-        const user = await res.json();
+        const rawUser = await res.json();
+        const user = this.normalizeUser(rawUser);
         localStorage.setItem('supermind_user', JSON.stringify(user));
         return user;
       } else if (res.status === 401) {
@@ -94,10 +127,13 @@ export const authService = {
         return null;
       }
     } catch (err) {
-      // Fallback to local stored session if offline
+      // Fallback to stored session if offline
     }
 
-    return stored ? JSON.parse(stored) : null;
+    if (stored) {
+      return this.normalizeUser(JSON.parse(stored));
+    }
+    return null;
   },
 
   async loginWithSocial(provider: 'google' | 'facebook' | 'apple'): Promise<User> {
@@ -108,11 +144,12 @@ export const authService = {
       id: `usr_${provider}_${Date.now()}`,
       name: `${formattedProviderName} User`,
       email,
+      role: 'USER',
       authProvider: providerEnum,
       providerId: `oauth_${provider}_${Date.now()}`,
-      planTier: 'Pro',
+      planTier: 'Free Trial',
       tokensUsed: 0,
-      tokenBudget: 5000000,
+      tokenBudget: 100000,
       createdAt: new Date().toISOString(),
     };
     this.registerUserInRegistry(email);
@@ -128,11 +165,12 @@ export const authService = {
       id: `usr_phone_${Date.now()}`,
       name: `User (+${cleanPhone.slice(-4)})`,
       email,
+      role: 'USER',
       authProvider: 'PHONE',
       providerId: cleanPhone,
-      planTier: 'Pro',
+      planTier: 'Free Trial',
       tokensUsed: 0,
-      tokenBudget: 5000000,
+      tokenBudget: 100000,
       createdAt: new Date().toISOString(),
     };
     this.registerUserInRegistry(email);
@@ -141,11 +179,6 @@ export const authService = {
     localStorage.setItem('supermind_user', JSON.stringify(mockUser));
     return mockUser;
   },
-
-
-
-
-
 
   async login(email: string, password: string): Promise<User> {
     try {
@@ -160,18 +193,20 @@ export const authService = {
         throw new Error(data.message || 'Invalid email or password');
       }
 
+      const normalized = this.normalizeUser(data.user);
       localStorage.setItem('supermind_token', data.accessToken);
-      localStorage.setItem('supermind_user', JSON.stringify(data.user));
-      return data.user;
+      localStorage.setItem('supermind_user', JSON.stringify(normalized));
+      return normalized;
     } catch (err: any) {
-      // Local fallback for standalone demo
+      // Local fallback
       const mockUser: User = {
         id: 'usr_demo_101',
         name: 'Alex Developer',
         email,
-        planTier: 'Pro',
-        tokensUsed: 624000,
-        tokenBudget: 5000000,
+        role: 'USER',
+        planTier: 'Free Trial',
+        tokensUsed: 0,
+        tokenBudget: 100000,
         createdAt: new Date().toISOString(),
       };
       localStorage.setItem('supermind_token', 'mock_jwt_token_2026');
@@ -192,9 +227,10 @@ export const authService = {
       throw new Error(data.message || 'Registration failed');
     }
 
+    const normalized = this.normalizeUser(data.user);
     localStorage.setItem('supermind_token', data.accessToken);
-    localStorage.setItem('supermind_user', JSON.stringify(data.user));
-    return data.user;
+    localStorage.setItem('supermind_user', JSON.stringify(normalized));
+    return normalized;
   },
 
   async sendVerificationCode(
@@ -259,22 +295,24 @@ export const authService = {
 
       if (!res.ok) throw new Error('Failed to update profile');
       const updatedUser = await res.json();
-      localStorage.setItem('supermind_user', JSON.stringify(updatedUser));
-      return updatedUser;
+      const normalized = this.normalizeUser(updatedUser);
+      localStorage.setItem('supermind_user', JSON.stringify(normalized));
+      return normalized;
     } catch (err) {
-      // Local fallback for standalone demo mode
+      // Local fallback for standalone mode
       const stored = localStorage.getItem('supermind_user');
       const currentUser: User = stored ? JSON.parse(stored) : {
         id: 'usr_demo_101',
         name: 'Alex Developer',
         email: 'demo@supermind.ai',
-        planTier: 'Pro',
-        tokensUsed: 624000,
-        tokenBudget: 5000000,
+        role: 'USER',
+        planTier: 'Free Trial',
+        tokensUsed: 0,
+        tokenBudget: 100000,
         createdAt: new Date().toISOString(),
       };
 
-      const newUser = { ...currentUser, ...updatedData };
+      const newUser = this.normalizeUser({ ...currentUser, ...updatedData });
       localStorage.setItem('supermind_user', JSON.stringify(newUser));
       return newUser;
     }
