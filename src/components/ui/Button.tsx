@@ -16,25 +16,25 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseClasses =
-    'inline-flex items-center justify-center font-semibold tracking-tight transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/50 disabled:opacity-50 disabled:cursor-not-allowed select-none cursor-pointer hover:scale-[1.02] active:scale-[0.97]';
+    'inline-flex items-center justify-center font-medium tracking-tight transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F05A3C]/40 disabled:opacity-50 disabled:cursor-not-allowed select-none cursor-pointer';
 
   const variantClasses = {
     primary:
-      'bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 border border-indigo-400/30',
+      'bg-[#F05A3C] hover:bg-[#D94528] text-white shadow-sm border border-[#F05A3C] hover:shadow-[#F05A3C]/20',
     secondary:
-      'bg-slate-800/80 hover:bg-slate-700/80 backdrop-blur-xl text-slate-100 border border-white/10 hover:border-indigo-500/30 shadow-sm',
+      'bg-[#2457D6] hover:bg-[#1B44B0] text-white shadow-sm border border-[#2457D6]',
     outline:
-      'bg-white/5 backdrop-blur-xl border border-white/10 hover:border-indigo-500/40 hover:bg-white/10 text-slate-200 shadow-sm',
+      'bg-transparent hover:bg-[#EAE5D9] dark:hover:bg-[#23221F] border border-[#DCD6CA] dark:border-[#33312B] text-[#171717] dark:text-[#F4F0E6]',
     ghost:
-      'hover:bg-white/10 text-slate-300 hover:text-white',
+      'hover:bg-[#EAE5D9] dark:hover:bg-[#23221F] text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6]',
     danger:
-      'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white shadow-lg shadow-red-600/25 border border-red-500/30',
+      'bg-[#F05A3C] hover:bg-[#D94528] text-white shadow-sm border border-[#F05A3C]',
   };
 
   const sizeClasses = {
-    sm: 'text-xs px-3.5 py-1.5 rounded-xl min-h-[36px] gap-1.5',
-    md: 'text-sm px-4.5 py-2.5 rounded-xl min-h-[44px] gap-2',
-    lg: 'text-base px-6 py-3 rounded-2xl min-h-[50px] gap-2.5',
+    sm: 'text-xs px-3 py-1.5 rounded-lg min-h-[34px] gap-1.5',
+    md: 'text-xs md:text-sm px-4 py-2 rounded-xl min-h-[40px] gap-2',
+    lg: 'text-sm md:text-base px-5 py-2.5 rounded-xl min-h-[46px] gap-2.5',
   };
 
   return (

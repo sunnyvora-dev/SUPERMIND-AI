@@ -50,35 +50,35 @@ export const ImageStudioPage: React.FC = () => {
     <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full space-y-8">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight font-display">
+        <h1 className="text-2xl sm:text-4xl font-serif font-medium text-[#171717] dark:text-[#F4F0E6] tracking-tight">
           AI Image Studio
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <p className="text-xs sm:text-sm text-[#77736B] mt-1">
           Synthesize high-fidelity digital art, photorealistic portraits, and concept graphics with Grok Imagine & Flux AI. All creations are automatically preserved in your account.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
         {/* Left Control Panel */}
-        <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#0B0F1F]/90 backdrop-blur-2xl border border-slate-200 dark:border-white/10 space-y-5 h-fit shadow-xl shadow-indigo-500/5">
-          <div className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-violet-500" /> Prompt Studio Settings
+        <div className="p-5 sm:p-6 rounded-2xl bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] space-y-5 h-fit shadow-2xs">
+          <div className="font-serif font-medium text-base text-[#171717] dark:text-[#F4F0E6] flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-[#F05A3C]" /> Prompt Studio Settings
           </div>
 
           <form onSubmit={handleGenerate} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Prompt Description</label>
+              <label className="text-xs font-semibold text-[#171717] dark:text-[#D2CFC7]">Prompt Description</label>
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Describe your vision (e.g., 'A majestic cybernetic white tiger in neo-Tokyo with rain reflections')..."
                 rows={4}
-                className="w-full p-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 resize-none transition-all"
+                className="w-full p-3 bg-[#EAE5D9] dark:bg-[#252421] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] outline-none focus:border-[#F05A3C] resize-none transition-all"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Aspect Ratio</label>
+              <label className="text-xs font-semibold text-[#171717] dark:text-[#D2CFC7]">Aspect Ratio</label>
               <div className="grid grid-cols-3 gap-2">
                 {(['1:1', '16:9', '9:16'] as ImageItem['aspectRatio'][]).map((ar) => (
                   <button
@@ -87,8 +87,8 @@ export const ImageStudioPage: React.FC = () => {
                     onClick={() => setAspectRatio(ar)}
                     className={`py-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
                       aspectRatio === ar
-                        ? 'bg-gradient-to-r from-indigo-500 to-violet-600 text-white border-indigo-400/30 shadow-md shadow-indigo-500/20'
-                        : 'bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10'
+                        ? 'bg-[#F05A3C] text-white border-[#F05A3C] shadow-2xs'
+                        : 'bg-[#FAF8F3] dark:bg-[#1E1E1C] text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] border-[#DCD6CA] dark:border-[#33312B] hover:bg-[#EAE5D9] dark:hover:bg-[#252421]'
                     }`}
                   >
                     {ar}
@@ -98,11 +98,11 @@ export const ImageStudioPage: React.FC = () => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Artistic Style</label>
+              <label className="text-xs font-semibold text-[#171717] dark:text-[#D2CFC7]">Artistic Style</label>
               <select
                 value={style}
                 onChange={(e) => setStyle(e.target.value as ImageItem['style'])}
-                className="w-full p-2.5 bg-slate-50 dark:bg-[#0F172A] border border-slate-200 dark:border-white/10 rounded-xl text-xs text-slate-900 dark:text-white outline-none focus:border-indigo-500 cursor-pointer"
+                className="w-full p-2.5 bg-[#EAE5D9] dark:bg-[#252421] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] outline-none focus:border-[#F05A3C] cursor-pointer"
               >
                 <option value="Digital Art">Digital Art (High Detail)</option>
                 <option value="Photorealistic">Photorealistic (8K Photography)</option>
@@ -120,32 +120,32 @@ export const ImageStudioPage: React.FC = () => {
         {/* Right Gallery */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <ImageIcon className="h-4 w-4 text-indigo-500" />
+            <h3 className="font-serif font-medium text-base text-[#171717] dark:text-[#F4F0E6] flex items-center gap-2">
+              <ImageIcon className="h-4 w-4 text-[#F05A3C]" />
               <span>Saved Account Gallery ({images.length})</span>
             </h3>
-            <span className="text-[11px] text-slate-400 font-mono">Synced with Database</span>
+            <span className="text-[11px] text-[#77736B] font-mono">Synced with Database</span>
           </div>
 
           {/* Active Generation Shimmer Card */}
           {generating && (
-            <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center space-x-3 animate-pulse">
-              <Loader2 className="h-5 w-5 text-indigo-400 animate-spin shrink-0" />
+            <div className="p-4 rounded-2xl bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#F05A3C] flex items-center space-x-3 animate-pulse">
+              <Loader2 className="h-5 w-5 text-[#F05A3C] animate-spin shrink-0" />
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-bold text-indigo-300">Generating New Masterpiece...</div>
-                <div className="text-[11px] text-slate-400 truncate">Synthesizing visual diffusion prompt with Grok & Flux AI</div>
+                <div className="text-xs font-semibold text-[#F05A3C]">Generating New Masterpiece...</div>
+                <div className="text-[11px] text-[#77736B] truncate">Synthesizing visual diffusion prompt with Grok & Flux AI</div>
               </div>
             </div>
           )}
 
           {/* Empty State */}
           {images.length === 0 && !generating && (
-            <div className="p-12 rounded-3xl border-2 border-dashed border-slate-200 dark:border-white/10 text-center space-y-3 bg-white/40 dark:bg-white/5">
-              <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 flex items-center justify-center mx-auto">
+            <div className="p-12 rounded-2xl border border-dashed border-[#DCD6CA] dark:border-[#33312B] text-center space-y-3 bg-[#FAF8F3] dark:bg-[#1E1E1C]">
+              <div className="h-12 w-12 rounded-2xl bg-[#EAE5D9] dark:bg-[#252421] border border-[#DCD6CA] dark:border-[#33312B] text-[#F05A3C] flex items-center justify-center mx-auto shadow-2xs">
                 <ImageIcon className="h-6 w-6" />
               </div>
-              <h4 className="text-sm font-bold text-slate-900 dark:text-white">No images generated yet</h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+              <h4 className="text-base font-serif font-medium text-[#171717] dark:text-[#F4F0E6]">No images generated yet</h4>
+              <p className="text-xs text-[#77736B] max-w-sm mx-auto">
                 Type a prompt on the left and click "Generate Studio Image", or ask SuperMind in Chat to generate images. All created assets are stored directly in your account.
               </p>
             </div>
@@ -157,7 +157,7 @@ export const ImageStudioPage: React.FC = () => {
               <div
                 key={img.id}
                 onClick={() => setPreviewImage(img)}
-                className="group relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-md hover:shadow-xl transition-all cursor-pointer"
+                className="group relative rounded-2xl overflow-hidden bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] shadow-2xs hover:border-[#F05A3C] transition-all cursor-pointer"
               >
                 <div className="relative overflow-hidden aspect-video bg-black/40">
                   <img
@@ -173,17 +173,17 @@ export const ImageStudioPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-3 bg-white dark:bg-[#0F172A] border-t border-slate-200 dark:border-white/5 space-y-1.5">
-                  <div className="text-xs font-semibold text-slate-900 dark:text-white truncate" title={img.prompt}>
+                <div className="p-3 bg-[#FAF8F3] dark:bg-[#1E1E1C] border-t border-[#DCD6CA] dark:border-[#33312B] space-y-1.5">
+                  <div className="text-xs font-semibold text-[#171717] dark:text-[#F4F0E6] truncate" title={img.prompt}>
                     {img.prompt}
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center justify-between text-[11px] text-[#77736B]">
                     <span>{img.style} • {img.aspectRatio}</span>
                     <div className="flex items-center space-x-1.5">
                       <button
                         type="button"
                         onClick={(e) => handleCopyPrompt(img.prompt, img.id, e)}
-                        className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
+                        className="p-1 rounded-md hover:bg-[#EAE5D9] dark:hover:bg-[#252421] text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] transition-colors"
                         title="Copy Prompt"
                       >
                         {copiedId === img.id ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
@@ -194,7 +194,7 @@ export const ImageStudioPage: React.FC = () => {
                         rel="noreferrer"
                         download={`supermind-${img.id}.png`}
                         onClick={(e) => e.stopPropagation()}
-                        className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 hover:text-indigo-500 transition-colors"
+                        className="p-1 rounded-md hover:bg-[#EAE5D9] dark:hover:bg-[#252421] text-[#77736B] hover:text-[#F05A3C] transition-colors"
                         title="Download Image"
                       >
                         <Download className="h-3.5 w-3.5" />
@@ -202,7 +202,7 @@ export const ImageStudioPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={(e) => handleDelete(img.id, e)}
-                        className="p-1 rounded-md hover:bg-red-50 dark:hover:bg-red-500/10 text-slate-400 hover:text-red-500 transition-colors"
+                        className="p-1 rounded-md hover:bg-[#F05A3C]/10 text-[#77736B] hover:text-[#F05A3C] transition-colors"
                         title="Delete from Account"
                       >
                         <Trash2 className="h-3.5 w-3.5" />

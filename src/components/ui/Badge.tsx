@@ -8,11 +8,11 @@ interface BadgeProps {
 
 export const Badge: React.FC<BadgeProps> = ({ variant = 'default', children, className = '' }) => {
   const variantStyles = {
-    default: 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800/50',
-    success: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50',
-    warning: 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/50',
-    error: 'bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800/50',
-    info: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800/50',
+    default: 'bg-[#F05A3C]/10 text-[#F05A3C] border-[#F05A3C]/25',
+    success: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/25',
+    warning: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/25',
+    error: 'bg-[#F05A3C]/10 text-[#F05A3C] border-[#F05A3C]/25',
+    info: 'bg-[#2457D6]/10 text-[#2457D6] dark:text-[#4D7DFA] border-[#2457D6]/25',
   };
 
   return (

@@ -29,19 +29,19 @@ export const MobileDrawer: React.FC = () => {
       {/* Backdrop */}
       <div
         onClick={() => setIsMobileDrawerOpen(false)}
-        className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-[#171717]/60 backdrop-blur-sm transition-opacity"
       />
 
       {/* Drawer Panel */}
-      <div className="relative w-72 bg-white dark:bg-slate-900 h-full flex flex-col z-10 border-r border-slate-200 dark:border-slate-800 p-4 space-y-4 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+      <div className="relative w-72 bg-[#FAF8F3] dark:bg-[#141413] h-full flex flex-col z-10 border-r border-[#DCD6CA] dark:border-[#2E2D29] p-4 space-y-4 shadow-2xl">
+        <div className="flex items-center justify-between border-b border-[#DCD6CA] dark:border-[#2E2D29] pb-3">
           <div className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center text-xs">S</div>
-            <span className="font-extrabold text-slate-900 dark:text-white">SuperMind</span>
+            <div className="h-8 w-8 rounded-lg bg-[#F05A3C] text-white font-bold flex items-center justify-center text-xs font-serif shadow-sm">S</div>
+            <span className="font-serif font-medium text-base text-[#171717] dark:text-[#F4F0E6] tracking-tight">SuperMind</span>
           </div>
           <button
             onClick={() => setIsMobileDrawerOpen(false)}
-            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+            className="p-1 text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
@@ -53,7 +53,7 @@ export const MobileDrawer: React.FC = () => {
             navigate('/chat');
             setIsMobileDrawerOpen(false);
           }}
-          className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 text-white font-medium text-xs flex items-center justify-center space-x-2 shadow-sm"
+          className="w-full py-2.5 px-4 rounded-xl bg-[#F05A3C] hover:bg-[#D94528] text-white font-medium text-xs flex items-center justify-center space-x-2 shadow-sm border border-[#F05A3C] cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           <span>New Prompt Session</span>
@@ -72,9 +72,9 @@ export const MobileDrawer: React.FC = () => {
                   navigate(it.path);
                   setIsMobileDrawerOpen(false);
                 }}
-                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium text-[#171717] dark:text-[#D2CFC7] hover:bg-[#EAE5D9] dark:hover:bg-[#23221F] cursor-pointer transition-colors"
               >
-                <Icon className="h-4 w-4 text-indigo-500" />
+                <Icon className="h-4 w-4 text-[#F05A3C]" />
                 <span>{it.label}</span>
               </button>
             );
@@ -83,7 +83,7 @@ export const MobileDrawer: React.FC = () => {
 
         {/* User Profile Footer on Mobile */}
         {user && (
-          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div className="pt-3 border-t border-[#DCD6CA] dark:border-[#2E2D29] flex items-center justify-between">
             <button
               onClick={() => {
                 navigate('/profile');
@@ -91,12 +91,12 @@ export const MobileDrawer: React.FC = () => {
               }}
               className="flex items-center space-x-2.5 min-w-0 flex-1 text-left cursor-pointer"
             >
-              <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-600 text-white font-semibold text-xs flex items-center justify-center shrink-0 shadow-xs">
+              <div className="h-8 w-8 rounded-lg bg-[#171717] dark:bg-[#F4F0E6] text-[#F4F0E6] dark:text-[#171717] font-serif font-semibold text-xs flex items-center justify-center shrink-0 shadow-xs">
                 {user.name.slice(0, 2).toUpperCase()}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-semibold text-slate-900 dark:text-slate-200 truncate">{user.name}</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{user.email}</div>
+                <div className="text-xs font-medium text-[#171717] dark:text-[#F4F0E6] truncate">{user.name}</div>
+                <div className="text-[10px] text-[#77736B] truncate">{user.email}</div>
               </div>
             </button>
 
@@ -105,7 +105,7 @@ export const MobileDrawer: React.FC = () => {
                 setIsMobileDrawerOpen(false);
                 await logout();
               }}
-              className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors ml-1 cursor-pointer"
+              className="p-1.5 text-[#77736B] hover:text-[#F05A3C] hover:bg-[#EAE5D9] dark:hover:bg-[#23221F] rounded-lg transition-colors ml-1 cursor-pointer"
               title="Sign Out"
             >
               <LogOut className="h-4 w-4" />

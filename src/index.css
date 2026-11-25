@@ -3,48 +3,58 @@
 @tailwind utilities;
 
 @layer base {
-  /* Default Dark Mode Theme Tokens */
+  /* Dark Mode: Coordinated Deep Ink & Warm Ivory */
   :root, html.dark {
-    --bg-body: #030712;
-    --bg-app: #090d1a;
-    --bg-surface: #0f172a;
-    --bg-subtle: #131b33;
-    --bg-card: rgba(15, 23, 42, 0.75);
-    --bg-hover: rgba(30, 41, 59, 0.8);
-    --bg-selected: #1e1b4b;
+    --bg-body: #121212;
+    --bg-app: #171717;
+    --bg-surface: #1E1E1C;
+    --bg-subtle: #252421;
+    --bg-card: #1E1E1C;
+    --bg-hover: #292824;
+    --bg-selected: #312E27;
 
-    --text-primary: #f8fafc;
-    --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;
-    --border: rgba(255, 255, 255, 0.08);
+    --text-primary: #F4F0E6;
+    --text-secondary: #D2CFC7;
+    --text-muted: #8E8A81;
+    --border: #33312B;
+    --border-subtle: #262522;
 
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
+    --primary: #F05A3C;
+    --primary-hover: #D94528;
+    --cobalt: #2457D6;
+    --chartreuse: #C7D83D;
 
-    --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    --font-sans: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Newsreader', 'Georgia', serif;
     --font-mono: 'JetBrains Mono', monospace;
 
     color-scheme: dark;
   }
 
-  /* High-Contrast Light Mode Theme Tokens */
+  /* Light Mode: Warm Ivory, Deep Ink, Secondary Sand & Vermilion */
   html:not(.dark) {
-    --bg-body: #f1f5f9;
-    --bg-app: #ffffff;
-    --bg-surface: #f8fafc;
-    --bg-subtle: #e2e8f0;
-    --bg-card: rgba(255, 255, 255, 0.9);
-    --bg-hover: rgba(241, 245, 249, 0.9);
-    --bg-selected: #e0e7ff;
+    --bg-body: #F4F0E6;
+    --bg-app: #FAF8F3;
+    --bg-surface: #FFFFFF;
+    --bg-subtle: #EAE5D9;
+    --bg-card: #FAF8F3;
+    --bg-hover: #EAE5D9;
+    --bg-selected: #E2DDD0;
 
-    --text-primary: #0f172a;
-    --text-secondary: #334155;
-    --text-muted: #64748b;
-    --border: rgba(0, 0, 0, 0.08);
+    --text-primary: #171717;
+    --text-secondary: #3D3B36;
+    --text-muted: #77736B;
+    --border: #DCD6CA;
+    --border-subtle: #ECE7DC;
 
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
+    --primary: #F05A3C;
+    --primary-hover: #D94528;
+    --cobalt: #2457D6;
+    --chartreuse: #C7D83D;
+
+    --font-sans: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Newsreader', 'Georgia', serif;
+    --font-mono: 'JetBrains Mono', monospace;
 
     color-scheme: light;
   }
@@ -55,73 +65,71 @@
     font-family: var(--font-sans);
     overflow-x: hidden;
     line-height: 1.6;
+    letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     max-width: 100vw;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
+    letter-spacing: -0.025em;
   }
 }
 
-/* Glassmorphism & Ambient Utilities */
+/* Editorial & Retro-Futurism Panel Utilities */
+.editorial-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(23, 23, 23, 0.04);
+}
+
+.editorial-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 2px rgba(23, 23, 23, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editorial-card:hover {
+  border-color: #F05A3C;
+  box-shadow: 0 4px 16px -2px rgba(23, 23, 23, 0.08);
+}
+
+/* Backward-compatible glass aliases re-mapped to refined editorial surfaces */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
 }
 
 .glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border);
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  background: var(--bg-hover);
-  border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.15);
+  border-color: #F05A3C;
+  box-shadow: 0 6px 20px -4px rgba(23, 23, 23, 0.08);
 }
 
-/* Gradient Text Utilities */
+/* Refined Accent Text Utilities (No tacky neon) */
 .gradient-text-indigo {
-  background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-html.dark .gradient-text-indigo {
-  background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 50%, #818cf8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
 }
 
 .gradient-text-purple {
-  background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #F05A3C;
 }
 
-html.dark .gradient-text-purple {
-  background: linear-gradient(135deg, #ffffff 0%, #e9d5ff 50%, #c084fc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.text-editorial-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.03em;
 }
 
-.glow-indigo {
-  box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.25);
-}
-
-.glow-purple {
-  box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.25);
-}
-
-/* Custom Sleek Scrollbars */
+/* Custom Sleek Editorial Scrollbars */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -130,15 +138,15 @@ html.dark .gradient-text-purple {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
+  background: var(--border);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: #F05A3C;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -149,39 +157,10 @@ html.dark .gradient-text-purple {
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.25s ease-out forwards;
 }
 
 .animate-shake {
   animation: shake 0.35s ease-in-out;
-}
-
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-18px) scale(1.04); }
-}
-
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.25; transform: scale(1); }
-  50% { opacity: 0.55; transform: scale(1.1); }
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.animate-float {
-  animation: floatSlow 6s ease-in-out infinite;
-}
-
-.animate-pulseGlow {
-  animation: pulseGlow 5s ease-in-out infinite;
-}
-
-.animate-gradientText {
-  background-size: 200% 200%;
-  animation: gradientShift 6s ease infinite;
 }
 

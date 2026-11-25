@@ -36,21 +36,21 @@ export const Sidebar: React.FC = () => {
   const favorites = conversations.filter((c) => c.favorite);
 
   return (
-    <aside className="w-64 bg-slate-50 dark:bg-[#0B0F1F] border-r border-slate-200 dark:border-white/10 flex flex-col h-full select-none shrink-0 transition-colors duration-200">
+    <aside className="w-64 bg-[#EAE5D9] dark:bg-[#141413] border-r border-[#DCD6CA] dark:border-[#2E2D29] flex flex-col h-full select-none shrink-0 transition-colors duration-200">
       {/* Brand Logo Header */}
-      <div className="p-4 border-b border-slate-200 dark:border-white/10 flex items-center justify-between">
+      <div className="p-4 border-b border-[#DCD6CA] dark:border-[#2E2D29] flex items-center justify-between">
         <button
           onClick={() => navigate('/dashboard')}
           className="flex items-center space-x-3 text-left focus:outline-none group cursor-pointer"
         >
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-indigo-600 to-violet-600 text-white font-bold flex items-center justify-center text-sm shadow-md shadow-indigo-500/25">
+          <div className="h-9 w-9 rounded-lg bg-[#F05A3C] text-white font-bold flex items-center justify-center text-sm shadow-sm font-serif">
             S
           </div>
           <div>
-            <div className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white leading-none group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <div className="font-serif font-medium text-lg tracking-tight text-[#171717] dark:text-[#F4F0E6] leading-none group-hover:text-[#F05A3C] transition-colors">
               SuperMind
             </div>
-            <div className="text-[10px] font-medium text-slate-500 dark:text-slate-400 mt-1">
+            <div className="text-[10px] font-mono uppercase tracking-wider text-[#77736B] dark:text-[#8E8A81] mt-1">
               AI Orchestrator
             </div>
           </div>
@@ -58,19 +58,18 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* New Prompt Session CTA */}
-      <div className="p-3 border-b border-slate-200 dark:border-white/10">
+      <div className="p-3 border-b border-[#DCD6CA] dark:border-[#2E2D29]">
         <button
           onClick={() => {
             createNewChat();
             navigate('/chat');
           }}
-          className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.97] transition-all cursor-pointer"
+          className="w-full py-2.5 px-4 rounded-xl bg-[#F05A3C] hover:bg-[#D94528] text-white font-medium text-xs flex items-center justify-center space-x-2 shadow-sm border border-[#F05A3C] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           <span>New Prompt Session</span>
         </button>
       </div>
-
 
       {/* Navigation Links */}
       <div className="flex-1 overflow-y-auto p-3 space-y-4">
@@ -89,11 +88,11 @@ export const Sidebar: React.FC = () => {
                 }}
                 className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all relative cursor-pointer ${
                   isActive
-                    ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 font-semibold border-l-2 border-indigo-600 dark:border-indigo-500 pl-2.5 shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-100'
+                    ? 'bg-[#FAF8F3] dark:bg-[#1E1E1C] text-[#171717] dark:text-[#F4F0E6] font-medium border-l-2 border-[#F05A3C] pl-2.5 shadow-sm'
+                    : 'text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] hover:bg-[#FAF8F3]/60 dark:hover:bg-[#1E1E1C]/60'
                 }`}
               >
-                <Icon className={`h-4 w-4 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`} />
+                <Icon className={`h-4 w-4 ${isActive ? 'text-[#F05A3C]' : 'text-[#77736B]'}`} />
                 <span>{item.label}</span>
               </button>
             );
@@ -102,8 +101,8 @@ export const Sidebar: React.FC = () => {
 
         {/* Favorites */}
         {favorites.length > 0 && (
-          <div className="pt-2 border-t border-slate-200 dark:border-white/10 space-y-1">
-            <div className="px-3 py-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
+          <div className="pt-2 border-t border-[#DCD6CA] dark:border-[#2E2D29] space-y-1">
+            <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-[#77736B] flex items-center gap-1 font-semibold">
               <Star className="h-3 w-3 text-amber-500 fill-amber-500" /> Favorites
             </div>
             {favorites.map((c) => (
@@ -113,7 +112,7 @@ export const Sidebar: React.FC = () => {
                   selectConversation(c.id);
                   navigate(`/chat/${c.id}`);
                 }}
-                className="w-full text-left px-3 py-1.5 rounded-lg text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-white/5 truncate block cursor-pointer"
+                className="w-full text-left px-3 py-1.5 rounded-lg text-xs text-[#171717] dark:text-[#D2CFC7] hover:bg-[#FAF8F3] dark:hover:bg-[#1E1E1C] truncate block cursor-pointer transition-colors"
               >
                 {c.title}
               </button>
@@ -122,24 +121,24 @@ export const Sidebar: React.FC = () => {
         )}
 
         {/* Secondary Navigation */}
-        <div className="pt-2 border-t border-slate-200 dark:border-white/10 space-y-1">
+        <div className="pt-2 border-t border-[#DCD6CA] dark:border-[#2E2D29] space-y-1">
           <button
             onClick={() => navigate('/settings')}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-              location.pathname === '/settings' ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-100'
+              location.pathname === '/settings' ? 'bg-[#FAF8F3] dark:bg-[#1E1E1C] text-[#171717] dark:text-[#F4F0E6] font-medium border-l-2 border-[#F05A3C] pl-2.5' : 'text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] hover:bg-[#FAF8F3]/60 dark:hover:bg-[#1E1E1C]/60'
             }`}
           >
-            <Settings className="h-4 w-4 text-slate-400" />
+            <Settings className="h-4 w-4 text-[#77736B]" />
             <span>Settings</span>
           </button>
 
           <button
             onClick={() => navigate('/help')}
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-              location.pathname === '/help' ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-100'
+              location.pathname === '/help' ? 'bg-[#FAF8F3] dark:bg-[#1E1E1C] text-[#171717] dark:text-[#F4F0E6] font-medium border-l-2 border-[#F05A3C] pl-2.5' : 'text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] hover:bg-[#FAF8F3]/60 dark:hover:bg-[#1E1E1C]/60'
             }`}
           >
-            <HelpCircle className="h-4 w-4 text-slate-400" />
+            <HelpCircle className="h-4 w-4 text-[#77736B]" />
             <span>Help & FAQ</span>
           </button>
 
@@ -147,10 +146,10 @@ export const Sidebar: React.FC = () => {
             <button
               onClick={() => navigate('/admin')}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                location.pathname === '/admin' ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-100'
+                location.pathname === '/admin' ? 'bg-[#FAF8F3] dark:bg-[#1E1E1C] text-[#171717] dark:text-[#F4F0E6] font-medium border-l-2 border-[#F05A3C] pl-2.5' : 'text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] hover:bg-[#FAF8F3]/60 dark:hover:bg-[#1E1E1C]/60'
               }`}
             >
-              <ShieldAlert className="h-4 w-4 text-amber-500" />
+              <ShieldAlert className="h-4 w-4 text-[#F05A3C]" />
               <span>Admin Dashboard</span>
             </button>
           )}
@@ -159,23 +158,23 @@ export const Sidebar: React.FC = () => {
 
       {/* User Profile Footer */}
       {user && (
-        <div className="p-3 border-t border-slate-200 dark:border-white/10 flex items-center justify-between bg-slate-100/80 dark:bg-black/20">
+        <div className="p-3 border-t border-[#DCD6CA] dark:border-[#2E2D29] flex items-center justify-between bg-[#FAF8F3] dark:bg-[#1E1E1C]">
           <button
             onClick={() => navigate('/profile')}
             className="flex items-center space-x-2.5 min-w-0 flex-1 text-left cursor-pointer"
           >
-            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-violet-600 text-white font-semibold text-xs flex items-center justify-center shrink-0 shadow-xs">
+            <div className="h-8 w-8 rounded-lg bg-[#171717] dark:bg-[#F4F0E6] text-[#F4F0E6] dark:text-[#171717] font-serif font-semibold text-xs flex items-center justify-center shrink-0 shadow-xs">
               {user.name.slice(0, 2).toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-semibold text-slate-900 dark:text-slate-200 truncate">{user.name}</div>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{user.email}</div>
+              <div className="text-xs font-medium text-[#171717] dark:text-[#F4F0E6] truncate">{user.name}</div>
+              <div className="text-[10px] text-[#77736B] truncate">{user.email}</div>
             </div>
           </button>
 
           <button
             onClick={logout}
-            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-slate-200/60 dark:hover:bg-white/10 rounded-lg transition-colors ml-1 cursor-pointer"
+            className="p-1.5 text-[#77736B] hover:text-[#F05A3C] hover:bg-[#EAE5D9] dark:hover:bg-[#2A2925] rounded-lg transition-colors ml-1 cursor-pointer"
             title="Sign Out"
           >
             <LogOut className="h-4 w-4" />

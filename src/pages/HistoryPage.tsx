@@ -66,8 +66,8 @@ export const HistoryPage: React.FC = () => {
     <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Chat History</h1>
-          <p className="text-xs text-slate-500">Manage and search past SuperMind prompt sessions</p>
+          <h1 className="text-2xl md:text-3xl font-serif font-medium text-[#171717] dark:text-[#F4F0E6] tracking-tight">Chat History</h1>
+          <p className="text-xs text-[#77736B]">Manage and search past SuperMind prompt sessions</p>
         </div>
 
         {/* Filter Categories */}
@@ -76,10 +76,10 @@ export const HistoryPage: React.FC = () => {
             <button
               key={cat}
               onClick={() => setFilterCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
                 filterCategory === cat
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  ? 'bg-[#F05A3C] text-white shadow-2xs border border-[#F05A3C]'
+                  : 'bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] hover:bg-[#EAE5D9] dark:hover:bg-[#252421]'
               }`}
             >
               {cat}
@@ -90,28 +90,28 @@ export const HistoryPage: React.FC = () => {
 
       {/* Search Input Bar */}
       <div className="relative max-w-md">
-        <Search className="h-4 w-4 text-slate-400 absolute left-3.5 top-3" />
+        <Search className="h-4 w-4 text-[#77736B] absolute left-3.5 top-3" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by title or message content..."
-          className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs text-slate-900 dark:text-white outline-none focus:border-indigo-500"
+          className="w-full pl-10 pr-4 py-2.5 bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] outline-none focus:border-[#F05A3C]"
         />
       </div>
 
       {/* Grouped History Lists */}
       <div className="space-y-6">
         {filtered.length === 0 && (
-          <div className="p-12 rounded-3xl border-2 border-dashed border-slate-200 dark:border-white/10 text-center space-y-4 bg-white/40 dark:bg-white/5">
-            <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 flex items-center justify-center mx-auto shadow-inner">
+          <div className="p-12 rounded-3xl border border-dashed border-[#DCD6CA] dark:border-[#33312B] text-center space-y-4 bg-[#FAF8F3] dark:bg-[#1E1E1C]">
+            <div className="h-12 w-12 rounded-2xl bg-[#EAE5D9] dark:bg-[#252421] border border-[#DCD6CA] dark:border-[#33312B] text-[#F05A3C] flex items-center justify-center mx-auto shadow-2xs">
               <MessageSquare className="h-6 w-6" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+              <h4 className="text-base font-serif font-medium text-[#171717] dark:text-[#F4F0E6]">
                 {search ? `No conversations matching "${search}"` : 'No chat history found'}
               </h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
+              <p className="text-xs text-[#77736B] max-w-sm mx-auto mt-1">
                 {search ? 'Try clearing your search query or selecting another category.' : 'Start a new prompt session in Chat Studio to orchestrate multi-LLM workflows.'}
               </p>
             </div>
@@ -121,7 +121,7 @@ export const HistoryPage: React.FC = () => {
                   createNewChat();
                   navigate('/chat');
                 }}
-                className="py-2 px-4 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white text-xs font-semibold shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
+                className="py-2 px-4 rounded-xl bg-[#F05A3C] hover:bg-[#D94528] text-white text-xs font-medium shadow-2xs border border-[#F05A3C] transition-all cursor-pointer"
               >
                 Start New Chat Session
               </button>
@@ -138,7 +138,7 @@ export const HistoryPage: React.FC = () => {
           if (group.list.length === 0) return null;
           return (
             <div key={group.title} className="space-y-2">
-              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1">
+              <div className="text-[11px] font-mono uppercase tracking-wider text-[#77736B] px-1 font-medium">
                 {group.title} ({group.list.length})
               </div>
 
@@ -150,11 +150,11 @@ export const HistoryPage: React.FC = () => {
                       selectConversation(c.id);
                       navigate(`/chat/${c.id}`);
                     }}
-                    className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 flex items-center justify-between transition-all cursor-pointer group"
+                    className="p-4 rounded-2xl bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] hover:border-[#F05A3C] flex items-center justify-between transition-all cursor-pointer group shadow-2xs"
                   >
                     <div className="flex items-center space-x-3 min-w-0 pr-4">
-                      <div className="h-9 w-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center shrink-0">
-                        <MessageSquare className="h-4 w-4 text-indigo-500" />
+                      <div className="h-9 w-9 rounded-xl bg-[#EAE5D9] dark:bg-[#252421] text-[#F05A3C] flex items-center justify-center shrink-0 border border-[#DCD6CA] dark:border-[#33312B]">
+                        <MessageSquare className="h-4 w-4" />
                       </div>
                       <div className="min-w-0 flex-1">
                         {editingId === c.id ? (

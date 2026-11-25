@@ -17,40 +17,40 @@ export const TaskDetailsPanel: React.FC<TaskDetailsPanelProps> = ({ taskDetails,
         onClick={onClose}
         className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 md:hidden"
       />
-      <aside className="fixed inset-y-0 right-0 z-50 md:static md:z-auto w-full max-w-[320px] sm:w-80 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 h-full flex flex-col p-4 space-y-4 select-none shadow-2xl md:shadow-none animate-fadeIn">
-      <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+      <aside className="fixed inset-y-0 right-0 z-50 md:static md:z-auto w-full max-w-[320px] sm:w-80 bg-[#FAF8F3] dark:bg-[#1E1E1C] border-l border-[#DCD6CA] dark:border-[#33312B] h-full flex flex-col p-4 space-y-4 select-none shadow-2xl md:shadow-none animate-fadeIn text-[#171717] dark:text-[#F4F0E6]">
+      <div className="flex items-center justify-between border-b border-[#DCD6CA] dark:border-[#33312B] pb-3">
         <div className="flex items-center space-x-2">
-          <Activity className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-          <span className="font-bold text-xs uppercase tracking-wider text-slate-900 dark:text-white">Supervisor Task Trace</span>
+          <Activity className="h-4 w-4 text-[#F05A3C]" />
+          <span className="font-mono font-medium text-xs uppercase tracking-wider text-[#F05A3C]">Supervisor Task Trace</span>
         </div>
-        <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+        <button onClick={onClose} className="p-1 text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] cursor-pointer">
           <X className="h-4 w-4" />
         </button>
       </div>
 
       <div className="space-y-3 text-xs">
-        <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 space-y-2 border border-slate-200 dark:border-slate-800">
+        <div className="p-3 rounded-xl bg-[#EAE5D9] dark:bg-[#252421] space-y-2 border border-[#DCD6CA] dark:border-[#33312B]">
           <div className="flex justify-between">
-            <span className="text-slate-500">Intent:</span>
-            <span className="font-bold text-indigo-600 dark:text-indigo-400">{taskDetails.intent}</span>
+            <span className="text-[#77736B]">Intent:</span>
+            <span className="font-medium text-[#F05A3C]">{taskDetails.intent}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-500">Complexity:</span>
-            <span className="font-semibold text-slate-800 dark:text-slate-200">{taskDetails.complexity}</span>
+            <span className="text-[#77736B]">Complexity:</span>
+            <span className="font-medium text-[#171717] dark:text-[#F4F0E6]">{taskDetails.complexity}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-500">Status:</span>
-            <span className="font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+            <span className="text-[#77736B]">Status:</span>
+            <span className="font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
               <CheckCircle2 className="h-3.5 w-3.5" /> {taskDetails.status}
             </span>
           </div>
         </div>
 
         <div>
-          <div className="font-semibold text-slate-700 dark:text-slate-300 mb-1">Capabilities Invoked:</div>
+          <div className="font-medium text-[#171717] dark:text-[#F4F0E6] mb-1">Capabilities Invoked:</div>
           <div className="flex flex-wrap gap-1.5">
             {taskDetails.capabilities.map((cap, i) => (
-              <span key={i} className="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-medium">
+              <span key={i} className="px-2 py-0.5 rounded-md bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] text-[#2457D6] dark:text-[#4D7DFA] text-[10px] font-mono font-medium">
                 {cap}
               </span>
             ))}
@@ -58,27 +58,27 @@ export const TaskDetailsPanel: React.FC<TaskDetailsPanelProps> = ({ taskDetails,
         </div>
 
         <div>
-          <div className="font-semibold text-slate-700 dark:text-slate-300 mb-1">Routed AI Models:</div>
+          <div className="font-medium text-[#171717] dark:text-[#F4F0E6] mb-1">Routed AI Models:</div>
           <div className="space-y-1">
             {taskDetails.providers.map((p, i) => (
-              <div key={i} className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] flex items-center justify-between font-mono">
+              <div key={i} className="p-2 rounded-lg bg-[#EAE5D9] dark:bg-[#252421] border border-[#DCD6CA] dark:border-[#33312B] text-[11px] flex items-center justify-between font-mono">
                 <span className="flex items-center gap-1">
-                  <Cpu className="h-3 w-3 text-cyan-500" /> {p}
+                  <Cpu className="h-3 w-3 text-[#2457D6]" /> {p}
                 </span>
-                <span className="text-emerald-500">Active</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold text-[10px]">Active</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/40 space-y-1 text-[11px] text-slate-500">
+        <div className="p-3 rounded-xl bg-[#EAE5D9] dark:bg-[#252421] border border-[#DCD6CA] dark:border-[#33312B] space-y-1 text-[11px] text-[#77736B]">
           <div className="flex justify-between">
             <span>Latency SLA:</span>
-            <span className="font-mono font-medium text-slate-700 dark:text-slate-300">{taskDetails.latencyMs}ms</span>
+            <span className="font-mono font-medium text-[#171717] dark:text-[#F4F0E6]">{taskDetails.latencyMs}ms</span>
           </div>
           <div className="flex justify-between">
             <span>Estimated Cost:</span>
-            <span className="font-mono font-medium text-emerald-600">${taskDetails.costUsd}</span>
+            <span className="font-mono font-medium text-emerald-600 dark:text-emerald-400">${taskDetails.costUsd}</span>
           </div>
         </div>
       </div>

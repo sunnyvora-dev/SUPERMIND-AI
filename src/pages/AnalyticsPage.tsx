@@ -15,29 +15,29 @@ export const AnalyticsPage: React.FC = () => {
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Usage & Analytics</h1>
-        <p className="text-xs text-slate-500">Real-time token metrics, SLA latency breakdown, and provider stats</p>
+        <h1 className="text-2xl md:text-3xl font-serif font-medium text-[#171717] dark:text-[#F4F0E6] tracking-tight">Usage & Analytics</h1>
+        <p className="text-xs text-[#77736B]">Real-time token metrics, SLA latency breakdown, and provider telemetry</p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3.5">
         {[
-          { label: 'Total Requests', value: data.totalRequests, icon: Activity, color: 'text-indigo-600 dark:text-indigo-400' },
-          { label: 'Messages', value: data.totalMessages, icon: BarChart2, color: 'text-purple-600 dark:text-purple-400' },
-          { label: 'Tokens Used', value: (data.tokensConsumed || 0).toLocaleString(), icon: Zap, color: 'text-emerald-600 dark:text-emerald-400' },
-          { label: 'Images Created', value: data.imagesGenerated, icon: Zap, color: 'text-cyan-600 dark:text-cyan-400' },
-          { label: 'Documents Analyzed', value: data.documentsAnalyzed, icon: Cpu, color: 'text-amber-600 dark:text-amber-400' },
+          { label: 'Total Requests', value: data.totalRequests, icon: Activity, color: 'text-[#F05A3C]' },
+          { label: 'Messages', value: data.totalMessages, icon: BarChart2, color: 'text-[#2457D6]' },
+          { label: 'Tokens Used', value: (data.tokensConsumed || 0).toLocaleString(), icon: Zap, color: 'text-[#171717] dark:text-[#F4F0E6]' },
+          { label: 'Images Created', value: data.imagesGenerated, icon: Zap, color: 'text-[#F05A3C]' },
+          { label: 'Documents Analyzed', value: data.documentsAnalyzed, icon: Cpu, color: 'text-[#D97706]' },
           { label: 'Success Rate', value: `${data.successRatePercentage}%`, icon: ShieldCheck, color: 'text-emerald-600 dark:text-emerald-400' },
-          { label: 'Avg Latency', value: `${data.averageLatencyMs}ms`, icon: Clock, color: 'text-indigo-600 dark:text-indigo-400' },
+          { label: 'Avg Latency', value: `${data.averageLatencyMs}ms`, icon: Clock, color: 'text-[#2457D6]' },
         ].map((card, idx) => {
           const Icon = card.icon;
           return (
-            <div key={idx} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1">
-              <div className="flex items-center justify-between text-xs text-slate-500">
+            <div key={idx} className="p-4 rounded-2xl bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] space-y-1 shadow-2xs">
+              <div className="flex items-center justify-between text-xs text-[#77736B]">
                 <span>{card.label}</span>
                 <Icon className={`h-4 w-4 ${card.color}`} />
               </div>
-              <div className="text-lg font-extrabold text-slate-900 dark:text-white">{card.value}</div>
+              <div className="text-base font-mono font-semibold text-[#171717] dark:text-[#F4F0E6]">{card.value}</div>
             </div>
           );
         })}
@@ -46,17 +46,17 @@ export const AnalyticsPage: React.FC = () => {
       {/* Task Distribution Breakdown */}
       {data.taskDistribution && data.taskDistribution.length > 0 && (
         <div className="space-y-3">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white">Task Type Distribution</h3>
+          <h3 className="font-serif font-medium text-base text-[#171717] dark:text-[#F4F0E6]">Task Type Distribution</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
             {data.taskDistribution.map((item, idx) => (
-              <div key={idx} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
-                <div className="flex justify-between text-xs text-slate-500 font-medium">
+              <div key={idx} className="p-4 rounded-2xl bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] space-y-2 shadow-2xs">
+                <div className="flex justify-between text-xs text-[#77736B] font-medium">
                   <span>{item.task}</span>
-                  <span className="font-bold text-slate-700 dark:text-slate-300">{item.percentage}%</span>
+                  <span className="font-mono font-semibold text-[#171717] dark:text-[#F4F0E6]">{item.percentage}%</span>
                 </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-[#EAE5D9] dark:bg-[#252421] rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="bg-indigo-600 dark:bg-indigo-500 h-2 rounded-full transition-all duration-500"
+                    className="bg-[#F05A3C] h-1.5 rounded-full transition-all duration-500"
                     style={{ width: `${Math.min(item.percentage, 100)}%` }}
                   />
                 </div>
@@ -68,10 +68,10 @@ export const AnalyticsPage: React.FC = () => {
 
       {/* Provider Performance Breakdown */}
       <div className="space-y-3">
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white">Foundation Provider Health</h3>
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden text-xs">
+        <h3 className="font-serif font-medium text-base text-[#171717] dark:text-[#F4F0E6]">Foundation Provider Health</h3>
+        <div className="bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] rounded-2xl overflow-hidden text-xs shadow-2xs">
           <table className="w-full text-left">
-            <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-semibold">
+            <thead className="bg-[#EAE5D9] dark:bg-[#252421] border-b border-[#DCD6CA] dark:border-[#33312B] text-[#77736B] font-mono text-[10px] uppercase">
               <tr>
                 <th className="p-3">Provider</th>
                 <th className="p-3">Model</th>
@@ -80,14 +80,14 @@ export const AnalyticsPage: React.FC = () => {
                 <th className="p-3">Success SLA</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-[#DCD6CA] dark:divide-[#33312B]">
               {data.providerStats.map((p, idx) => (
-                <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                  <td className="p-3 font-bold text-indigo-600 dark:text-indigo-400">{p.provider}</td>
-                  <td className="p-3 font-semibold text-slate-800 dark:text-slate-200">{p.model}</td>
+                <tr key={idx} className="hover:bg-[#EAE5D9]/40 dark:hover:bg-[#252421]/40">
+                  <td className="p-3 font-semibold text-[#F05A3C]">{p.provider}</td>
+                  <td className="p-3 font-medium text-[#171717] dark:text-[#F4F0E6]">{p.model}</td>
                   <td className="p-3 font-mono">{p.requests}</td>
                   <td className="p-3 font-mono">{p.latencyMs}ms</td>
-                  <td className="p-3 text-emerald-500 font-semibold">{p.successRate}%</td>
+                  <td className="p-3 text-emerald-600 dark:text-emerald-400 font-semibold">{p.successRate}%</td>
                 </tr>
               ))}
             </tbody>

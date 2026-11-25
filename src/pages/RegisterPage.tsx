@@ -50,7 +50,6 @@ export const RegisterPage: React.FC = () => {
     }
   };
 
-
   // Step 1: Form Submit -> Request 6-Digit OTP Verification Code (Email or Phone)
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,45 +112,47 @@ export const RegisterPage: React.FC = () => {
     }
   };
 
-
-
   const passStrength = password.length > 8 ? 'Strong' : password.length > 5 ? 'Medium' : 'Weak';
 
   return (
-    <div className="min-h-screen bg-[#050814] flex items-center justify-center p-4 relative overflow-hidden select-none">
-      {/* Background Radial Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-gradient-to-tr from-indigo-500/20 via-indigo-600/10 to-violet-600/20 blur-[130px] rounded-full pointer-events-none -z-10" />
-
-      <div className="w-full max-w-md bg-[#0B0F1F]/90 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl shadow-indigo-500/10 p-8 space-y-6 relative transition-all duration-300">
+    <div className="min-h-screen bg-[#F4F0E6] dark:bg-[#121212] flex items-center justify-center p-4 relative select-none">
+      <div className="w-full max-w-md bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] rounded-2xl shadow-editorial p-7 md:p-8 space-y-6 relative transition-all">
         
         {/* Step Indicator dots */}
         <div className="flex items-center justify-center space-x-2 pt-1">
           <div
-            className={`h-2.5 rounded-full transition-all duration-300 ${
-              step === 'form' ? 'w-7 bg-indigo-500 shadow-md shadow-indigo-500/50' : 'w-2.5 bg-emerald-500'
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              step === 'form' ? 'w-6 bg-[#F05A3C]' : 'w-2 bg-emerald-600'
             }`}
           />
           <div
-            className={`h-2.5 rounded-full transition-all duration-300 ${
+            className={`h-1.5 rounded-full transition-all duration-300 ${
               step === 'verify'
-                ? 'w-7 bg-indigo-500 shadow-md shadow-indigo-500/50'
+                ? 'w-6 bg-[#F05A3C]'
                 : step === 'verified'
-                ? 'w-2.5 bg-emerald-500'
-                : 'w-2.5 bg-white/10'
+                ? 'w-2 bg-emerald-600'
+                : 'w-2 bg-[#DCD6CA] dark:bg-[#33312B]'
             }`}
           />
         </div>
 
         {/* STEP 1: Registration Form */}
         {step === 'form' && (
-          <div className="space-y-5 animate-fadeIn">
+          <div className="space-y-5 animate-fadeIn text-left">
             <div className="text-center space-y-2">
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-indigo-600 to-violet-600 text-white font-bold flex items-center justify-center mx-auto text-xl shadow-lg shadow-indigo-500/30 cursor-pointer" onClick={() => navigate('/')}>
+              <div
+                className="h-11 w-11 rounded-xl bg-[#171717] dark:bg-[#F4F0E6] text-[#F4F0E6] dark:text-[#171717] font-serif text-lg flex items-center justify-center mx-auto cursor-pointer border border-[#DCD6CA] dark:border-[#33312B] shadow-subtle"
+                onClick={() => navigate('/')}
+              >
                 S
               </div>
               <div>
-                <h2 className="text-2xl font-extrabold text-white tracking-tight">Create Account</h2>
-                <p className="text-xs text-slate-400 mt-0.5">Join SuperMind AI SaaS platform</p>
+                <h2 className="text-2xl font-serif font-normal text-[#171717] dark:text-[#F4F0E6] tracking-tight">
+                  Create Workspace
+                </h2>
+                <p className="text-xs text-[#77736B] dark:text-[#A8A49C] mt-0.5">
+                  Join the SuperMind AI orchestration platform
+                </p>
               </div>
             </div>
 
@@ -161,7 +162,7 @@ export const RegisterPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleSocialRegister('google')}
-                  className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all cursor-pointer hover:scale-105"
+                  className="p-2.5 rounded-xl bg-[#EAE5D9]/50 dark:bg-[#171717]/60 hover:bg-[#EAE5D9] dark:hover:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] flex items-center justify-center transition-all cursor-pointer"
                   title="Sign up with Google"
                 >
                   <svg className="h-4 w-4" viewBox="0 0 24 24">
@@ -175,7 +176,7 @@ export const RegisterPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleSocialRegister('facebook')}
-                  className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all cursor-pointer hover:scale-105"
+                  className="p-2.5 rounded-xl bg-[#EAE5D9]/50 dark:bg-[#171717]/60 hover:bg-[#EAE5D9] dark:hover:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] flex items-center justify-center transition-all cursor-pointer"
                   title="Sign up with Facebook"
                 >
                   <svg className="h-4 w-4 fill-[#1877F2]" viewBox="0 0 24 24">
@@ -186,10 +187,10 @@ export const RegisterPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleSocialRegister('apple')}
-                  className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all cursor-pointer hover:scale-105 text-white"
+                  className="p-2.5 rounded-xl bg-[#EAE5D9]/50 dark:bg-[#171717]/60 hover:bg-[#EAE5D9] dark:hover:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] flex items-center justify-center transition-all cursor-pointer text-[#171717] dark:text-[#F4F0E6]"
                   title="Sign up with Apple"
                 >
-                  <svg className="h-4 w-4 fill-white" viewBox="0 0 24 24">
+                  <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
                     <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.32c.66-.82 1.11-1.96.99-3.1-.96.04-2.13.64-2.82 1.45-.62.72-1.16 1.88-1.01 3 .08.01.21.02.32.02.87 0 1.92-.55 2.52-1.37z" />
                   </svg>
                 </button>
@@ -197,10 +198,10 @@ export const RegisterPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setAuthMethod(authMethod === 'phone' ? 'email' : 'phone')}
-                  className={`p-2.5 rounded-xl border flex items-center justify-center transition-all cursor-pointer hover:scale-105 ${
+                  className={`p-2.5 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
                     authMethod === 'phone'
-                      ? 'bg-indigo-500 text-white border-indigo-400'
-                      : 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30'
+                      ? 'bg-[#F05A3C] text-white border-[#F05A3C]'
+                      : 'bg-[#EAE5D9]/50 dark:bg-[#171717]/60 text-[#77736B] dark:text-[#A8A49C] border-[#DCD6CA] dark:border-[#33312B]'
                   }`}
                   title="Sign up with Phone SMS OTP"
                 >
@@ -208,20 +209,22 @@ export const RegisterPage: React.FC = () => {
                 </button>
               </div>
 
-              <div className="relative flex items-center justify-center">
-                <div className="border-t border-white/10 w-full" />
-                <span className="bg-[#0B0F1F] px-2 text-[10px] uppercase font-mono text-slate-400 absolute">or</span>
+              <div className="relative flex items-center justify-center py-1">
+                <div className="border-t border-[#DCD6CA] dark:border-[#33312B] w-full" />
+                <span className="bg-[#FAF8F3] dark:bg-[#1E1E1C] px-2 text-[10px] uppercase font-mono text-[#77736B] dark:text-[#A8A49C] absolute">
+                  or
+                </span>
               </div>
             </div>
 
             {error && (
-              <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center font-medium space-y-2">
+              <div className="p-3.5 rounded-xl bg-[#F05A3C]/10 border border-[#F05A3C]/30 text-[#F05A3C] text-xs text-center font-medium space-y-2">
                 <div>{error}</div>
                 {error.includes('already exists') && (
                   <button
                     type="button"
                     onClick={() => navigate('/login')}
-                    className="py-1.5 px-3 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 text-white text-[11px] font-bold transition-all cursor-pointer"
+                    className="py-1.5 px-3 rounded-lg bg-[#F05A3C] text-white text-[11px] font-medium transition-all cursor-pointer"
                   >
                     Sign In to Existing Account →
                   </button>
@@ -229,19 +232,18 @@ export const RegisterPage: React.FC = () => {
               </div>
             )}
 
-
             <form onSubmit={handleSubmitForm} className="space-y-3.5">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Full Name</label>
+                <label className="text-xs font-medium text-[#171717] dark:text-[#F4F0E6]">Full Name</label>
                 <div className="relative">
-                  <UserIcon className="h-4 w-4 text-indigo-400 absolute left-3.5 top-3" />
+                  <UserIcon className="h-3.5 w-3.5 text-[#77736B] absolute left-3.5 top-3" />
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Alex Developer"
-                    className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-[#F4F0E6] dark:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] outline-none focus:border-[#F05A3C] transition-all"
                   />
                 </div>
               </div>
@@ -249,65 +251,65 @@ export const RegisterPage: React.FC = () => {
               {authMethod === 'email' ? (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-slate-300">Email Address</label>
+                    <label className="text-xs font-medium text-[#171717] dark:text-[#F4F0E6]">Email Address</label>
                     <div className="relative">
-                      <Mail className="h-4 w-4 text-indigo-400 absolute left-3.5 top-3" />
+                      <Mail className="h-3.5 w-3.5 text-[#77736B] absolute left-3.5 top-3" />
                       <input
                         type="email"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="alex@company.com"
-                        className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 bg-[#F4F0E6] dark:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] outline-none focus:border-[#F05A3C] transition-all"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
-                      <label className="font-semibold text-slate-300">Password</label>
-                      <span className="text-[10px] font-mono text-indigo-400 font-bold">Strength: {passStrength}</span>
+                      <label className="font-medium text-[#171717] dark:text-[#F4F0E6]">Password</label>
+                      <span className="text-[10px] font-mono text-[#F05A3C] font-semibold">Strength: {passStrength}</span>
                     </div>
                     <div className="relative">
-                      <Lock className="h-4 w-4 text-indigo-400 absolute left-3.5 top-3" />
+                      <Lock className="h-3.5 w-3.5 text-[#77736B] absolute left-3.5 top-3" />
                       <input
                         type="password"
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 bg-[#F4F0E6] dark:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] outline-none focus:border-[#F05A3C] transition-all"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-slate-300">Confirm Password</label>
+                    <label className="text-xs font-medium text-[#171717] dark:text-[#F4F0E6]">Confirm Password</label>
                     <div className="relative">
-                      <Lock className="h-4 w-4 text-indigo-400 absolute left-3.5 top-3" />
+                      <Lock className="h-3.5 w-3.5 text-[#77736B] absolute left-3.5 top-3" />
                       <input
                         type="password"
                         required
                         value={confirmPass}
                         onChange={(e) => setConfirmPass(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 bg-[#F4F0E6] dark:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] outline-none focus:border-[#F05A3C] transition-all"
                       />
                     </div>
                   </div>
                 </>
               ) : (
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-300">Mobile Phone Number</label>
+                  <label className="text-xs font-medium text-[#171717] dark:text-[#F4F0E6]">Mobile Phone Number</label>
                   <div className="relative">
-                    <Phone className="h-4 w-4 text-indigo-400 absolute left-3.5 top-3" />
+                    <Phone className="h-3.5 w-3.5 text-[#77736B] absolute left-3.5 top-3" />
                     <input
                       type="tel"
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+1 (555) 234-5678"
-                      className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                      className="w-full pl-10 pr-4 py-2.5 bg-[#F4F0E6] dark:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] outline-none focus:border-[#F05A3C] transition-all"
                     />
                   </div>
                 </div>
@@ -319,33 +321,33 @@ export const RegisterPage: React.FC = () => {
                   id="terms"
                   checked={terms}
                   onChange={(e) => setTerms(e.target.checked)}
-                  className="rounded border-slate-700 text-indigo-600 focus:ring-indigo-500 h-4 w-4"
+                  className="rounded border-[#DCD6CA] dark:border-[#33312B] accent-[#F05A3C] h-4 w-4 cursor-pointer"
                 />
-                <label htmlFor="terms" className="text-xs text-slate-400">
+                <label htmlFor="terms" className="text-xs text-[#77736B] dark:text-[#A8A49C]">
                   I agree to the{' '}
-                  <Link to="/terms" target="_blank" className="text-indigo-400 font-semibold hover:underline">
+                  <Link to="/terms" target="_blank" className="text-[#F05A3C] font-medium hover:underline">
                     Terms of Service
                   </Link>{' '}
                   &{' '}
-                  <Link to="/privacy" target="_blank" className="text-indigo-400 font-semibold hover:underline">
+                  <Link to="/privacy" target="_blank" className="text-[#F05A3C] font-medium hover:underline">
                     Privacy Policy
                   </Link>
                 </label>
               </div>
 
-              <Button type="submit" isLoading={loading} className="w-full pt-1">
-                {authMethod === 'phone' ? 'Send Phone SMS OTP Code' : 'Continue to Email Verification'}
+              <Button type="submit" isLoading={loading} variant="primary" className="w-full pt-1">
+                {authMethod === 'phone' ? 'Send Phone SMS OTP Code' : 'Continue to Verification'}
               </Button>
             </form>
           </div>
         )}
 
-        {/* STEP 2: 6-Digit OTP Verification Code Slide (Email & Phone) */}
+        {/* STEP 2: 6-Digit OTP Verification */}
         {step === 'verify' && (
           <div className="space-y-4">
             <VerificationCodePanel
               email={authMethod === 'phone' ? phone : email}
-              title={authMethod === 'phone' ? 'Verify Phone Number' : 'Verify Email Address'}
+              title={authMethod === 'phone' ? 'Verify Mobile Phone' : 'Verify Email Address'}
               subtitle={authMethod === 'phone' ? 'Enter the 6-digit SMS OTP sent to' : 'Enter the 6-digit OTP code sent to'}
               onVerify={handleVerifyCode}
               onResend={async () => {
@@ -361,20 +363,20 @@ export const RegisterPage: React.FC = () => {
         {/* STEP 3: Verification Success */}
         {step === 'verified' && (
           <div className="text-center space-y-4 animate-fadeIn py-4">
-            <div className="h-16 w-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
-              <CheckCircle2 className="h-8 w-8 text-emerald-400 animate-bounce" />
+            <div className="h-14 w-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-subtle">
+              <CheckCircle2 className="h-7 w-7 text-emerald-600 dark:text-emerald-400 animate-bounce" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-2xl font-extrabold text-white">Account Created!</h3>
-              <p className="text-xs text-slate-300">Welcome to SuperMind AI. Redirecting to your dashboard...</p>
+              <h3 className="text-xl font-serif font-normal text-[#171717] dark:text-[#F4F0E6]">Account Created</h3>
+              <p className="text-xs text-[#77736B] dark:text-[#A8A49C]">Welcome to SuperMind AI. Redirecting to workspace...</p>
             </div>
           </div>
         )}
 
         {/* Footer Link */}
-        <div className="text-center text-xs text-slate-400 pt-2 border-t border-white/10">
+        <div className="text-center text-xs text-[#77736B] dark:text-[#A8A49C] pt-3 border-t border-[#DCD6CA] dark:border-[#33312B]">
           Already have an account?{' '}
-          <Link to="/login" className="text-indigo-400 font-semibold hover:underline">
+          <Link to="/login" className="text-[#F05A3C] font-semibold hover:underline">
             Sign In
           </Link>
         </div>

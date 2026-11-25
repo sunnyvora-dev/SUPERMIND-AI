@@ -149,26 +149,23 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({ onSend, disabled = f
       />
 
       <div className="relative group">
-        {/* Glow backdrop on focus */}
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 rounded-2xl blur-md opacity-20 group-focus-within:opacity-70 transition duration-300 pointer-events-none" />
-
-        <div className="relative bg-white dark:bg-slate-950/90 backdrop-blur-2xl border border-slate-200 dark:border-white/10 rounded-2xl p-2 sm:p-3 shadow-lg transition-all duration-200">
+        <div className="relative bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] focus-within:border-[#F05A3C]/70 focus-within:shadow-md rounded-2xl p-2 sm:p-3 shadow-sm transition-all duration-200">
           
           {/* Active Attached File Chips */}
           {attachedFiles.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5 px-1 pb-2 border-b border-slate-100 dark:border-white/5 mb-2">
+            <div className="flex flex-wrap items-center gap-1.5 px-1 pb-2 border-b border-[#DCD6CA] dark:border-[#33312B] mb-2">
               {attachedFiles.map((file, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/15 border border-indigo-200 dark:border-indigo-500/30 text-xs text-indigo-700 dark:text-indigo-300 font-medium shadow-sm animate-fadeIn"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#EAE5D9] dark:bg-[#252421] border border-[#DCD6CA] dark:border-[#33312B] text-xs text-[#171717] dark:text-[#F4F0E6] font-medium shadow-2xs animate-fadeIn"
                 >
-                  <FileText className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                  <FileText className="h-3.5 w-3.5 text-[#F05A3C] shrink-0" />
                   <span className="truncate max-w-[160px]">{file.name}</span>
-                  <span className="text-[10px] text-slate-400 font-mono">({Math.round(file.size / 1024)} KB)</span>
+                  <span className="text-[10px] text-[#77736B] font-mono">({Math.round(file.size / 1024)} KB)</span>
                   <button
                     type="button"
                     onClick={() => removeFile(idx)}
-                    className="p-0.5 rounded-md hover:bg-indigo-200 dark:hover:bg-indigo-500/30 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer ml-1"
+                    className="p-0.5 rounded-md hover:bg-[#DCD6CA] dark:hover:bg-[#33312B] text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] transition-colors cursor-pointer ml-1"
                     title="Remove file"
                   >
                     <X className="h-3 w-3" />
@@ -185,18 +182,18 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({ onSend, disabled = f
             placeholder="Message SuperMind... (Attach PDF, DOCX, TXT, code, or images)"
             rows={1}
             disabled={disabled || isThinking}
-            className="w-full bg-transparent border-none outline-none resize-none text-xs md:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 px-2 py-1 leading-snug font-normal min-h-[32px] max-h-[120px]"
+            className="w-full bg-transparent border-none outline-none resize-none text-xs md:text-sm text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] px-2 py-1 leading-snug font-normal min-h-[32px] max-h-[120px]"
           />
 
-          <div className="flex items-center justify-between pt-1.5 mt-1 border-t border-slate-100 dark:border-white/5 px-1">
+          <div className="flex items-center justify-between pt-1.5 mt-1 border-t border-[#DCD6CA] dark:border-[#33312B] px-1">
             <div className="flex items-center space-x-1">
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 text-[11px] flex items-center gap-1 transition-all cursor-pointer"
+                className="p-1.5 rounded-lg text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] hover:bg-[#EAE5D9] dark:hover:bg-[#252421] text-[11px] flex items-center gap-1 transition-all cursor-pointer"
                 title="Attach Document or Image File"
               >
-                <Paperclip className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                <Paperclip className="h-3.5 w-3.5 text-[#F05A3C]" />
                 <span className="hidden sm:inline font-medium">Attach File</span>
               </button>
 
@@ -205,18 +202,18 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({ onSend, disabled = f
                 onClick={toggleVoice}
                 className={`p-1.5 rounded-lg text-[11px] flex items-center gap-1 transition-all cursor-pointer ${
                   isRecording
-                    ? 'bg-red-500/20 text-red-500 border border-red-500/30 animate-pulse'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10'
+                    ? 'bg-[#F05A3C]/15 text-[#F05A3C] border border-[#F05A3C]/30 animate-pulse'
+                    : 'text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] hover:bg-[#EAE5D9] dark:hover:bg-[#252421]'
                 }`}
                 title="Voice Speech-to-Text"
               >
-                <Mic className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                <Mic className="h-3.5 w-3.5 text-[#2457D6]" />
                 <span className="hidden sm:inline font-medium">{isRecording ? 'Listening...' : 'Voice'}</span>
               </button>
             </div>
 
             <div className="flex items-center space-x-2">
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 hidden sm:flex items-center gap-0.5 font-mono">
+              <span className="text-[10px] text-[#77736B] hidden sm:flex items-center gap-0.5 font-mono">
                 <Command className="h-2.5 w-2.5" /> Enter to send
               </span>
 
@@ -224,10 +221,10 @@ export const ChatComposer: React.FC<ChatComposerProps> = ({ onSend, disabled = f
                 type="button"
                 onClick={handleSend}
                 disabled={(!prompt.trim() && attachedFiles.length === 0) || disabled || isThinking}
-                className={`py-1.5 px-3.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-md transition-all duration-200 cursor-pointer ${
+                className={`py-1.5 px-3.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 shadow-sm transition-all duration-200 cursor-pointer ${
                   (prompt.trim() || attachedFiles.length > 0) && !isThinking
-                    ? 'bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98]'
-                    : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-500 cursor-not-allowed border border-slate-200 dark:border-white/5'
+                    ? 'bg-[#F05A3C] hover:bg-[#D94528] text-white border border-[#F05A3C] hover:scale-[1.01] active:scale-[0.98]'
+                    : 'bg-[#EAE5D9] dark:bg-[#252421] text-[#77736B] cursor-not-allowed border border-[#DCD6CA] dark:border-[#33312B]'
                 }`}
               >
                 <span>Dispatch</span>

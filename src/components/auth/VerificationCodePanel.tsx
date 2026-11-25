@@ -14,8 +14,8 @@ interface VerificationCodePanelProps {
 
 export const VerificationCodePanel: React.FC<VerificationCodePanelProps> = ({
   email,
-  title = "Verify Your Email",
-  subtitle = `We sent a 6-digit verification code to`,
+  title = "Verify Your Identity",
+  subtitle = `Enter the 6-digit verification code sent to`,
   onVerify,
   onResend,
   onBack,
@@ -139,38 +139,38 @@ export const VerificationCodePanel: React.FC<VerificationCodePanelProps> = ({
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn text-left">
       {onBack && (
         <button
           onClick={onBack}
           type="button"
-          className="inline-flex items-center text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center text-xs font-medium text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] transition-colors cursor-pointer"
         >
-          <ArrowLeft className="h-4 w-4 mr-1.5" /> Back
+          <ArrowLeft className="h-3.5 w-3.5 mr-1.5" /> Back to form
         </button>
       )}
 
       <div className="text-center space-y-2">
-        <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto shadow-inner">
-          <ShieldCheck className="h-6 w-6 text-indigo-400 animate-pulse" />
+        <div className="h-12 w-12 rounded-xl bg-[#F05A3C]/10 border border-[#F05A3C]/20 text-[#F05A3C] flex items-center justify-center mx-auto">
+          <ShieldCheck className="h-6 w-6 text-[#F05A3C]" />
         </div>
-        <h3 className="text-xl font-extrabold text-white tracking-tight">{title}</h3>
-        <p className="text-xs text-slate-400">
-          {subtitle} <span className="font-semibold text-indigo-300">{email}</span>
+        <h3 className="text-xl font-serif font-normal text-[#171717] dark:text-[#F4F0E6] tracking-tight">{title}</h3>
+        <p className="text-xs text-[#77736B] dark:text-[#A8A49C]">
+          {subtitle} <span className="font-mono text-[#F05A3C] font-semibold">{email}</span>
         </p>
       </div>
 
       {error && (
-        <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center justify-center space-x-2 animate-shake">
+        <div className="p-3 rounded-xl bg-[#F05A3C]/10 border border-[#F05A3C]/30 text-[#F05A3C] text-xs flex items-center justify-center space-x-2">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {verifiedSuccess ? (
-        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-2">
-          <ShieldCheck className="h-8 w-8 text-emerald-400 mx-auto animate-bounce" />
-          <div className="text-sm font-bold text-emerald-400">Code Verified Successfully!</div>
+        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-2">
+          <ShieldCheck className="h-8 w-8 text-emerald-600 dark:text-emerald-400 mx-auto" />
+          <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">Code Verified Successfully</div>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -187,34 +187,36 @@ export const VerificationCodePanel: React.FC<VerificationCodePanelProps> = ({
                 value={digit}
                 onChange={(e) => handleChange(idx, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(idx, e)}
-                className={`w-11 h-13 text-center text-xl font-bold bg-white/5 border rounded-xl text-white outline-none transition-all shadow-sm ${digit
-                  ? 'border-indigo-500 ring-2 ring-indigo-500/30 bg-indigo-500/10'
-                  : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
-                  }`}
+                className={`w-11 h-13 text-center text-xl font-mono font-medium rounded-xl border outline-none transition-all shadow-subtle ${
+                  digit
+                    ? 'border-[#F05A3C] bg-[#F4F0E6] dark:bg-[#171717] text-[#171717] dark:text-[#F4F0E6] ring-2 ring-[#F05A3C]/20'
+                    : 'border-[#DCD6CA] dark:border-[#33312B] bg-[#EAE5D9]/40 dark:bg-[#171717] text-[#171717] dark:text-[#F4F0E6] focus:border-[#F05A3C] focus:ring-2 focus:ring-[#F05A3C]/20'
+                }`}
               />
             ))}
           </div>
 
-          <Button type="submit" isLoading={isLoading} className="w-full">
-            Verify Code
+          <Button type="submit" isLoading={isLoading} variant="primary" className="w-full">
+            Verify Code & Proceed
           </Button>
         </form>
       )}
 
       <div className="text-center space-y-1 text-xs">
-        <p className="text-slate-400">Didn't receive the code?</p>
+        <p className="text-[#77736B] dark:text-[#A8A49C]">Didn't receive the verification code?</p>
         <button
           onClick={handleResendClick}
           disabled={!canResend || resending}
           type="button"
-          className={`inline-flex items-center font-semibold transition-all ${canResend && !resending
-            ? 'text-indigo-400 hover:text-indigo-300 underline cursor-pointer'
-            : 'text-slate-600 cursor-not-allowed'
-            }`}
+          className={`inline-flex items-center font-medium transition-all ${
+            canResend && !resending
+              ? 'text-[#F05A3C] hover:underline cursor-pointer'
+              : 'text-[#77736B] cursor-not-allowed opacity-60'
+          }`}
         >
           {resending ? (
             <>
-              <RefreshCw className="h-3.5 w-3.5 mr-1 animate-spin" /> Resending...
+              <RefreshCw className="h-3 w-3 mr-1 animate-spin" /> Sending...
             </>
           ) : canResend ? (
             'Resend Code'

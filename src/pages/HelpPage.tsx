@@ -12,37 +12,59 @@ export const HelpPage: React.FC = () => {
   ];
 
   return (
-    <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6 text-left">
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Help & Documentation</h1>
-        <p className="text-xs text-slate-500">Frequently asked questions and SuperMind AI platform guides</p>
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="font-mono text-[10px] tracking-wider uppercase px-2 py-0.5 rounded border border-[#DCD6CA] dark:border-[#33312B] bg-[#EAE5D9]/60 dark:bg-[#1E1E1C] text-[#77736B] dark:text-[#A8A49C]">
+            Knowledge & Reference
+          </span>
+        </div>
+        <h1 className="text-2xl md:text-3xl font-serif font-normal tracking-tight text-[#171717] dark:text-[#F4F0E6]">
+          Help & Documentation
+        </h1>
+        <p className="text-xs text-[#77736B] dark:text-[#A8A49C] mt-1">
+          Frequently asked questions, multi-model routing documentation, and support channels.
+        </p>
       </div>
 
       <div className="space-y-3">
-        {faqs.map((faq, idx) => (
-          <div key={idx} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
-            <button
-              onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
-              className="w-full flex items-center justify-between text-left font-bold text-xs text-slate-900 dark:text-white"
+        {faqs.map((faq, idx) => {
+          const isOpen = openIdx === idx;
+          return (
+            <div
+              key={idx}
+              className="p-5 rounded-2xl bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] space-y-2 shadow-subtle transition-all"
             >
-              <span>{faq.q}</span>
-              {openIdx === idx ? <ChevronUp className="h-4 w-4 text-indigo-500" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
-            </button>
-            {openIdx === idx && (
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed pt-2 border-t border-slate-100 dark:border-slate-800">
-                {faq.a}
-              </p>
-            )}
-          </div>
-        ))}
+              <button
+                onClick={() => setOpenIdx(isOpen ? null : idx)}
+                className="w-full flex items-center justify-between text-left font-serif text-sm font-normal text-[#171717] dark:text-[#F4F0E6] cursor-pointer"
+              >
+                <span>{faq.q}</span>
+                {isOpen ? (
+                  <ChevronUp className="h-4 w-4 text-[#F05A3C] shrink-0 ml-2" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 text-[#77736B] shrink-0 ml-2" />
+                )}
+              </button>
+              {isOpen && (
+                <p className="text-xs text-[#77736B] dark:text-[#A8A49C] leading-relaxed pt-3 border-t border-[#DCD6CA] dark:border-[#33312B]">
+                  {faq.a}
+                </p>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      <div className="p-6 rounded-3xl bg-indigo-600 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="font-bold text-sm">Need dedicated support?</div>
-          <p className="text-xs text-indigo-100">Our engineering team is ready to help 24/7.</p>
+      <div className="p-6 md:p-8 rounded-2xl bg-[#171717] dark:bg-[#FAF8F3] text-[#F4F0E6] dark:text-[#171717] border border-[#33312B] dark:border-[#DCD6CA] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-editorial">
+        <div className="space-y-1 text-center sm:text-left">
+          <div className="font-serif text-base font-normal">Need dedicated architecture assistance?</div>
+          <p className="text-xs text-[#A8A49C] dark:text-[#77736B]">Our engineering team is on standby to assist with API integration and enterprise deployments.</p>
         </div>
-        <a href="mailto:support@supermind.ai" className="px-4 py-2 rounded-xl bg-white text-indigo-600 text-xs font-bold shadow-md">
+        <a
+          href="mailto:support@supermind.ai"
+          className="px-5 py-2.5 rounded-xl bg-[#F05A3C] text-white text-xs font-medium hover:bg-[#d9482b] transition-all shadow-subtle shrink-0 cursor-pointer"
+        >
           Contact Support
         </a>
       </div>

@@ -121,16 +121,16 @@ export const CommandPaletteModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 bg-[#171717]/60 backdrop-blur-sm animate-fadeIn">
       {/* Backdrop overlay click handler */}
       <div className="absolute inset-0" onClick={() => setActiveModal(null)} />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-xl bg-[#0B0F1F] border border-white/10 rounded-3xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[80vh] divide-y divide-white/10">
+      <div className="relative w-full max-w-xl bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[80vh] divide-y divide-[#DCD6CA] dark:divide-[#33312B]">
         
         {/* Search Input Bar */}
         <div className="flex items-center px-4 py-3.5 relative">
-          <Search className="h-5 w-5 text-indigo-400 shrink-0 mr-3" />
+          <Search className="h-5 w-5 text-[#F05A3C] shrink-0 mr-3" />
           <input
             ref={inputRef}
             type="text"
@@ -141,17 +141,17 @@ export const CommandPaletteModal: React.FC = () => {
             }}
             onKeyDown={handleKeyDown}
             placeholder="Type a command or search sessions, features, pages..."
-            className="w-full bg-transparent border-none outline-none text-sm text-white placeholder-slate-400 font-medium"
+            className="w-full bg-transparent border-none outline-none text-sm text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] font-medium"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="p-1 text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] transition-colors cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
           )}
-          <span className="hidden sm:flex items-center gap-1 text-[10px] font-mono text-slate-400 px-2 py-1 bg-white/5 rounded-lg border border-white/10 ml-2">
+          <span className="hidden sm:flex items-center gap-1 text-[10px] font-mono text-[#77736B] px-2 py-1 bg-[#EAE5D9] dark:bg-[#252421] rounded-lg border border-[#DCD6CA] dark:border-[#33312B] ml-2">
             ESC
           </span>
         </div>
@@ -159,9 +159,9 @@ export const CommandPaletteModal: React.FC = () => {
         {/* Results List */}
         <div className="overflow-y-auto p-2 space-y-1 max-h-[420px] custom-scrollbar">
           {filtered.length === 0 ? (
-            <div className="py-12 text-center text-slate-400 text-xs space-y-1">
-              <p className="font-semibold text-slate-300">No matching commands or sessions found</p>
-              <p className="text-[11px] text-slate-500">Try searching for "chat", "dashboard", "images", or "settings"</p>
+            <div className="py-12 text-center text-[#77736B] text-xs space-y-1">
+              <p className="font-medium text-[#171717] dark:text-[#F4F0E6]">No matching commands or sessions found</p>
+              <p className="text-[11px] text-[#77736B]">Try searching for "chat", "dashboard", "images", or "settings"</p>
             </div>
           ) : (
             filtered.map((item, idx) => {
@@ -172,31 +172,31 @@ export const CommandPaletteModal: React.FC = () => {
                   key={item.id}
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`w-full text-left px-3.5 py-2.5 rounded-2xl flex items-center justify-between transition-all duration-150 cursor-pointer ${
+                  className={`w-full text-left px-3.5 py-2.5 rounded-xl flex items-center justify-between transition-all duration-150 cursor-pointer ${
                     isSelected
-                      ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 text-white shadow-sm'
-                      : 'text-slate-300 hover:bg-white/5 hover:text-white border border-transparent'
+                      ? 'bg-[#EAE5D9] dark:bg-[#2A2925] border border-[#F05A3C]/40 text-[#171717] dark:text-[#F4F0E6] shadow-sm'
+                      : 'text-[#383632] dark:text-[#D2CFC7] hover:bg-[#EAE5D9]/60 dark:hover:bg-[#252421] border border-transparent'
                   }`}
                 >
                   <div className="flex items-center space-x-3 min-w-0">
-                    <div className={`p-2 rounded-xl shrink-0 ${
-                      isSelected ? 'bg-indigo-500 text-white' : 'bg-white/5 text-slate-400'
+                    <div className={`p-2 rounded-lg shrink-0 ${
+                      isSelected ? 'bg-[#F05A3C] text-white' : 'bg-[#EAE5D9] dark:bg-[#252421] text-[#77736B]'
                     }`}>
                       <IconComponent className="h-4 w-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-xs font-bold truncate tracking-tight">{item.title}</div>
+                      <div className="text-xs font-semibold truncate tracking-tight">{item.title}</div>
                       {item.subtitle && (
-                        <div className="text-[11px] text-slate-400 truncate mt-0.5">{item.subtitle}</div>
+                        <div className="text-[11px] text-[#77736B] truncate mt-0.5">{item.subtitle}</div>
                       )}
                     </div>
                   </div>
 
                   <div className="flex items-center space-x-2 shrink-0 ml-3">
-                    <span className="text-[10px] font-medium text-slate-400 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                    <span className="text-[10px] font-mono text-[#77736B] bg-[#FAF8F3] dark:bg-[#171717] px-2 py-0.5 rounded-md border border-[#DCD6CA] dark:border-[#33312B]">
                       {item.category}
                     </span>
-                    {isSelected && <ArrowRight className="h-3.5 w-3.5 text-indigo-400" />}
+                    {isSelected && <ArrowRight className="h-3.5 w-3.5 text-[#F05A3C]" />}
                   </div>
                 </button>
               );
@@ -205,12 +205,12 @@ export const CommandPaletteModal: React.FC = () => {
         </div>
 
         {/* Modal Footer */}
-        <div className="px-4 py-2.5 bg-white/5 flex items-center justify-between text-[11px] text-slate-400">
+        <div className="px-4 py-2.5 bg-[#EAE5D9]/50 dark:bg-[#141413] flex items-center justify-between text-[11px] text-[#77736B]">
           <div className="flex items-center space-x-3 font-mono">
-            <span className="flex items-center gap-1"><kbd className="px-1.5 py-0.5 bg-white/10 rounded text-[9px]">↑↓</kbd> Navigate</span>
-            <span className="flex items-center gap-1"><kbd className="px-1.5 py-0.5 bg-white/10 rounded text-[9px]">↵</kbd> Select</span>
+            <span className="flex items-center gap-1"><kbd className="px-1.5 py-0.5 bg-[#FAF8F3] dark:bg-[#22211F] border border-[#DCD6CA] dark:border-[#33312B] rounded text-[9px]">↑↓</kbd> Navigate</span>
+            <span className="flex items-center gap-1"><kbd className="px-1.5 py-0.5 bg-[#FAF8F3] dark:bg-[#22211F] border border-[#DCD6CA] dark:border-[#33312B] rounded text-[9px]">↵</kbd> Select</span>
           </div>
-          <div className="flex items-center space-x-1 font-semibold text-indigo-400">
+          <div className="flex items-center space-x-1 font-medium text-[#F05A3C]">
             <Command className="h-3 w-3" />
             <span>SuperMind Quick Search</span>
           </div>

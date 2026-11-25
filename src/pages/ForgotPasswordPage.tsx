@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { Button } from '../components/ui/Button';
 import { VerificationCodePanel } from '../components/auth/VerificationCodePanel';
-import { Mail, CheckCircle2, Lock, KeyRound } from 'lucide-react';
+import { Mail, CheckCircle2, Lock, KeyRound, ArrowLeft } from 'lucide-react';
 
 export const ForgotPasswordPage: React.FC = () => {
   const navigate = useNavigate();
@@ -76,83 +76,89 @@ export const ForgotPasswordPage: React.FC = () => {
   const passStrength = newPassword.length > 8 ? 'Strong' : newPassword.length > 5 ? 'Medium' : 'Weak';
 
   return (
-    <div className="min-h-screen bg-[#050814] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Dynamic Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-gradient-to-tr from-indigo-600/20 via-purple-600/20 to-pink-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
-
-      <div className="w-full max-w-md bg-[#0B0F1F]/90 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl shadow-indigo-500/10 p-8 space-y-6 relative transition-all duration-300">
+    <div className="min-h-screen bg-[#F4F0E6] dark:bg-[#121212] flex items-center justify-center p-4 relative select-none">
+      <div className="w-full max-w-md bg-[#FAF8F3] dark:bg-[#1E1E1C] border border-[#DCD6CA] dark:border-[#33312B] rounded-2xl shadow-editorial p-7 md:p-8 space-y-6 relative transition-all">
         
         {/* Step Indicators */}
-        <div className="flex items-center justify-center space-x-2 pt-1 pb-2">
-          {(['email', 'code', 'password', 'success'] as const).map((s, idx) => {
+        <div className="flex items-center justify-center space-x-2 pt-1 pb-1">
+          {(['email', 'code', 'password', 'success'] as const).map((s) => {
             const stepOrder = { email: 1, code: 2, password: 3, success: 4 };
             const currentIdx = stepOrder[step];
             const itemIdx = stepOrder[s];
             return (
-              <React.Fragment key={s}>
-                <div
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    itemIdx === currentIdx
-                      ? 'w-7 bg-indigo-500 shadow-md shadow-indigo-500/50'
-                      : itemIdx < currentIdx
-                      ? 'w-2.5 bg-emerald-500'
-                      : 'w-2.5 bg-white/10'
-                  }`}
-                />
-              </React.Fragment>
+              <div
+                key={s}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  itemIdx === currentIdx
+                    ? 'w-6 bg-[#F05A3C]'
+                    : itemIdx < currentIdx
+                    ? 'w-2 bg-emerald-600'
+                    : 'w-2 bg-[#DCD6CA] dark:bg-[#33312B]'
+                }`}
+              />
             );
           })}
         </div>
 
-        {/* STEP 1: Email Form */}
+        {/* STEP 1: Enter Email */}
         {step === 'email' && (
-          <div className="space-y-6 animate-fadeIn">
-            <div className="text-center space-y-3">
-              <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto shadow-inner">
-                <KeyRound className="h-6 w-6 text-indigo-400" />
+          <div className="space-y-5 animate-fadeIn text-left">
+            <div className="text-center space-y-2">
+              <div className="h-11 w-11 rounded-xl bg-[#F05A3C]/10 border border-[#F05A3C]/20 text-[#F05A3C] flex items-center justify-center mx-auto">
+                <KeyRound className="h-5 w-5" />
               </div>
               <div>
-                <h2 className="text-2xl font-extrabold text-white tracking-tight">Forgot Password?</h2>
-                <p className="text-xs text-slate-400 mt-1">Enter your email to receive a 6-digit verification code</p>
+                <h2 className="text-2xl font-serif font-normal text-[#171717] dark:text-[#F4F0E6] tracking-tight">
+                  Reset Password
+                </h2>
+                <p className="text-xs text-[#77736B] dark:text-[#A8A49C] mt-0.5">
+                  Enter your registered email to receive a recovery code
+                </p>
               </div>
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center font-medium">
+              <div className="p-3 rounded-xl bg-[#F05A3C]/10 border border-[#F05A3C]/30 text-[#F05A3C] text-xs text-center font-medium">
                 {error}
               </div>
             )}
 
             <form onSubmit={handleSendCode} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-300">Email Address</label>
+                <label className="text-xs font-medium text-[#171717] dark:text-[#F4F0E6]">Account Email Address</label>
                 <div className="relative">
-                  <Mail className="h-4 w-4 text-indigo-400 absolute left-3.5 top-3" />
+                  <Mail className="h-3.5 w-3.5 text-[#77736B] absolute left-3.5 top-3" />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@company.com"
-                    className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-[#F4F0E6] dark:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] outline-none focus:border-[#F05A3C] transition-all"
                   />
                 </div>
               </div>
 
-              <Button type="submit" isLoading={loading} className="w-full">
+              <Button type="submit" isLoading={loading} variant="primary" className="w-full">
                 Send Verification Code
               </Button>
             </form>
+
+            <div className="text-center pt-2">
+              <Link to="/login" className="inline-flex items-center text-xs font-medium text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] transition-colors">
+                <ArrowLeft className="h-3.5 w-3.5 mr-1" /> Back to Sign In
+              </Link>
+            </div>
           </div>
         )}
 
-        {/* STEP 2: 6-Digit Verification Code Slide */}
+        {/* STEP 2: Verify Code */}
         {step === 'code' && (
           <div className="space-y-4">
             <VerificationCodePanel
               email={email}
-              title="Enter Verification Code"
-              subtitle="We sent a 6-digit code to"
+              title="Reset Code Verification"
+              subtitle="Enter the 6-digit recovery code sent to"
               onVerify={handleVerifyCode}
               onResend={async () => {
                 await authService.sendVerificationCode(email, 'forgot_password');
@@ -163,90 +169,85 @@ export const ForgotPasswordPage: React.FC = () => {
           </div>
         )}
 
-        {/* STEP 3: Set New Password Slide */}
+        {/* STEP 3: Create New Password */}
         {step === 'password' && (
-          <div className="space-y-6 animate-fadeIn">
+          <div className="space-y-5 animate-fadeIn text-left">
             <div className="text-center space-y-2">
-              <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto">
-                <Lock className="h-6 w-6 text-indigo-400" />
+              <div className="h-11 w-11 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 flex items-center justify-center mx-auto">
+                <Lock className="h-5 w-5" />
               </div>
-              <h3 className="text-xl font-extrabold text-white">Set New Password</h3>
-              <p className="text-xs text-slate-400">Choose a strong password for {email}</p>
+              <div>
+                <h2 className="text-2xl font-serif font-normal text-[#171717] dark:text-[#F4F0E6] tracking-tight">
+                  Set New Password
+                </h2>
+                <p className="text-xs text-[#77736B] dark:text-[#A8A49C] mt-0.5">
+                  Choose a secure password for your SuperMind account
+                </p>
+              </div>
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center">
+              <div className="p-3 rounded-xl bg-[#F05A3C]/10 border border-[#F05A3C]/30 text-[#F05A3C] text-xs text-center font-medium">
                 {error}
               </div>
             )}
 
             <form onSubmit={handleResetPassword} className="space-y-4">
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <label className="font-semibold text-slate-300">New Password</label>
-                  <span className="text-[10px] font-mono text-indigo-400 font-bold">Strength: {passStrength}</span>
+                  <label className="font-medium text-[#171717] dark:text-[#F4F0E6]">New Password</label>
+                  <span className="text-[10px] font-mono text-[#F05A3C] font-semibold">Strength: {passStrength}</span>
                 </div>
                 <div className="relative">
-                  <Lock className="h-4 w-4 text-indigo-400 absolute left-3.5 top-3" />
+                  <Lock className="h-3.5 w-3.5 text-[#77736B] absolute left-3.5 top-3" />
                   <input
                     type="password"
                     required
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-[#F4F0E6] dark:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] outline-none focus:border-[#F05A3C] transition-all"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Confirm New Password</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-[#171717] dark:text-[#F4F0E6]">Confirm Password</label>
                 <div className="relative">
-                  <Lock className="h-4 w-4 text-indigo-400 absolute left-3.5 top-3" />
+                  <Lock className="h-3.5 w-3.5 text-[#77736B] absolute left-3.5 top-3" />
                   <input
                     type="password"
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-[#F4F0E6] dark:bg-[#171717] border border-[#DCD6CA] dark:border-[#33312B] rounded-xl text-xs text-[#171717] dark:text-[#F4F0E6] placeholder-[#77736B] outline-none focus:border-[#F05A3C] transition-all"
                   />
                 </div>
               </div>
 
-              <Button type="submit" isLoading={loading} className="w-full">
-                Update Password
+              <Button type="submit" isLoading={loading} variant="primary" className="w-full">
+                Reset Password & Log In
               </Button>
             </form>
           </div>
         )}
 
-        {/* STEP 4: Success Panel */}
+        {/* STEP 4: Success */}
         {step === 'success' && (
-          <div className="text-center space-y-4 animate-fadeIn py-2">
-            <div className="h-16 w-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
-              <CheckCircle2 className="h-8 w-8 text-emerald-400 animate-bounce" />
+          <div className="text-center space-y-4 animate-fadeIn py-4">
+            <div className="h-14 w-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-subtle">
+              <CheckCircle2 className="h-7 w-7 text-emerald-600 dark:text-emerald-400 animate-bounce" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-2xl font-extrabold text-white">Password Reset Complete!</h3>
-              <p className="text-xs text-slate-300">
-                Your password has been successfully updated. You can now log in with your new password.
-              </p>
+              <h3 className="text-xl font-serif font-normal text-[#171717] dark:text-[#F4F0E6]">Password Updated</h3>
+              <p className="text-xs text-[#77736B] dark:text-[#A8A49C]">Your credentials have been updated securely.</p>
             </div>
-
-            <Button onClick={() => navigate('/login')} className="w-full pt-2">
-              Sign In to Your Account
+            <Button onClick={() => navigate('/login')} variant="primary" className="w-full mt-4">
+              Return to Sign In
             </Button>
           </div>
         )}
-
-        {/* Bottom Link */}
-        <div className="text-center text-xs text-slate-400 pt-2 border-t border-white/10">
-          Remembered your password?{' '}
-          <Link to="/login" className="text-indigo-400 font-semibold hover:underline">
-            Sign In
-          </Link>
-        </div>
       </div>
     </div>
   );
