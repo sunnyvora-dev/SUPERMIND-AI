@@ -14,7 +14,7 @@ import {
 
 export const HistoryPage: React.FC = () => {
   const navigate = useNavigate();
-  const { conversations, selectConversation, deleteConv, renameConv, toggleFav } = useChat();
+  const { conversations, selectConversation, deleteConv, renameConv, toggleFav, createNewChat } = useChat();
 
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('All');
@@ -117,7 +117,10 @@ export const HistoryPage: React.FC = () => {
             </div>
             {!search && (
               <button
-                onClick={() => navigate('/chat')}
+                onClick={() => {
+                  createNewChat();
+                  navigate('/chat');
+                }}
                 className="py-2 px-4 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white text-xs font-semibold shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
               >
                 Start New Chat Session

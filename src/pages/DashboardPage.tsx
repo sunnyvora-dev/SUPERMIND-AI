@@ -22,7 +22,7 @@ import {
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { conversations, sendPrompt, selectConversation, isThinking, thinkingProgress, activeConvId } = useChat();
+  const { conversations, sendPrompt, selectConversation, createNewChat, isThinking, thinkingProgress, activeConvId } = useChat();
 
   const activeRunningConv = conversations.find((c) => c.id === activeConvId) || conversations[0];
 
@@ -88,8 +88,16 @@ export const DashboardPage: React.FC = () => {
   ];
 
   const handleComposeSend = async (promptText: string) => {
+    createNewChat();
     navigate('/chat');
-    await sendPrompt(promptText);
+    await sendPrompt(promptText, null);
+  };
+
+  const handleActionClick = (path: string) => {
+    if (path === '/chat') {
+      createNewChat();
+    }
+    navigate(path);
   };
 
 
@@ -203,7 +211,7 @@ export const DashboardPage: React.FC = () => {
             return (
               <button
                 key={idx}
-                onClick={() => navigate(act.path)}
+                onClick={() => handleActionClick(act.path)}
                 className="group relative flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 hover:bg-slate-50 dark:hover:bg-slate-900/90 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1.5 text-left transition-all duration-300 cursor-pointer overflow-hidden space-y-4 shadow-xs"
               >
                 {/* Top subtle hover accent gradient bar */}

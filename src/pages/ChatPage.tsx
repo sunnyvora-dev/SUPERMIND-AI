@@ -15,6 +15,7 @@ export const ChatPage: React.FC = () => {
     thinkingProgress, 
     sendPrompt, 
     selectConversation,
+    createNewChat,
     conversations 
   } = useChat();
 
@@ -22,7 +23,11 @@ export const ChatPage: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (id) selectConversation(id);
+    if (id) {
+      selectConversation(id);
+    } else if (!isThinking && messages.length > 0) {
+      createNewChat();
+    }
   }, [id]);
 
   useEffect(() => {

@@ -81,7 +81,12 @@ export const Sidebar: React.FC = () => {
             return (
               <button
                 key={item.path}
-                onClick={() => navigate(item.path)}
+                onClick={() => {
+                  if (item.path === '/chat') {
+                    createNewChat();
+                  }
+                  navigate(item.path);
+                }}
                 className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all relative cursor-pointer ${
                   isActive
                     ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 font-semibold border-l-2 border-indigo-600 dark:border-indigo-500 pl-2.5 shadow-xs'

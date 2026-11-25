@@ -50,7 +50,8 @@ export const MobileDrawer: React.FC = () => {
         <button
           onClick={() => {
             createNewChat();
-            navigate('/dashboard');
+            navigate('/chat');
+            setIsMobileDrawerOpen(false);
           }}
           className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 text-white font-medium text-xs flex items-center justify-center space-x-2 shadow-sm"
         >
@@ -65,6 +66,9 @@ export const MobileDrawer: React.FC = () => {
               <button
                 key={it.path}
                 onClick={() => {
+                  if (it.path === '/chat') {
+                    createNewChat();
+                  }
                   navigate(it.path);
                   setIsMobileDrawerOpen(false);
                 }}

@@ -9,9 +9,7 @@ interface ChatContextType {
   isThinking: boolean;
   thinkingProgress: { step: number; label: string } | null;
   selectConversation: (id: string) => Promise<void>;
-  sendPrompt: (prompt: string) => Promise<void>;
-
-
+  sendPrompt: (prompt: string, overrideConvId?: string | null) => Promise<void>;
   createNewChat: () => void;
   deleteConv: (id: string) => Promise<void>;
   renameConv: (id: string, title: string) => Promise<void>;
@@ -29,21 +27,13 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // 1. Instant Fast-Start (0ms): Initialize from local cache so user sees history instantly
+  // 1. Instant Fast-Start: Initialize conversations list from local cache
   const [conversations, setConversations] = useState<Conversation[]>(() => {
     return chatService.getStoredLocalConversations();
   });
-  const [activeConvId, setActiveConvId] = useState<string | null>(() => {
-    const list = chatService.getStoredLocalConversations();
-    return list.length > 0 ? list[0].id : null;
-  });
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const list = chatService.getStoredLocalConversations();
-    if (list.length > 0) {
-      return chatService.getStoredLocalMessages(list[0].id);
-    }
-    return [];
-  });
+  // Default to a fresh new chat session (null activeConvId, empty messages)
+  const [activeConvId, setActiveConvId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isThinking, setIsThinking] = useState(false);
   const [thinkingProgress, setThinkingProgress] = useState<{ step: number; label: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -59,11 +49,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const reloadConversations = async () => {
     const list = await chatService.getConversations();
     setConversations(list);
-    if (!activeConvId && list.length > 0) {
-      setActiveConvId(list[0].id);
-      const msgs = await chatService.getMessages(list[0].id);
-      setMessages(msgs);
-    }
   };
 
   useEffect(() => {
@@ -85,13 +70,15 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch {}
   };
 
-  const sendPrompt = async (prompt: string) => {
+  const sendPrompt = async (prompt: string, overrideConvId?: string | null) => {
     if (!prompt.trim() || isThinking) return;
     setIsThinking(true);
     try {
+      // If overrideConvId === null, explicitly start a brand new conversation
+      const targetConvId = overrideConvId === null ? undefined : (overrideConvId || activeConvId || undefined);
       const { conversation, message } = await chatService.sendPrompt(
         prompt,
-        activeConvId || undefined,
+        targetConvId,
         (step, label) => setThinkingProgress({ step, label })
       );
 
