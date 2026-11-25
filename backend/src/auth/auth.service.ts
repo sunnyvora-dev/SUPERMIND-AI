@@ -125,8 +125,8 @@ export class AuthService {
     // Send Live Email in background without blocking the HTTP response
     this.mailService.sendOtpEmail(cleanEmail, code, purpose).catch(() => {});
 
-    // Always include OTP code if SMTP is unconfigured or in demo mode so users are never blocked
-    const hasSmtp = Boolean(process.env.SMTP_USER && process.env.SMTP_PASS);
+    // Check if SMTP transporter is configured and ready
+    const hasSmtp = this.mailService.getIsConfigured();
     return {
       success: true,
       ...(!hasSmtp ? { code } : {}),

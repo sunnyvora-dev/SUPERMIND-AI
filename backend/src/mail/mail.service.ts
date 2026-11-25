@@ -11,32 +11,38 @@ export class MailService implements OnModuleInit {
   constructor(private configService: ConfigService) {}
 
   onModuleInit() {
-    const host = this.configService.get<string>('SMTP_HOST');
-    const port = this.configService.get<number>('SMTP_PORT') || 587;
-    const user = this.configService.get<string>('SMTP_USER');
-    const pass = this.configService.get<string>('SMTP_PASS');
+    const host = this.configService.get<string>('SMTP_HOST') || 'smtp.gmail.com';
+    const port = Number(this.configService.get<number>('SMTP_PORT')) || 587;
+    const user = (this.configService.get<string>('SMTP_USER') || '').trim();
+    const rawPass = this.configService.get<string>('SMTP_PASS') || '';
+    // Strip spaces from Google App Password (e.g. "ddws jtym rmno gcfg" -> "ddwsjtymrmnogcfg")
+    const pass = host.includes('gmail') ? rawPass.replace(/\s+/g, '').trim() : rawPass.trim();
 
-    if (host && user && pass) {
+    if (user && pass) {
       try {
         this.transporter = nodemailer.createTransport({
           host,
           port,
           secure: port === 465,
           auth: { user, pass },
-          connectionTimeout: 5000,
-          greetingTimeout: 5000,
-          socketTimeout: 5000,
+          connectionTimeout: 10000,
+          greetingTimeout: 10000,
+          socketTimeout: 10000,
         });
         this.isConfigured = true;
-        this.logger.log(`Live Mail Service initialized with SMTP server: ${host}:${port}`);
+        this.logger.log(`Live Mail Service initialized with SMTP server: ${host}:${port} (${user})`);
       } catch (err: any) {
         this.logger.warn(`Failed to initialize SMTP transporter: ${err.message}`);
       }
     } else {
-      this.logger.log(
-        'SMTP credentials not set in .env. MailService running in Console-Log mode (OTPs logged to terminal).',
+      this.logger.warn(
+        'SMTP credentials not set in environment. MailService running in Console-Log mode (OTPs logged to terminal).',
       );
     }
+  }
+
+  getIsConfigured(): boolean {
+    return this.isConfigured;
   }
 
   async sendOtpEmail(email: string, otpCode: string, purpose: 'login' | 'register' | 'forgot_password'): Promise<boolean> {
