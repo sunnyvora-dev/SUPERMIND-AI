@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Sparkles, 
-  ArrowRight, 
-  Bot, 
-  Cpu, 
-  Layers, 
-  Search, 
-  FileText, 
-  Code, 
-  Mic, 
-  Brain, 
-  Check, 
+import {
+  Sparkles,
+  ArrowRight,
+  Bot,
+  Cpu,
+  Layers,
+  Search,
+  FileText,
+  Code,
+  Mic,
+  Brain,
+  Check,
   Image as ImageIcon,
   FileDown,
   Globe,
@@ -64,11 +64,15 @@ export const LandingPage: React.FC = () => {
     for (let i = 0; i < TOTAL_FRAMES; i++) {
       const img = new Image();
       const numStr = i.toString().padStart(2, '0');
-      img.src = `/globe-frames/frame_${numStr}.webp`;
+      img.src = `/hero_frames/frame_${numStr}.jpg`;
       img.onload = () => {
         loadedCount++;
-        if (loadedCount >= Math.min(10, TOTAL_FRAMES)) {
+        if (loadedCount === 1) {
+          drawFrame(0);
+        }
+        if (loadedCount >= Math.min(5, TOTAL_FRAMES)) {
           setCanvasReady(true);
+          drawFrame(frameIndexRef.current);
         }
       };
       images.push(img);
@@ -86,6 +90,11 @@ export const LandingPage: React.FC = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    if (canvas.width === 0 || canvas.height === 0) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
 
     const frameImg = framesRef.current[frameIdx];
     if (!frameImg || !frameImg.complete || frameImg.naturalWidth === 0) return;
@@ -124,7 +133,7 @@ export const LandingPage: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [canvasReady]);
 
-  // 3. Mouse Movement Autoplay & Stop Automatically
+  // 3. Mouse & Touch Movement Autoplay & Stop Automatically
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const normX = (e.clientX / window.innerWidth) * 2 - 1;
@@ -136,17 +145,33 @@ export const LandingPage: React.FC = () => {
       if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
       stopTimerRef.current = setTimeout(() => {
         setIsMouseMoving(false);
-      }, 160);
+      }, 180);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        const normX = (touch.clientX / window.innerWidth) * 2 - 1;
+        const normY = (touch.clientY / window.innerHeight) * 2 - 1;
+        setMousePos({ x: normX, y: normY });
+      }
+      setIsMouseMoving(true);
+      if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
+      stopTimerRef.current = setTimeout(() => {
+        setIsMouseMoving(false);
+      }, 220);
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
       if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
     };
   }, []);
 
-  // 4. Kinetic Autoplay Loop: Runs ONLY while mouse is moving
+  // 4. Kinetic Autoplay Loop: Runs ONLY while mouse or touch is actively moving
   useEffect(() => {
     if (!isMouseMoving || !canvasReady) {
       if (animFrameIdRef.current) {
@@ -156,7 +181,9 @@ export const LandingPage: React.FC = () => {
       return;
     }
 
-    const fpsInterval = 1000 / 24; // 24 FPS smooth playback
+    const fpsInterval = 1000 / 25; // 25 FPS smooth playback
+    lastAdvanceTimeRef.current = performance.now();
+
     const loop = (timestamp: number) => {
       if (timestamp - lastAdvanceTimeRef.current >= fpsInterval) {
         frameIndexRef.current = (frameIndexRef.current + 1) % TOTAL_FRAMES;
@@ -172,6 +199,7 @@ export const LandingPage: React.FC = () => {
     return () => {
       if (animFrameIdRef.current) {
         cancelAnimationFrame(animFrameIdRef.current);
+        animFrameIdRef.current = null;
       }
     };
   }, [isMouseMoving, canvasReady]);
@@ -183,7 +211,7 @@ export const LandingPage: React.FC = () => {
       if (totalScrollable <= 0) return;
       const progress = Math.min(Math.max(window.scrollY / totalScrollable, 0), 1);
       const targetFrame = Math.floor(progress * (TOTAL_FRAMES - 1));
-      
+
       frameIndexRef.current = targetFrame;
       setCurrentFrameIndex(targetFrame);
       drawFrame(targetFrame);
@@ -320,23 +348,38 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen text-white bg-transparent flex flex-col font-sans select-none overflow-x-hidden relative">
-      
+
       {/* ========================================================================= */}
-      {/* 1. FIXED BACKGROUND: ANIMATED CYBER GLOBE GIF (DIRECT, ZERO COLOR TINT)   */}
-      {/* Full-bleed stretched animated GIF playing continuously as the background  */}
+      {/* 1. FIXED BACKGROUND: MOTION-DRIVEN GLOBE ORCHESTRATION WITH OVERLAY      */}
+      {/* Plays when mouse moves, stops/pauses automatically when mouse stops idle  */}
       {/* ========================================================================= */}
-      <div className="fixed inset-0 w-full h-full pointer-events-none -z-10 overflow-hidden bg-black">
+      <div className="fixed inset-0 w-full h-full pointer-events-none -z-10 overflow-hidden bg-[#04060A]">
+        {/* Poster / Fallback Image until canvas initializes */}
         <img
-          src="/hero_orchestration_globe.gif"
-          alt="SuperMind AI Global Orchestration Core"
-          loading="eager"
-          decoding="async"
-          className="w-full h-full object-cover will-change-transform"
+          src="/hero_frames/frame_00.jpg"
+          alt="SuperMind AI Globe Orchestration Poster"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 will-change-transform ${
+            canvasReady ? 'opacity-0' : 'opacity-100'
+          }`}
           style={{
             transform: `scale(${isMouseMoving ? 1.02 : 1}) translate3d(${mousePos.x * 6}px, ${mousePos.y * 4}px, 0)`,
             transition: 'transform 0.25s ease-out',
           }}
         />
+
+        {/* Interactive Hardware-Accelerated Canvas Scrubbing / Playing */}
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full object-cover will-change-transform"
+          style={{
+            transform: `scale(${isMouseMoving ? 1.02 : 1}) translate3d(${mousePos.x * 6}px, ${mousePos.y * 4}px, 0)`,
+            transition: 'transform 0.25s ease-out',
+          }}
+        />
+
+        {/* Sleek Cinematic Dark Glassmorphic Background Overlay across all content */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/35 to-black/80 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.7)_100%)] pointer-events-none" />
       </div>
 
       {/* ========================================================================= */}
@@ -394,21 +437,21 @@ export const LandingPage: React.FC = () => {
       {/* 2. HERO SECTION: ALL TEXT HOVERS DIRECTLY OVER FIXED GIF BACKGROUND       */}
       {/* ========================================================================= */}
       <section id="vision" className="min-h-[calc(100vh-4rem)] flex flex-col justify-center items-center py-16 px-6 text-center relative z-20">
-        
+
         {/* Status Pills */}
         <div className="flex flex-wrap items-center justify-center gap-3 pb-6">
-          <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/50 border border-white/15 backdrop-blur-xl font-mono text-[11px] text-slate-300 shadow-sm hover:border-cyan-400 transition-all">
+          <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl font-mono text-[11px] text-slate-300 shadow-sm hover:border-cyan-400 transition-all">
             <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
             <span className="text-white font-medium">SUPERMIND GLOBAL ORCHESTRATOR</span>
             <span className="text-white/30">•</span>
             <span className="text-cyan-400 font-bold">LIVE ONLINE</span>
           </div>
 
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/50 border border-white/15 backdrop-blur-xl font-mono text-[11px] text-slate-300 shadow-sm">
-            <MousePointer2 className={`h-3.5 w-3.5 transition-colors ${isMouseMoving ? 'text-cyan-400 animate-spin' : 'text-slate-400'}`} />
-            <span className="text-slate-400">STATUS:</span>
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl font-mono text-[11px] text-slate-300 shadow-sm">
+            <span className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${isMouseMoving ? 'bg-cyan-400 shadow-[0_0_8px_#22d3ee] scale-110' : 'bg-slate-500 scale-90'}`} />
+            <span className="text-slate-400">CORE ANIMATION:</span>
             <span className={isMouseMoving ? 'text-cyan-400 font-bold' : 'text-slate-300 font-medium'}>
-              {isMouseMoving ? 'KINETIC REACTIVE (ACTIVE)' : 'AUTOPLAYING AMBIENT'}
+              {isMouseMoving ? 'PLAYING (MOUSE MOVING)' : 'PAUSED (MOVE MOUSE TO PLAY)'}
             </span>
           </div>
         </div>
@@ -551,11 +594,10 @@ export const LandingPage: React.FC = () => {
               <button
                 key={key}
                 onClick={() => setActiveModel(key)}
-                className={`py-2 px-4 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer ${
-                  isSelected
-                    ? 'bg-cyan-400 text-black font-semibold shadow-md scale-105'
-                    : 'bg-black/40 hover:bg-white/10 text-slate-300 border border-white/10 backdrop-blur-md'
-                }`}
+                className={`py-2 px-4 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer ${isSelected
+                  ? 'bg-cyan-400 text-black font-semibold shadow-md scale-105'
+                  : 'bg-black/40 hover:bg-white/10 text-slate-300 border border-white/10 backdrop-blur-md'
+                  }`}
               >
                 {spec.name}
               </button>
