@@ -41,30 +41,22 @@ export const LandingPage: React.FC = () => {
   const [tokenCounter, setTokenCounter] = useState(3429810);
   const [demoIndex, setDemoIndex] = useState(0);
 
-  // Mouse Movement Autoplay & Stop State
+  // Mouse Movement Autoplay & Parallax State
   const [isMouseMoving, setIsMouseMoving] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const stopTimerRef = useRef<any>(null);
-  const animRef = useRef<number>(0);
-  const rotationAngleRef = useRef<number>(0);
-  const speedRef = useRef<number>(0.2); // Idle ambient speed
-  const targetSpeedRef = useRef<number>(0.2);
 
-  // Mouse Move Event Listener
+  // Mouse Move Event Listener for Dynamic Tilt & Interactive Glow
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const normX = (e.clientX / window.innerWidth) * 2 - 1;
       const normY = (e.clientY / window.innerHeight) * 2 - 1;
       setMousePos({ x: normX, y: normY });
-
       setIsMouseMoving(true);
-      targetSpeedRef.current = 1.4; // Accelerate playback on mouse movement
 
       if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
       stopTimerRef.current = setTimeout(() => {
         setIsMouseMoving(false);
-        targetSpeedRef.current = 0.2; // Return to gentle ambient idle
       }, 200);
     };
 
@@ -72,107 +64,6 @@ export const LandingPage: React.FC = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
-    };
-  }, []);
-
-  // Live Animated Cyber Canvas (Turns image into a continuously playing futuristic animated loop)
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', handleResize);
-
-    // Particles along orbital paths
-    const particles = Array.from({ length: 42 }).map(() => ({
-      orbitRadius: 180 + Math.random() * 260,
-      angle: Math.random() * Math.PI * 2,
-      speed: 0.004 + Math.random() * 0.008,
-      size: 1.5 + Math.random() * 2.5,
-      color: Math.random() > 0.5 ? '#2457D6' : Math.random() > 0.5 ? '#00f0ff' : '#F05A3C',
-    }));
-
-    const render = () => {
-      // Smoothly interpolate animation speed based on mouse motion
-      speedRef.current += (targetSpeedRef.current - speedRef.current) * 0.08;
-      rotationAngleRef.current += speedRef.current * 0.015;
-      const rot = rotationAngleRef.current;
-
-      ctx.clearRect(0, 0, width, height);
-
-      const centerX = width / 2;
-      const centerY = height / 2;
-
-      // 1. Orbital Telemetry Rings
-      ctx.save();
-      ctx.translate(centerX, centerY);
-
-      // Ring 1: Outer Cyan Arc with dashes
-      ctx.beginPath();
-      ctx.arc(0, 0, Math.min(width, height) * 0.36, rot, rot + Math.PI * 1.4);
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.35)';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([8, 14]);
-      ctx.stroke();
-
-      // Ring 2: Counter-rotating Cobalt Arc
-      ctx.beginPath();
-      ctx.arc(0, 0, Math.min(width, height) * 0.42, -rot * 0.8, -rot * 0.8 + Math.PI * 0.9);
-      ctx.strokeStyle = 'rgba(36, 87, 214, 0.4)';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([16, 20]);
-      ctx.stroke();
-
-      // Ring 3: Inner Vermilion Target Reticle
-      ctx.beginPath();
-      ctx.arc(0, 0, Math.min(width, height) * 0.28, rot * 1.5, rot * 1.5 + Math.PI * 0.5);
-      ctx.strokeStyle = 'rgba(240, 90, 60, 0.45)';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([4, 8]);
-      ctx.stroke();
-
-      // Sweeping Radar Line
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      const sweepLen = Math.min(width, height) * 0.44;
-      ctx.lineTo(Math.cos(rot * 2) * sweepLen, Math.sin(rot * 2) * sweepLen);
-      ctx.strokeStyle = 'rgba(0, 240, 255, 0.22)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      ctx.restore();
-
-      // 2. Data Packet Orbiting Nodes
-      particles.forEach((p) => {
-        p.angle += p.speed * (speedRef.current * 1.8);
-        const px = centerX + Math.cos(p.angle) * p.orbitRadius;
-        const py = centerY + Math.sin(p.angle) * (p.orbitRadius * 0.45); // Elliptical perspective
-
-        ctx.beginPath();
-        ctx.arc(px, py, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 8;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      });
-
-      animRef.current = requestAnimationFrame(render);
-    };
-
-    animRef.current = requestAnimationFrame(render);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animRef.current);
     };
   }, []);
 
@@ -305,33 +196,29 @@ export const LandingPage: React.FC = () => {
     <div className="min-h-screen text-[#F4F0E6] bg-transparent flex flex-col font-sans select-none overflow-x-hidden relative">
       
       {/* ========================================================================= */}
-      {/* 1. FIXED BACKGROUND: STRETCHED CYBER GLOBE GIF + ANIMATED CANVAS ENGINE  */}
+      {/* 1. FIXED BACKGROUND: STRETCHED ANIMATED CYBER GLOBE GIF                   */}
       {/* This background stays FIXED in place; all text & sections scroll OVER it  */}
       {/* ========================================================================= */}
       <div className="fixed inset-0 w-full h-full pointer-events-none -z-10 overflow-hidden bg-[#05070e]">
-        {/* Full-bleed stretched visual image */}
+        {/* Full-bleed stretched animated GIF playing continuously */}
         <img
-          src="/hero_orchestration_globe.jpg"
+          src="/hero_orchestration_globe.gif"
           alt="SuperMind AI Global Orchestration Core"
+          loading="eager"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover will-change-transform"
           style={{
-            transform: `scale(${isMouseMoving ? 1.04 : 1.01}) translate3d(${mousePos.x * 12}px, ${mousePos.y * 8}px, 0)`,
-            transition: 'transform 0.4s ease-out, filter 0.4s ease-out',
-            filter: isMouseMoving ? 'brightness(1.15) saturate(1.2)' : 'brightness(0.95) saturate(1.05)',
+            transform: `scale(${isMouseMoving ? 1.03 : 1}) translate3d(${mousePos.x * 10}px, ${mousePos.y * 8}px, 0)`,
+            transition: 'transform 0.3s ease-out, filter 0.3s ease-out',
+            filter: isMouseMoving ? 'brightness(1.1) saturate(1.15)' : 'brightness(1) saturate(1.05)',
           }}
         />
 
-        {/* Live Canvas: Spinning orbital rings & glowing data nodes (turns it into a playing GIF) */}
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-75"
-        />
+        {/* Subtle Cyber scanline overlay */}
+        <div className="absolute inset-0 w-full h-full cyber-scanline pointer-events-none opacity-20 mix-blend-screen z-10" />
 
-        {/* Cyber scanline overlay */}
-        <div className="absolute inset-0 w-full h-full cyber-scanline pointer-events-none opacity-30 mix-blend-screen z-20" />
-
-        {/* Radial dark vignette ensuring all scrolling text has pristine contrast */}
-        <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#05070e]/50 to-[#05070e]/95 pointer-events-none z-20" />
+        {/* Soft edge vignette to ensure text readability without darkening the center */}
+        <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#05070e]/25 to-[#05070e]/85 pointer-events-none z-10" />
       </div>
 
       {/* ========================================================================= */}
