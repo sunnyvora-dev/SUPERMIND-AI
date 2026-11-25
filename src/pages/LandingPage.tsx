@@ -353,14 +353,12 @@ export const LandingPage: React.FC = () => {
       {/* 1. FIXED BACKGROUND: MOTION-DRIVEN GLOBE ORCHESTRATION WITH OVERLAY      */}
       {/* Plays when mouse moves, stops/pauses automatically when mouse stops idle  */}
       {/* ========================================================================= */}
-      <div className="fixed inset-0 w-full h-full pointer-events-none -z-10 overflow-hidden bg-[#04060A]">
-        {/* Poster / Fallback Image until canvas initializes */}
+      <div className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-black">
+        {/* Poster / Fallback Image: frame 0 always visible until canvas takes over */}
         <img
           src="/hero_frames/frame_00.jpg"
           alt="SuperMind AI Globe Orchestration Poster"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 will-change-transform ${
-            canvasReady ? 'opacity-0' : 'opacity-100'
-          }`}
+          className="absolute inset-0 w-full h-full object-cover will-change-transform"
           style={{
             transform: `scale(${isMouseMoving ? 1.02 : 1}) translate3d(${mousePos.x * 6}px, ${mousePos.y * 4}px, 0)`,
             transition: 'transform 0.25s ease-out',
@@ -370,16 +368,17 @@ export const LandingPage: React.FC = () => {
         {/* Interactive Hardware-Accelerated Canvas Scrubbing / Playing */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full object-cover will-change-transform"
+          className={`absolute inset-0 w-full h-full object-cover will-change-transform transition-opacity duration-300 ${
+            canvasReady ? 'opacity-100' : 'opacity-0'
+          }`}
           style={{
             transform: `scale(${isMouseMoving ? 1.02 : 1}) translate3d(${mousePos.x * 6}px, ${mousePos.y * 4}px, 0)`,
             transition: 'transform 0.25s ease-out',
           }}
         />
 
-        {/* Sleek Cinematic Dark Glassmorphic Background Overlay across all content */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/35 to-black/80 pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.7)_100%)] pointer-events-none" />
+        {/* Subtle Dark Vignette: keeps the cyber globe crisp and vivid, text perfectly readable */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
       </div>
 
       {/* ========================================================================= */}
@@ -456,33 +455,33 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Floating Glass Hero Box */}
-        <div className="w-full max-w-4xl p-8 sm:p-14 rounded-3xl bg-black/40 border border-white/15 backdrop-blur-xl shadow-2xl space-y-6 hover:border-white/30 transition-all">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-xs font-mono text-cyan-400">
+        {/* Main Floating Hero Content (Text hovers directly over the globe, zero solid card fill) */}
+        <div className="w-full max-w-4xl p-6 sm:p-10 space-y-6 text-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-400/30 bg-black/30 backdrop-blur-md text-xs font-mono text-cyan-400 shadow-lg">
             <Sparkles className="h-3.5 w-3.5 animate-pulse" />
             <span>All-In-One Unified AI Ecosystem</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-normal tracking-tight text-white leading-[1.08]">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-normal tracking-tight text-white leading-[1.08] drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
             One Unified Workspace.{' '}
-            <span className="italic text-cyan-400 drop-shadow-md">Every Leading AI Model.</span>
+            <span className="italic text-cyan-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]">Every Leading AI Model.</span>
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-200 max-w-2xl mx-auto leading-relaxed font-normal">
+          <p className="text-sm sm:text-base text-slate-100 max-w-2xl mx-auto leading-relaxed font-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
             SuperMind AI brings multiple AI models, providers, and intelligent agents together into one unified workspace—letting you access, compare, orchestrate, and cross-synthesize artificial intelligence seamlessly.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
               onClick={() => navigate('/dashboard')}
-              className="py-3.5 px-8 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition-all hover:scale-105 cursor-pointer"
+              className="py-3.5 px-8 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/30 transition-all hover:scale-105 cursor-pointer"
             >
               <span>Launch Unified Chat Studio</span>
               <ArrowRight className="h-4 w-4" />
             </button>
             <button
               onClick={() => navigate('/register')}
-              className="py-3.5 px-8 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-white text-xs font-medium backdrop-blur-md transition-all hover:scale-105 cursor-pointer"
+              className="py-3.5 px-8 rounded-xl bg-black/40 hover:bg-black/60 border border-white/30 text-white text-xs font-medium backdrop-blur-md transition-all hover:scale-105 cursor-pointer shadow-lg"
             >
               Start Free Trial (100k Tokens)
             </button>
