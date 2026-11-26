@@ -503,74 +503,80 @@ export const LandingPage: React.FC = () => {
 
       {/* Mobile Glass Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="sm:hidden fixed inset-x-0 top-16 z-40 bg-black/95 border-b border-white/15 backdrop-blur-2xl p-5 space-y-4 shadow-2xl animate-in slide-in-from-top-2 duration-200">
-          <nav className="flex flex-col gap-2 font-medium text-sm text-slate-200">
-            <a
-              href="#vision"
-              onClick={() => setMobileMenuOpen(false)}
-              className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
-            >
-              Vision
-            </a>
-            <a
-              href="#capabilities"
-              onClick={() => setMobileMenuOpen(false)}
-              className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
-            >
-              Capabilities
-            </a>
-            <a
-              href="#models"
-              onClick={() => setMobileMenuOpen(false)}
-              className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
-            >
-              AI Models Matrix
-            </a>
-            <a
-              href="#pricing"
-              onClick={() => setMobileMenuOpen(false)}
-              className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
-            >
-              Subscription Plans
-            </a>
-          </nav>
-
-          <div className="pt-3 border-t border-white/10 flex flex-col gap-2.5">
-            {isAuthenticated ? (
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  navigate('/dashboard');
-                }}
-                className="w-full py-2.5 px-4 rounded-xl bg-cyan-400 text-black text-xs font-bold flex items-center justify-center gap-2"
+        <>
+          <div
+            className="sm:hidden fixed inset-0 top-16 bg-black/60 z-30"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="sm:hidden fixed inset-x-0 top-16 z-40 bg-black/95 border-b border-white/15 backdrop-blur-2xl p-5 space-y-4 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+            <nav className="flex flex-col gap-2 font-medium text-sm text-slate-200">
+              <a
+                href="#vision"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
               >
-                <span>Open Workspace</span>
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            ) : (
-              <>
+                Vision
+              </a>
+              <a
+                href="#capabilities"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
+              >
+                Capabilities
+              </a>
+              <a
+                href="#models"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
+              >
+                AI Models Matrix
+              </a>
+              <a
+                href="#pricing"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
+              >
+                Subscription Plans
+              </a>
+            </nav>
+
+            <div className="pt-3 border-t border-white/10 flex flex-col gap-2.5">
+              {isAuthenticated ? (
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    navigate('/login');
+                    navigate('/dashboard');
                   }}
-                  className="w-full py-2.5 px-4 rounded-xl border border-white/20 bg-white/5 text-white text-xs font-medium"
+                  className="w-full py-2.5 px-4 rounded-xl bg-cyan-400 text-black text-xs font-bold flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  Sign In
+                  <span>Open Workspace</span>
+                  <ArrowRight className="h-4 w-4" />
                 </button>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate('/register');
-                  }}
-                  className="w-full py-2.5 px-4 rounded-xl bg-cyan-400 text-black text-xs font-bold"
-                >
-                  Start Free Trial (100k Tokens)
-                </button>
-              </>
-            )}
+              ) : (
+                <>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate('/login');
+                    }}
+                    className="w-full py-2.5 px-4 rounded-xl border border-white/20 bg-white/5 text-white text-xs font-medium cursor-pointer"
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate('/register');
+                    }}
+                    className="w-full py-2.5 px-4 rounded-xl bg-cyan-400 text-black text-xs font-bold cursor-pointer"
+                  >
+                    Start Free Trial (100k Tokens)
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* ========================================================================= */}
@@ -656,7 +662,10 @@ export const LandingPage: React.FC = () => {
           ))}
         </div>
 
-        <div className="pt-6 sm:pt-8 text-[11px] sm:text-xs font-mono text-slate-300 flex items-center gap-1.5 animate-bounce">
+        <div
+          onClick={() => document.getElementById('capabilities')?.scrollIntoView({ behavior: 'smooth' })}
+          className="pt-6 sm:pt-8 text-[11px] sm:text-xs font-mono text-slate-300 flex items-center gap-1.5 animate-bounce cursor-pointer hover:text-cyan-400 transition-colors"
+        >
           <ChevronDown className="h-3.5 w-3.5 text-cyan-400" />
           <span>SCROLL DOWN TO EXPLORE THE PLATFORM ECOSYSTEM</span>
         </div>
@@ -767,15 +776,15 @@ export const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
             <div className="p-2.5 sm:p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="text-[9px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 truncate">Response Latency</div>
+              <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400">Latency</div>
               <div className="text-base sm:text-xl font-serif text-cyan-400 mt-1">{modelSpecs[activeModel].latency}</div>
             </div>
             <div className="p-2.5 sm:p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="text-[9px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 truncate">Quality Score</div>
+              <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400">Quality</div>
               <div className="text-base sm:text-xl font-serif text-emerald-400 mt-1">{modelSpecs[activeModel].quality}</div>
             </div>
             <div className="p-2.5 sm:p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="text-[9px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 truncate">Token Cost</div>
+              <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400">Token Cost</div>
               <div className="text-base sm:text-xl font-serif text-blue-400 mt-1">{modelSpecs[activeModel].cost}</div>
             </div>
           </div>
