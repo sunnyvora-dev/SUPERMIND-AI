@@ -203,6 +203,23 @@ class AdminApiClient {
     return res.json();
   }
 
+  async loginAdmin(email: string, password: string, securityPin?: string): Promise<any> {
+    const res = await fetch(`${API_CONFIG.BASE_URL}/admin/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, securityPin: securityPin || undefined }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || 'Administrative authentication failed');
+    }
+
+    localStorage.setItem('supermind_token', data.accessToken);
+    localStorage.setItem('supermind_user', JSON.stringify(data.user));
+    return data;
+  }
+
   async getOverview(days = 30): Promise<AdminKPIs> {
     return this.request<AdminKPIs>(`/overview?days=${days}`);
   }

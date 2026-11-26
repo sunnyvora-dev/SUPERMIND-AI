@@ -25,7 +25,7 @@ export const AdminAccessDenied: React.FC = () => {
 
   const handleSignOutAndLogin = async () => {
     await logout();
-    navigate('/login?role=admin');
+    navigate('/admin/login');
   };
 
   return (

@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdminService } from './admin.service';
 import { PrismaService } from '../database/prisma.service';
+import { RedisService } from '../redis/redis.service';
+import { JwtService } from '@nestjs/jwt';
 import { AIProviderRegistryService } from '../ai/providers/provider-registry.service';
 
 describe('AdminService', () => {
@@ -53,12 +55,22 @@ describe('AdminService', () => {
     ]),
   };
 
+  const mockRedisService = {
+    rateLimit: jest.fn().mockResolvedValue({ allowed: true, remaining: 3 }),
+  };
+
+  const mockJwtService = {
+    sign: jest.fn().mockReturnValue('mock_admin_jwt_token'),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AdminService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: AIProviderRegistryService, useValue: mockProviderRegistry },
+        { provide: RedisService, useValue: mockRedisService },
+        { provide: JwtService, useValue: mockJwtService },
       ],
     }).compile();
 

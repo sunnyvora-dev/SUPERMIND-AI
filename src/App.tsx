@@ -32,6 +32,7 @@ import { AdminHealthPage } from './pages/admin/AdminHealthPage';
 import { AdminAuditLogsPage } from './pages/admin/AdminAuditLogsPage';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 import { AdminAccessDenied } from './components/admin/AdminAccessDenied';
+import { AdminLoginPage } from './pages/admin/AdminLoginPage';
 
 const FullPageLoader = () => (
   <div className="h-screen w-screen bg-[#030712] flex items-center justify-center text-indigo-400 select-none">
@@ -104,6 +105,9 @@ export function App() {
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
               <Route path="/help" element={<ProtectedRoute><HelpPage /></ProtectedRoute>} />
+              {/* Isolated Fortified Admin Login Gateway */}
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+
               {/* Dedicated Secure Admin Panel Routes */}
               <Route
                 path="/admin"

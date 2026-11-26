@@ -20,14 +20,6 @@ export const LoginPage: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('role') === 'admin') {
-      setEmail('admin@supermind.ai');
-      setPassword('password123');
-    }
-  }, []);
-
   // Handle Social Login (Google OAuth, Facebook, Apple)
   const handleSocialLogin = async (provider: 'google' | 'facebook' | 'apple') => {
     if (provider === 'apple' || provider === 'facebook') {
@@ -237,38 +229,6 @@ export const LoginPage: React.FC = () => {
             <form onSubmit={handleCredentialsSubmit} className="space-y-4">
               {authMethod === 'email' ? (
                 <>
-                  {/* Account Type Preset Selector */}
-                  <div className="flex items-center gap-2 p-1 bg-[#EAE5D9]/60 dark:bg-[#171717]/80 rounded-xl border border-[#DCD6CA] dark:border-[#33312B]">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEmail('demo@supermind.ai');
-                        setPassword('password123');
-                      }}
-                      className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-medium transition-all cursor-pointer ${
-                        email === 'demo@supermind.ai'
-                          ? 'bg-white dark:bg-[#2A2925] text-[#171717] dark:text-[#F4F0E6] shadow-xs font-semibold'
-                          : 'text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6]'
-                      }`}
-                    >
-                      User Workspace
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEmail('admin@supermind.ai');
-                        setPassword('password123');
-                      }}
-                      className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-medium transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                        email === 'admin@supermind.ai'
-                          ? 'bg-[#F05A3C] text-white shadow-xs font-bold'
-                          : 'text-[#77736B] hover:text-[#F05A3C]'
-                      }`}
-                    >
-                      <span>Admin Console</span>
-                    </button>
-                  </div>
-
                   <div className="space-y-1.5">
                     <label className="text-xs font-medium text-[#171717] dark:text-[#F4F0E6]">Email Address</label>
                     <div className="relative">

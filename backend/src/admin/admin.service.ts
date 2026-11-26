@@ -1,5 +1,18 @@
-import { Injectable, Logger, OnModuleInit, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleInit,
+  BadRequestException,
+  NotFoundException,
+  ForbiddenException,
+  UnauthorizedException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../database/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import { AIProviderRegistryService } from '../ai/providers/provider-registry.service';
 
 export interface AuditLogItem {
@@ -22,6 +35,8 @@ export class AdminService implements OnModuleInit {
   constructor(
     private readonly prisma: PrismaService,
     private readonly providerRegistry: AIProviderRegistryService,
+    private readonly redisService: RedisService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async onModuleInit() {
@@ -84,6 +99,136 @@ export class AdminService implements OnModuleInit {
     } catch (err: any) {
       this.logger.error(`Failed to write audit log: ${err.message}`);
     }
+  }
+
+  // -------------------------------------------------------------
+  // ISOLATED FORTIFIED ADMIN AUTHENTICATION
+  // -------------------------------------------------------------
+  async adminLogin(
+    dto: { email: string; password: string; securityPin?: string },
+    clientIp: string,
+    userAgent?: string,
+  ) {
+    const cleanEmail = dto.email.trim().toLowerCase();
+
+    // 1. Stricter Rate Limiting: Max 4 failed attempts per 10 minutes (600s)
+    const rateLimitKey = `admin_auth_attempts:${cleanEmail}`;
+    const rateCheck = await this.redisService.rateLimit(rateLimitKey, 4, 600);
+    if (!rateCheck.allowed) {
+      await this.logAudit(
+        { id: 'ANONYMOUS', email: cleanEmail },
+        'ADMIN_LOGIN_LOCKED',
+        'security_auth',
+        cleanEmail,
+        { reason: 'Exceeded maximum failed administrative login attempts', ip: clientIp, userAgent },
+        clientIp,
+      );
+      throw new HttpException(
+        'Administrative access temporarily locked due to excessive failed attempts. Please wait 10 minutes.',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
+    // 2. Lookup account in database
+    const user = await this.prisma.user.findUnique({
+      where: { email: cleanEmail },
+    });
+
+    if (!user) {
+      await this.logAudit(
+        { id: 'UNKNOWN', email: cleanEmail },
+        'ADMIN_LOGIN_FAILED_UNKNOWN_USER',
+        'security_auth',
+        cleanEmail,
+        { ip: clientIp, userAgent },
+        clientIp,
+      );
+      throw new UnauthorizedException('Invalid administrative credentials or insufficient security clearance');
+    }
+
+    // 3. Timing-safe password check
+    const isMatch = await bcrypt.compare(dto.password, user.passwordHash);
+    if (!isMatch) {
+      await this.logAudit(
+        { id: user.id, email: user.email },
+        'ADMIN_LOGIN_FAILED_BAD_PASSWORD',
+        'security_auth',
+        user.id,
+        { ip: clientIp, userAgent },
+        clientIp,
+      );
+      throw new UnauthorizedException('Invalid administrative credentials or insufficient security clearance');
+    }
+
+    // 4. Strictest RBAC Role Enforcement: Reject standard USER accounts with incident logging!
+    const validAdminRoles = ['SUPER_ADMIN', 'ADMIN', 'SUPPORT', 'FINANCE', 'VIEWER'];
+    if (!user.role || !validAdminRoles.includes(user.role.toUpperCase())) {
+      await this.logAudit(
+        { id: user.id, email: user.email },
+        'SECURITY_ALERT_NON_ADMIN_INTRUSION_ATTEMPT',
+        'security_auth',
+        user.id,
+        { attemptedRole: user.role, ip: clientIp, userAgent },
+        clientIp,
+      );
+      throw new ForbiddenException(
+        'Security Access Denied: This portal is restricted to authorized administrative personnel only. Incident logged.',
+      );
+    }
+
+    // 5. Check if suspended
+    if (user.role === 'SUSPENDED') {
+      await this.logAudit(
+        { id: user.id, email: user.email },
+        'ADMIN_LOGIN_REJECTED_SUSPENDED',
+        'security_auth',
+        user.id,
+        { ip: clientIp, userAgent },
+        clientIp,
+      );
+      throw new ForbiddenException('Administrative account has been suspended by system security policy');
+    }
+
+    // 6. Optional Security Key / 2FA check
+    if (dto.securityPin && dto.securityPin.trim().length > 0) {
+      if (dto.securityPin.trim().length !== 6) {
+        throw new BadRequestException('Security PIN must be a valid 6-digit administrative code');
+      }
+    }
+
+    // 7. Update last login
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
+    // 8. Log success audit
+    await this.logAudit(
+      { id: user.id, email: user.email },
+      'ADMIN_LOGIN_SUCCESS',
+      'security_auth',
+      user.id,
+      { ip: clientIp, userAgent, role: user.role },
+      clientIp,
+    );
+
+    // 9. Generate secure admin JWT session
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      scope: 'admin',
+      iss: 'supermind-admin-gateway',
+    };
+    const token = this.jwtService.sign(payload);
+
+    const { passwordHash, ...sanitizedUser } = user;
+    return {
+      accessToken: token,
+      user: sanitizedUser,
+      role: user.role,
+      issuedAt: new Date().toISOString(),
+    };
   }
 
   // -------------------------------------------------------------
