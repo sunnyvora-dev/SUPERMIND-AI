@@ -28,7 +28,9 @@ import {
   MousePointer2,
   Compass,
   Radio,
-  Play
+  Play,
+  Menu,
+  X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/Button';
@@ -41,7 +43,11 @@ export const LandingPage: React.FC = () => {
   const [tokenCounter, setTokenCounter] = useState(3429810);
   const [demoIndex, setDemoIndex] = useState(0);
 
-  // Mouse Movement Autoplay & Stop State
+  // Mobile Menu & Touch Device Detection
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  // Motion Autoplay & Stop State
   const [isMouseMoving, setIsMouseMoving] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
@@ -55,6 +61,11 @@ export const LandingPage: React.FC = () => {
   const stopTimerRef = useRef<any>(null);
 
   const TOTAL_FRAMES = 39;
+
+  // Detect Touch Capabilities
+  useEffect(() => {
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
 
   // 1. Preload Globe Frames for Instant Canvas Scrubbing & Playback
   useEffect(() => {
@@ -117,14 +128,25 @@ export const LandingPage: React.FC = () => {
     ctx.drawImage(frameImg, nx, ny, nw, nh);
   };
 
-  // Resize canvas to match display size
+  // Resize canvas to match display size (smooth & throttled for mobile address bars)
   useEffect(() => {
+    let lastW = window.innerWidth;
+    let lastH = window.innerHeight;
+
     const handleResize = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      drawFrame(frameIndexRef.current);
+      const curW = window.innerWidth;
+      const curH = window.innerHeight;
+
+      // On mobile devices, ignore tiny vertical height shifts caused by address bar collapse
+      if (Math.abs(curW - lastW) > 10 || Math.abs(curH - lastH) > 80 || canvas.width === 0) {
+        canvas.width = curW;
+        canvas.height = curH;
+        lastW = curW;
+        lastH = curH;
+        drawFrame(frameIndexRef.current);
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -148,6 +170,11 @@ export const LandingPage: React.FC = () => {
       }, 180);
     };
 
+    const handleTouchStart = () => {
+      setIsMouseMoving(true);
+      if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
+    };
+
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         const touch = e.touches[0];
@@ -159,14 +186,26 @@ export const LandingPage: React.FC = () => {
       if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
       stopTimerRef.current = setTimeout(() => {
         setIsMouseMoving(false);
-      }, 220);
+      }, 250);
+    };
+
+    const handleTouchEnd = () => {
+      if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
+      stopTimerRef.current = setTimeout(() => {
+        setIsMouseMoving(false);
+      }, 200);
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
       if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
     };
   }, []);
@@ -204,7 +243,7 @@ export const LandingPage: React.FC = () => {
     };
   }, [isMouseMoving, canvasReady]);
 
-  // 5. Scroll-Driven Scrubbing: When user scrolls, scrub frames
+  // 5. Scroll-Driven Scrubbing: When user scrolls on mobile/tablet/desktop, scrub frames
   useEffect(() => {
     const handleScroll = () => {
       const totalScrollable = document.documentElement.scrollHeight - window.innerHeight;
@@ -384,12 +423,12 @@ export const LandingPage: React.FC = () => {
       {/* ========================================================================= */}
       {/* STICKY GLASSMORPHIC HEADER OVER FIXED BACKGROUND                          */}
       {/* ========================================================================= */}
-      <header className="h-16 px-4 sm:px-8 max-w-7xl mx-auto w-full flex items-center justify-between border-b border-white/10 bg-black/40 backdrop-blur-xl sticky top-0 z-50">
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className="h-8 w-8 rounded-lg bg-cyan-400 text-black font-bold flex items-center justify-center text-sm shadow-sm">
+      <header className="h-16 px-4 sm:px-8 max-w-7xl mx-auto w-full flex items-center justify-between border-b border-white/10 bg-black/60 backdrop-blur-xl sticky top-0 z-50">
+        <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div className="h-8 w-8 rounded-lg bg-cyan-400 text-black font-bold flex items-center justify-center text-sm shadow-sm shrink-0">
             S
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <span className="font-serif font-normal text-lg tracking-tight text-white">SuperMind</span>
             <span className="hidden sm:inline-block px-2 py-0.5 rounded border border-white/15 bg-white/5 text-slate-400 text-[10px] font-mono tracking-wider uppercase">
               AI Orchestrator
@@ -397,14 +436,16 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-slate-300">
+        {/* Desktop & Tablet Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-8 text-xs font-medium text-slate-300">
           <a href="#vision" className="hover:text-cyan-400 transition-colors">Vision</a>
           <a href="#capabilities" className="hover:text-cyan-400 transition-colors">Capabilities</a>
           <a href="#models" className="hover:text-cyan-400 transition-colors">AI Models</a>
           <a href="#pricing" className="hover:text-cyan-400 transition-colors">Pricing</a>
         </nav>
 
-        <div className="flex items-center gap-3">
+        {/* Desktop & Tablet Header CTAs */}
+        <div className="hidden sm:flex items-center gap-2.5">
           {isAuthenticated ? (
             <button
               onClick={() => navigate('/dashboard')}
@@ -430,66 +471,170 @@ export const LandingPage: React.FC = () => {
             </>
           )}
         </div>
+
+        {/* Mobile Compact Header CTAs & Hamburger Toggle */}
+        <div className="flex sm:hidden items-center gap-1.5">
+          {isAuthenticated ? (
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="py-1 px-2.5 rounded-lg bg-cyan-400 text-black text-[10px] font-bold flex items-center gap-1"
+            >
+              <span>App</span>
+              <ArrowRight className="h-3 w-3" />
+            </button>
+          ) : (
+            <button
+              onClick={() => navigate('/register')}
+              className="py-1 px-2.5 rounded-lg bg-cyan-400 text-black text-[10px] font-bold shadow-sm"
+            >
+              Trial
+            </button>
+          )}
+
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+            className="p-1.5 rounded-lg border border-white/20 bg-white/10 text-slate-200 hover:text-white transition-colors"
+          >
+            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
+        </div>
       </header>
 
+      {/* Mobile Glass Navigation Drawer */}
+      {mobileMenuOpen && (
+        <div className="sm:hidden fixed inset-x-0 top-16 z-40 bg-black/95 border-b border-white/15 backdrop-blur-2xl p-5 space-y-4 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+          <nav className="flex flex-col gap-2 font-medium text-sm text-slate-200">
+            <a
+              href="#vision"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
+            >
+              Vision
+            </a>
+            <a
+              href="#capabilities"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
+            >
+              Capabilities
+            </a>
+            <a
+              href="#models"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
+            >
+              AI Models Matrix
+            </a>
+            <a
+              href="#pricing"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 px-3 rounded-lg hover:bg-white/10 hover:text-cyan-400 transition-colors"
+            >
+              Subscription Plans
+            </a>
+          </nav>
+
+          <div className="pt-3 border-t border-white/10 flex flex-col gap-2.5">
+            {isAuthenticated ? (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate('/dashboard');
+                }}
+                className="w-full py-2.5 px-4 rounded-xl bg-cyan-400 text-black text-xs font-bold flex items-center justify-center gap-2"
+              >
+                <span>Open Workspace</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate('/login');
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl border border-white/20 bg-white/5 text-white text-xs font-medium"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate('/register');
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-cyan-400 text-black text-xs font-bold"
+                >
+                  Start Free Trial (100k Tokens)
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ========================================================================= */}
-      {/* 2. HERO SECTION: ALL TEXT HOVERS DIRECTLY OVER FIXED GIF BACKGROUND       */}
+      {/* 2. HERO SECTION: FULLY OPTIMIZED FOR PHONE, TABLET & DESKTOP              */}
       {/* ========================================================================= */}
-      <section id="vision" className="min-h-[calc(100vh-4rem)] flex flex-col justify-center items-center py-16 px-6 text-center relative z-20">
+      <section id="vision" className="min-h-[calc(100vh-4rem)] flex flex-col justify-center items-center py-10 sm:py-16 md:py-20 px-4 sm:px-6 text-center relative z-20">
 
         {/* Status Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pb-6">
-          <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl font-mono text-[11px] text-slate-300 shadow-sm hover:border-cyan-400 transition-all">
-            <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
-            <span className="text-white font-medium">SUPERMIND GLOBAL ORCHESTRATOR</span>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 pb-4 sm:pb-6 max-w-full">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl font-mono text-[10px] sm:text-[11px] text-slate-300 shadow-sm hover:border-cyan-400 transition-all max-w-[95vw]">
+            <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
+            <span className="text-white font-medium truncate">SUPERMIND GLOBAL ORCHESTRATOR</span>
             <span className="text-white/30">•</span>
-            <span className="text-cyan-400 font-bold">LIVE ONLINE</span>
+            <span className="text-cyan-400 font-bold shrink-0">ONLINE</span>
           </div>
 
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl font-mono text-[11px] text-slate-300 shadow-sm">
-            <span className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${isMouseMoving ? 'bg-cyan-400 shadow-[0_0_8px_#22d3ee] scale-110' : 'bg-slate-500 scale-90'}`} />
-            <span className="text-slate-400">CORE ANIMATION:</span>
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-xl font-mono text-[10px] sm:text-[11px] text-slate-300 shadow-sm max-w-[95vw]">
+            <span className={`h-2.5 w-2.5 rounded-full transition-all duration-300 shrink-0 ${isMouseMoving ? 'bg-cyan-400 shadow-[0_0_8px_#22d3ee] scale-110' : 'bg-slate-500 scale-90'}`} />
+            <span className="text-slate-400">{isTouchDevice ? 'TOUCH MODE:' : 'CORE ANIMATION:'}</span>
             <span className={isMouseMoving ? 'text-cyan-400 font-bold' : 'text-slate-300 font-medium'}>
-              {isMouseMoving ? 'PLAYING (MOUSE MOVING)' : 'PAUSED (MOVE MOUSE TO PLAY)'}
+              {isMouseMoving
+                ? (isTouchDevice ? 'PLAYING (TOUCH ACTIVE)' : 'PLAYING (MOUSE MOVING)')
+                : (isTouchDevice ? 'PAUSED (SWIPE TO ANIMATE)' : 'PAUSED (MOVE MOUSE TO PLAY)')}
             </span>
           </div>
         </div>
 
-        {/* Main Floating Hero Content (Text hovers directly over the globe, zero solid card fill) */}
-        <div className="w-full max-w-4xl p-6 sm:p-10 space-y-6 text-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-400/30 bg-black/30 backdrop-blur-md text-xs font-mono text-cyan-400 shadow-lg">
-            <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+        {/* Main Floating Hero Content */}
+        <div className="w-full max-w-4xl p-2 sm:p-6 md:p-10 space-y-4 sm:space-y-6 text-center">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:py-1.5 rounded-full border border-cyan-400/30 bg-black/40 backdrop-blur-md text-[11px] sm:text-xs font-mono text-cyan-400 shadow-lg">
+            <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 animate-pulse shrink-0" />
             <span>All-In-One Unified AI Ecosystem</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-normal tracking-tight text-white leading-[1.08] drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
+          <h1 className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-normal tracking-tight text-white leading-tight sm:leading-[1.08] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] max-w-full">
             One Unified Workspace.{' '}
-            <span className="italic text-cyan-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]">Every Leading AI Model.</span>
+            <span className="italic text-cyan-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.5)] block sm:inline">
+              Every Leading AI Model.
+            </span>
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-100 max-w-2xl mx-auto leading-relaxed font-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+          <p className="text-[11px] sm:text-sm md:text-base text-slate-100 max-w-2xl mx-auto leading-relaxed font-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] px-2">
             SuperMind AI brings multiple AI models, providers, and intelligent agents together into one unified workspace—letting you access, compare, orchestrate, and cross-synthesize artificial intelligence seamlessly.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-2 sm:pt-4 w-full sm:w-auto max-w-md sm:max-w-none mx-auto">
             <button
               onClick={() => navigate('/dashboard')}
-              className="py-3.5 px-8 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/30 transition-all hover:scale-105 cursor-pointer"
+              className="py-3 px-6 sm:py-3.5 sm:px-8 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black text-xs font-semibold flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/30 transition-all hover:scale-105 active:scale-95 cursor-pointer min-h-[44px]"
             >
               <span>Launch Unified Chat Studio</span>
               <ArrowRight className="h-4 w-4" />
             </button>
             <button
               onClick={() => navigate('/register')}
-              className="py-3.5 px-8 rounded-xl bg-black/40 hover:bg-black/60 border border-white/30 text-white text-xs font-medium backdrop-blur-md transition-all hover:scale-105 cursor-pointer shadow-lg"
+              className="py-3 px-6 sm:py-3.5 sm:px-8 rounded-xl bg-black/50 hover:bg-black/70 border border-white/30 text-white text-xs font-medium backdrop-blur-md transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-lg min-h-[44px]"
             >
               Start Free Trial (100k Tokens)
             </button>
           </div>
         </div>
 
-        {/* Live Provider Latency Chips Floating Over Fixed Background */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 w-full max-w-5xl pt-10">
+        {/* Live Provider Latency Chips */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 w-full max-w-5xl pt-6 sm:pt-10">
           {[
             { name: 'OpenAI GPT-4o', latency: '210ms', tag: 'Omnimodal', color: '#38BDF8' },
             { name: 'Claude 3.5 Sonnet', latency: '240ms', tag: 'Reasoning', color: '#60A5FA' },
@@ -500,19 +645,19 @@ export const LandingPage: React.FC = () => {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="p-3.5 rounded-2xl bg-black/45 border border-white/10 backdrop-blur-xl text-left space-y-1 shadow-sm hover:border-cyan-400 hover:scale-105 transition-all cursor-pointer"
+              className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-black/50 border border-white/10 backdrop-blur-xl text-left space-y-1 shadow-sm hover:border-cyan-400 hover:scale-105 active:scale-98 transition-all cursor-pointer"
             >
-              <div className="flex items-center justify-between">
-                <span className="font-serif text-xs font-medium text-white truncate">{item.name}</span>
-                <span className="font-mono text-[9px] text-cyan-400 font-bold">{item.latency}</span>
+              <div className="flex items-center justify-between gap-1">
+                <span className="font-serif text-[11px] sm:text-xs font-medium text-white truncate">{item.name}</span>
+                <span className="font-mono text-[9px] text-cyan-400 font-bold shrink-0">{item.latency}</span>
               </div>
-              <div className="text-[10px] font-mono text-slate-400">{item.tag}</div>
+              <div className="text-[9px] sm:text-[10px] font-mono text-slate-400">{item.tag}</div>
             </div>
           ))}
         </div>
 
-        <div className="pt-8 text-xs font-mono text-slate-300 flex items-center gap-1.5 animate-bounce">
-          <ChevronDown className="h-4 w-4 text-cyan-400" />
+        <div className="pt-6 sm:pt-8 text-[11px] sm:text-xs font-mono text-slate-300 flex items-center gap-1.5 animate-bounce">
+          <ChevronDown className="h-3.5 w-3.5 text-cyan-400" />
           <span>SCROLL DOWN TO EXPLORE THE PLATFORM ECOSYSTEM</span>
         </div>
       </section>
@@ -520,26 +665,26 @@ export const LandingPage: React.FC = () => {
       {/* ========================================================================= */}
       {/* 3. WHAT SUPERMIND AI DOES — FULL ECOSYSTEM CAPABILITIES OVERLAP           */}
       {/* ========================================================================= */}
-      <section id="capabilities" className="py-24 px-6 max-w-7xl mx-auto w-full space-y-14 text-left relative z-20">
-        <div className="max-w-3xl space-y-3">
+      <section id="capabilities" className="py-16 sm:py-24 px-4 sm:px-6 max-w-7xl mx-auto w-full space-y-10 sm:space-y-14 text-left relative z-20">
+        <div className="max-w-3xl space-y-2 sm:space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-black/40 backdrop-blur-md text-[10px] font-mono tracking-wider uppercase text-slate-300">
             Core Platform Architecture
           </div>
-          <h2 className="text-3xl sm:text-5xl font-serif font-normal tracking-tight text-white">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-normal tracking-tight text-white">
             What SuperMind AI Does
           </h2>
-          <p className="text-sm text-slate-200 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
             SuperMind AI is engineered as an all-in-one AI ecosystem where individuals, developers, and enterprise teams can access, compare, orchestrate, and monetize artificial intelligence capabilities under one roof.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {corePillars.map((pillar, idx) => {
             const Icon = pillar.icon;
             return (
               <div
                 key={idx}
-                className="p-7 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-xl space-y-4 shadow-sm hover:border-cyan-400 hover:scale-[1.02] transition-all group"
+                className="p-5 sm:p-7 rounded-2xl bg-black/45 border border-white/10 backdrop-blur-xl space-y-3 sm:space-y-4 shadow-sm hover:border-cyan-400 hover:scale-[1.02] active:scale-98 transition-all group"
               >
                 <div
                   className="h-10 w-10 rounded-xl flex items-center justify-center border transition-colors shadow-2xs"
@@ -555,7 +700,7 @@ export const LandingPage: React.FC = () => {
                   <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
                     {pillar.subtitle}
                   </div>
-                  <h3 className="text-lg font-serif font-normal text-white">
+                  <h3 className="text-base sm:text-lg font-serif font-normal text-white">
                     {pillar.title}
                   </h3>
                 </div>
@@ -571,12 +716,12 @@ export const LandingPage: React.FC = () => {
       {/* ========================================================================= */}
       {/* 4. INTERACTIVE MODEL MATRIX SECTION OVERLAPPING FIXED BACKGROUND          */}
       {/* ========================================================================= */}
-      <section id="models" className="py-20 px-6 max-w-7xl mx-auto w-full space-y-10 text-center relative z-20">
+      <section id="models" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto w-full space-y-8 sm:space-y-10 text-center relative z-20">
         <div className="space-y-2 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-black/40 backdrop-blur-md text-[10px] font-mono tracking-wider uppercase text-slate-300">
             Model Intelligence Matrix
           </div>
-          <h2 className="text-3xl sm:text-4xl font-serif font-normal tracking-tight text-white">
+          <h2 className="text-2xl sm:text-4xl font-serif font-normal tracking-tight text-white">
             Compare Candidate Models in Real-Time
           </h2>
           <p className="text-xs sm:text-sm text-slate-300">
@@ -584,8 +729,8 @@ export const LandingPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Model Tabs */}
-        <div className="flex justify-center flex-wrap gap-2">
+        {/* Model Tabs (Smooth Horizontal Scroll on Mobile, Centered on Tablet/Desktop) */}
+        <div className="flex sm:justify-center overflow-x-auto no-scrollbar py-2 px-2 sm:px-0 gap-2 w-full max-w-full -mx-2 sm:mx-auto sm:flex-wrap">
           {(['gemini', 'claude', 'gpt4', 'deepseek', 'grok', 'kimi'] as const).map((key) => {
             const spec = modelSpecs[key];
             const isSelected = activeModel === key;
@@ -593,9 +738,9 @@ export const LandingPage: React.FC = () => {
               <button
                 key={key}
                 onClick={() => setActiveModel(key)}
-                className={`py-2 px-4 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer ${isSelected
+                className={`py-2 px-3.5 sm:px-4 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer shrink-0 ${isSelected
                   ? 'bg-cyan-400 text-black font-semibold shadow-md scale-105'
-                  : 'bg-black/40 hover:bg-white/10 text-slate-300 border border-white/10 backdrop-blur-md'
+                  : 'bg-black/50 hover:bg-white/10 text-slate-300 border border-white/10 backdrop-blur-md'
                   }`}
               >
                 {spec.name}
@@ -605,33 +750,33 @@ export const LandingPage: React.FC = () => {
         </div>
 
         {/* Selected Model Spec Card */}
-        <div className="max-w-4xl mx-auto p-6 sm:p-8 rounded-2xl bg-black/50 border border-white/15 backdrop-blur-2xl shadow-xl space-y-6 text-left">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+        <div className="max-w-4xl mx-auto p-4 sm:p-8 rounded-2xl bg-black/55 border border-white/15 backdrop-blur-2xl shadow-xl space-y-5 sm:space-y-6 text-left">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 border-b border-white/10 pb-4">
             <div>
-              <div className="text-xl font-serif font-normal text-white">
+              <div className="text-lg sm:text-xl font-serif font-normal text-white">
                 {modelSpecs[activeModel].name}
               </div>
               <div className="text-xs text-slate-300 mt-1 leading-relaxed">
                 {modelSpecs[activeModel].description}
               </div>
             </div>
-            <span className={`px-3 py-1 rounded-full text-xs font-mono font-semibold border ${modelSpecs[activeModel].badgeColor}`}>
+            <span className={`px-3 py-1 rounded-full text-xs font-mono font-semibold border shrink-0 ${modelSpecs[activeModel].badgeColor}`}>
               {modelSpecs[activeModel].provider}
             </span>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Response Latency</div>
-              <div className="text-lg sm:text-xl font-serif text-cyan-400 mt-1">{modelSpecs[activeModel].latency}</div>
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+            <div className="p-2.5 sm:p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="text-[9px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 truncate">Response Latency</div>
+              <div className="text-base sm:text-xl font-serif text-cyan-400 mt-1">{modelSpecs[activeModel].latency}</div>
             </div>
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Quality Score</div>
-              <div className="text-lg sm:text-xl font-serif text-emerald-400 mt-1">{modelSpecs[activeModel].quality}</div>
+            <div className="p-2.5 sm:p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="text-[9px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 truncate">Quality Score</div>
+              <div className="text-base sm:text-xl font-serif text-emerald-400 mt-1">{modelSpecs[activeModel].quality}</div>
             </div>
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Token Cost</div>
-              <div className="text-lg sm:text-xl font-serif text-blue-400 mt-1">{modelSpecs[activeModel].cost}</div>
+            <div className="p-2.5 sm:p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="text-[9px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 truncate">Token Cost</div>
+              <div className="text-base sm:text-xl font-serif text-blue-400 mt-1">{modelSpecs[activeModel].cost}</div>
             </div>
           </div>
         </div>
@@ -640,13 +785,13 @@ export const LandingPage: React.FC = () => {
       {/* ========================================================================= */}
       {/* 5. OUR VISION MANIFESTO OVERLAPPING FIXED BACKGROUND                      */}
       {/* ========================================================================= */}
-      <section className="py-20 px-6 max-w-5xl mx-auto w-full text-center relative z-20">
-        <div className="p-8 sm:p-14 rounded-3xl bg-black/50 text-white border border-white/15 backdrop-blur-2xl shadow-xl space-y-6">
+      <section className="py-16 sm:py-20 px-4 sm:px-6 max-w-5xl mx-auto w-full text-center relative z-20">
+        <div className="p-6 sm:p-14 rounded-3xl bg-black/55 text-white border border-white/15 backdrop-blur-2xl shadow-xl space-y-5 sm:space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white font-mono text-[10px] uppercase tracking-wider">
             Our Mission & Vision
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-normal tracking-tight max-w-3xl mx-auto leading-tight text-white">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-serif font-normal tracking-tight max-w-3xl mx-auto leading-snug sm:leading-tight text-white">
             Build SuperMind AI into a premium, reliable, scalable platform that makes advanced artificial intelligence accessible through one beautifully designed application.
           </h2>
 
@@ -654,16 +799,16 @@ export const LandingPage: React.FC = () => {
             Eliminating silos between AI providers. Whether you need Claude's deep reasoning, Gemini's speed, or OpenAI's multimodal vision, SuperMind delivers unified mastery.
           </p>
 
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto max-w-md sm:max-w-none mx-auto">
             <button
               onClick={() => navigate('/register')}
-              className="py-3 px-6 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black text-xs font-semibold shadow-sm transition-all hover:scale-105 cursor-pointer"
+              className="py-3 px-6 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black text-xs font-semibold shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer min-h-[44px]"
             >
               Start Free Trial (100k Tokens)
             </button>
             <button
               onClick={() => navigate('/dashboard')}
-              className="py-3 px-6 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-medium border border-white/20 transition-all hover:scale-105 cursor-pointer backdrop-blur-md"
+              className="py-3 px-6 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-medium border border-white/20 transition-all hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md min-h-[44px]"
             >
               Explore Chat Studio
             </button>
@@ -674,12 +819,12 @@ export const LandingPage: React.FC = () => {
       {/* ========================================================================= */}
       {/* 6. SAAS PRICING & SUBSCRIPTION TIERS OVERLAPPING FIXED BACKGROUND         */}
       {/* ========================================================================= */}
-      <section id="pricing" className="py-20 px-6 max-w-7xl mx-auto w-full space-y-12 text-center relative z-20">
+      <section id="pricing" className="py-16 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto w-full space-y-10 sm:space-y-12 text-center relative z-20">
         <div className="space-y-2 max-w-xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-black/40 backdrop-blur-md text-[10px] font-mono tracking-wider uppercase text-slate-300">
             Transparent Pricing
           </div>
-          <h2 className="text-3xl sm:text-4xl font-serif font-normal tracking-tight text-white">
+          <h2 className="text-2xl sm:text-4xl font-serif font-normal tracking-tight text-white">
             Choose Your Intelligence Capacity
           </h2>
           <p className="text-xs sm:text-sm text-slate-300">
@@ -687,28 +832,28 @@ export const LandingPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch text-left">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 items-stretch text-left">
           {/* Starter Plan */}
-          <div className="p-6 sm:p-8 rounded-2xl bg-black/45 border border-white/15 backdrop-blur-2xl space-y-6 flex flex-col justify-between shadow-sm hover:border-white/30 transition-all">
+          <div className="p-5 sm:p-8 rounded-2xl bg-black/50 border border-white/15 backdrop-blur-2xl space-y-6 flex flex-col justify-between shadow-sm hover:border-white/30 transition-all">
             <div className="space-y-4">
               <div className="text-xs font-mono uppercase tracking-wider text-slate-400">Starter</div>
               <div className="text-3xl font-serif text-white">$9 <span className="text-xs text-slate-400 font-normal">/ mo</span></div>
               <ul className="space-y-2.5 text-xs text-slate-300">
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400" /> 500k Monthly Tokens</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400" /> Gemini & DeepSeek Routing</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400" /> Document RAG Analysis</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> 500k Monthly Tokens</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Gemini & DeepSeek Routing</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Document RAG Analysis</li>
               </ul>
             </div>
             <button
               onClick={() => navigate('/register')}
-              className="w-full py-2.5 px-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white text-xs font-medium transition-all"
+              className="w-full py-3 px-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white text-xs font-medium transition-all min-h-[44px]"
             >
               Choose Starter
             </button>
           </div>
 
           {/* Pro Intelligence Plan */}
-          <div className="p-6 sm:p-8 rounded-2xl bg-black/60 border-2 border-cyan-400 backdrop-blur-2xl shadow-xl shadow-cyan-500/10 space-y-6 flex flex-col justify-between relative overflow-hidden">
+          <div className="p-5 sm:p-8 rounded-2xl bg-black/65 border-2 border-cyan-400 backdrop-blur-2xl shadow-xl shadow-cyan-500/10 space-y-6 flex flex-col justify-between relative overflow-hidden">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-semibold">Pro Intelligence</span>
@@ -716,34 +861,34 @@ export const LandingPage: React.FC = () => {
               </div>
               <div className="text-3xl font-serif text-white">$29 <span className="text-xs text-slate-400 font-normal">/ mo</span></div>
               <ul className="space-y-2.5 text-xs text-white">
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400" /> 5M Monthly Tokens</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400" /> Multi-Model Consensus Engine</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400" /> 4K Image Studio & Vector PDF</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400" /> Autonomous Task Agents</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> 5M Monthly Tokens</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Multi-Model Consensus Engine</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> 4K Image Studio & Vector PDF</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Autonomous Task Agents</li>
               </ul>
             </div>
             <button
               onClick={() => navigate('/register')}
-              className="w-full py-2.5 px-4 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black text-xs font-bold transition-all shadow-md shadow-cyan-500/20"
+              className="w-full py-3 px-4 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black text-xs font-bold transition-all shadow-md shadow-cyan-500/20 min-h-[44px]"
             >
               Start With Free Trial
             </button>
           </div>
 
           {/* Enterprise Plan */}
-          <div className="p-6 sm:p-8 rounded-2xl bg-black/45 border border-white/15 backdrop-blur-2xl space-y-6 flex flex-col justify-between shadow-sm hover:border-white/30 transition-all">
+          <div className="p-5 sm:p-8 rounded-2xl bg-black/50 border border-white/15 backdrop-blur-2xl space-y-6 flex flex-col justify-between shadow-sm hover:border-white/30 transition-all">
             <div className="space-y-4">
               <div className="text-xs font-mono uppercase tracking-wider text-slate-400">Enterprise</div>
               <div className="text-3xl font-serif text-white">$99 <span className="text-xs text-slate-400 font-normal">/ mo</span></div>
               <ul className="space-y-2.5 text-xs text-slate-300">
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400" /> 50M Monthly Tokens</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400" /> Dedicated Supervisor SLA</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400" /> Custom Model Fine-Tuning & Admin</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> 50M Monthly Tokens</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Dedicated Supervisor SLA</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Custom Model Fine-Tuning & Admin</li>
               </ul>
             </div>
             <button
               onClick={() => navigate('/register')}
-              className="w-full py-2.5 px-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white text-xs font-medium transition-all"
+              className="w-full py-3 px-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white text-xs font-medium transition-all min-h-[44px]"
             >
               Contact Enterprise
             </button>
@@ -754,12 +899,12 @@ export const LandingPage: React.FC = () => {
       {/* ========================================================================= */}
       {/* 7. MULTI-COLUMN FOOTER OVERLAPPING FIXED BACKGROUND                       */}
       {/* ========================================================================= */}
-      <footer className="border-t border-white/10 bg-black/70 backdrop-blur-2xl pt-16 pb-12 px-6 relative z-20 text-left">
-        <div className="max-w-7xl mx-auto space-y-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-            <div className="lg:col-span-2 space-y-4">
+      <footer className="border-t border-white/10 bg-black/80 backdrop-blur-2xl pt-12 sm:pt-16 pb-10 sm:pb-12 px-4 sm:px-6 relative z-20 text-left">
+        <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8">
+            <div className="sm:col-span-2 space-y-4">
               <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                <div className="h-8 w-8 rounded-lg bg-cyan-400 text-black font-bold flex items-center justify-center text-sm shadow-sm">
+                <div className="h-8 w-8 rounded-lg bg-cyan-400 text-black font-bold flex items-center justify-center text-sm shadow-sm shrink-0">
                   S
                 </div>
                 <span className="font-serif font-normal text-lg tracking-tight text-white">SuperMind AI</span>
@@ -808,7 +953,7 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+          <div className="pt-6 sm:pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 text-center sm:text-left">
             <div>
               © 2026 SuperMind AI Inc. All rights reserved. • One Unified Workspace. Every World-Class AI Model.
             </div>
