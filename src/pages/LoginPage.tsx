@@ -59,14 +59,10 @@ export const LoginPage: React.FC = () => {
         setStep('otp');
       } else {
         // Direct email & password login against live API
-        const loggedUser = await login(email, password);
+        await login(email, password);
         setStep('success');
-        const adminRoles = ['SUPER_ADMIN', 'ADMIN', 'SUPPORT', 'FINANCE', 'VIEWER'];
-        const destination = (loggedUser?.role && adminRoles.includes(loggedUser.role))
-          ? '/admin'
-          : '/dashboard';
         setTimeout(() => {
-          navigate(destination);
+          navigate('/dashboard');
         }, 600);
       }
     } catch (err: any) {
@@ -83,19 +79,14 @@ export const LoginPage: React.FC = () => {
       const targetIdentifier = authMethod === 'phone' ? phone : email;
       const isValid = await authService.verifyCode(targetIdentifier, code);
       if (isValid) {
-        let loggedUser: any = null;
         if (authMethod === 'phone') {
-          loggedUser = await loginWithPhone(phone);
+          await loginWithPhone(phone);
         } else {
-          loggedUser = await login(email, password);
+          await login(email, password);
         }
         setStep('success');
-        const adminRoles = ['SUPER_ADMIN', 'ADMIN', 'SUPPORT', 'FINANCE', 'VIEWER'];
-        const destination = (loggedUser?.role && adminRoles.includes(loggedUser.role))
-          ? '/admin'
-          : '/dashboard';
         setTimeout(() => {
-          navigate(destination);
+          navigate('/dashboard');
         }, 800);
         return true;
       }

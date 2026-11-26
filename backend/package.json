@@ -18,6 +18,7 @@
     "prisma:generate": "prisma generate",
     "prisma:db:push": "prisma db push",
     "prisma:seed": "ts-node prisma/seed.ts",
+    "make-admin": "node scripts/make-admin.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",

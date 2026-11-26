@@ -56,8 +56,12 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isAuthenticated, isLoading } = useAuth();
   if (isLoading) return <FullPageLoader />;
   const adminRoles = ['SUPER_ADMIN', 'ADMIN', 'SUPPORT', 'FINANCE', 'VIEWER'];
-  if (!isAuthenticated || !user?.role || !adminRoles.includes(user.role)) {
-    return <AdminAccessDenied />;
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace />;
+  }
+  if (!user?.role || !adminRoles.includes(user.role)) {
+    // Regular users are strictly redirected to user workspace - admin console is completely hidden
+    return <Navigate to="/dashboard" replace />;
   }
   return <>{children}</>;
 };

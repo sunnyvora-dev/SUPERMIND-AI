@@ -383,9 +383,9 @@ export const LandingPage: React.FC = () => {
       color: '#38BDF8',
     },
     {
-      title: 'Admin Governance',
-      subtitle: 'Platform Operations',
-      desc: 'Manage users, monitor foundation provider SLA status, enforce rate limits, and analyze real-time request volume.',
+      title: 'Enterprise Security & SLA',
+      subtitle: 'Zero Trust & Compliance',
+      desc: 'Enterprise-grade encryption, guaranteed provider SLA uptime, audit logging, and automated token quota enforcement.',
       icon: ShieldCheck,
       color: '#14B8A6',
     },
@@ -891,7 +891,7 @@ export const LandingPage: React.FC = () => {
               <ul className="space-y-2.5 text-xs text-slate-300">
                 <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> 500M Monthly Tokens</li>
                 <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Dedicated Supervisor SLA</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Custom Model Fine-Tuning & Admin</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Custom Model Fine-Tuning & Private Endpoints</li>
               </ul>
             </div>
             <button
@@ -956,7 +956,6 @@ export const LandingPage: React.FC = () => {
                 <li><a onClick={() => navigate('/terms')} className="hover:text-cyan-400 transition-colors cursor-pointer">Terms of Service</a></li>
                 <li><a onClick={() => navigate('/privacy')} className="hover:text-cyan-400 transition-colors cursor-pointer">Privacy Policy</a></li>
                 <li><a onClick={() => navigate('/help')} className="hover:text-cyan-400 transition-colors cursor-pointer">Help & Documentation</a></li>
-                <li><a onClick={() => navigate('/admin')} className="hover:text-cyan-400 transition-colors cursor-pointer">Admin Governance</a></li>
               </ul>
             </div>
           </div>
