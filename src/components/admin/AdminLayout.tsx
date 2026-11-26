@@ -78,9 +78,16 @@ export const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F0E6] dark:bg-[#0C0D0E] text-slate-800 dark:text-slate-200 flex flex-col antialiased selection:bg-[#F05A3C]/20">
+    <div className="min-h-screen bg-[#F4F0E6] dark:bg-[#08090B] text-slate-800 dark:text-slate-200 flex flex-col antialiased selection:bg-[#F05A3C]/20 relative overflow-hidden">
+      {/* Liquid Ambient Fluid Lighting Mesh */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="liquid-orb-1 w-[500px] h-[500px] -top-32 -left-32 bg-gradient-to-tr from-[#F05A3C]/15 via-[#2457D6]/20 to-[#9333EA]/15" />
+        <div className="liquid-orb-2 w-[600px] h-[600px] -bottom-40 -right-40 bg-gradient-to-br from-[#2457D6]/20 via-[#06B6D4]/15 to-[#F05A3C]/15" />
+        <div className="liquid-orb-1 w-[350px] h-[350px] top-1/2 left-1/3 bg-gradient-to-tr from-[#C7D83D]/10 to-[#F05A3C]/15" />
+      </div>
+
       {/* Top Banner Alert / Cluster Status */}
-      <div className="bg-[#171717] dark:bg-black text-slate-400 text-[11px] font-mono px-4 py-1.5 flex items-center justify-between border-b border-white/5 select-none">
+      <div className="bg-[#171717] dark:bg-black/90 backdrop-blur-md text-slate-400 text-[11px] font-mono px-4 py-1.5 flex items-center justify-between border-b border-white/5 select-none relative z-20">
         <div className="flex items-center space-x-3">
           <span className="flex items-center space-x-1.5 text-emerald-400">
             <Radio className="w-3 h-3 animate-pulse text-emerald-400" />
@@ -102,18 +109,18 @@ export const AdminLayout: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar - Desktop */}
-        <aside className="hidden lg:flex flex-col w-64 bg-white/80 dark:bg-[#141518]/90 backdrop-blur-md border-r border-slate-200/80 dark:border-white/5 shrink-0 z-20">
+      <div className="flex-1 flex overflow-hidden relative z-10">
+        {/* Sidebar - Desktop with Liquid Glass */}
+        <aside className="hidden lg:flex flex-col w-64 liquid-glass border-r border-slate-200/60 dark:border-white/10 shrink-0 z-20 shadow-xl">
           {/* Admin Header */}
           <div className="p-5 border-b border-slate-200/80 dark:border-white/5 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#171717] to-[#F05A3C] flex items-center justify-center shadow-lg shadow-[#F05A3C]/20">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#171717] to-[#F05A3C] flex items-center justify-center shadow-lg shadow-[#F05A3C]/20 border border-white/20">
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
                 <h1 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5 font-display">
-                  SuperMind <span className="text-[10px] bg-[#F05A3C]/10 text-[#F05A3C] font-mono px-1.5 py-0.5 rounded border border-[#F05A3C]/20">ADMIN</span>
+                  SuperMind <span className="text-[10px] bg-[#F05A3C]/10 text-[#F05A3C] font-mono px-1.5 py-0.5 rounded-full border border-[#F05A3C]/20 font-semibold">ADMIN</span>
                 </h1>
                 <p className="text-[10px] text-slate-400 font-mono">Control Plane v2.4</p>
               </div>
@@ -279,8 +286,10 @@ export const AdminLayout: React.FC = () => {
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {/* Top Navbar */}
-          <header className="h-16 bg-white/70 dark:bg-[#141518]/70 backdrop-blur-md border-b border-slate-200/80 dark:border-white/5 px-4 sm:px-6 flex items-center justify-between shrink-0 z-10">
+          {/* Top Navbar with Liquid Glass */}
+          <header className="h-16 liquid-glass border-b border-slate-200/60 dark:border-white/10 px-4 sm:px-6 flex items-center justify-between shrink-0 z-10 shadow-sm relative">
+            {/* Top specular reflection line */}
+            <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => setMobileMenuOpen(true)}

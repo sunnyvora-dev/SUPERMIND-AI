@@ -127,7 +127,7 @@ export const AdminUsersPage: React.FC = () => {
 
         <button
           onClick={() => fetchUsers()}
-          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-[#1a1b1e] border border-slate-200 dark:border-white/10 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-all self-start sm:self-auto"
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl liquid-glass text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all self-start sm:self-auto"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#F05A3C]' : ''}`} />
           <span>Refresh</span>
@@ -135,7 +135,7 @@ export const AdminUsersPage: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+      <div className="p-4 rounded-2xl liquid-glass flex flex-col md:flex-row gap-3 items-center justify-between">
         <form onSubmit={handleSearchSubmit} className="relative w-full md:w-96">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
@@ -143,7 +143,7 @@ export const AdminUsersPage: React.FC = () => {
             placeholder="Search by email or name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#F05A3C] text-slate-900 dark:text-white placeholder:text-slate-400"
+            className="w-full pl-10 pr-4 py-2 text-xs liquid-glass-input rounded-xl focus:outline-none focus:ring-1 focus:ring-[#F05A3C] text-slate-900 dark:text-white placeholder:text-slate-400 transition-all"
           />
         </form>
 
@@ -155,7 +155,7 @@ export const AdminUsersPage: React.FC = () => {
               setRoleFilter(e.target.value);
               setPage(1);
             }}
-            className="px-3 py-2 text-xs bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#F05A3C]"
+            className="px-3 py-2 text-xs liquid-glass-input rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#F05A3C]"
           >
             <option value="">All Roles</option>
             <option value="SUPER_ADMIN">SUPER_ADMIN</option>
@@ -173,7 +173,7 @@ export const AdminUsersPage: React.FC = () => {
               setTierFilter(e.target.value);
               setPage(1);
             }}
-            className="px-3 py-2 text-xs bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#F05A3C]"
+            className="px-3 py-2 text-xs liquid-glass-input rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#F05A3C]"
           >
             <option value="">All Tiers</option>
             <option value="FREE_TRIAL">Free Trial</option>
@@ -185,10 +185,10 @@ export const AdminUsersPage: React.FC = () => {
       </div>
 
       {/* Users Table */}
-      <div className="rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm overflow-hidden">
+      <div className="rounded-2xl liquid-glass-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 dark:bg-black/30 border-b border-slate-200/80 dark:border-white/5 text-slate-400 font-mono text-[11px] uppercase tracking-wider">
+            <thead className="bg-slate-500/5 dark:bg-white/5 border-b border-slate-200/50 dark:border-white/10 text-slate-400 font-mono text-[11px] uppercase tracking-wider">
               <tr>
                 <th className="py-3 px-4">User</th>
                 <th className="py-3 px-4">Role</th>
@@ -362,8 +362,8 @@ export const AdminUsersPage: React.FC = () => {
 
       {/* Edit Role Modal */}
       {editRoleModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white dark:bg-[#1a1b1e] rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-white/10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fadeIn">
+          <div className="liquid-glass-card rounded-2xl max-w-md w-full p-6 shadow-2xl">
             <h3 className="text-base font-bold text-slate-900 dark:text-white">Modify User Role</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Select administrative privileges for <span className="font-mono font-semibold">{selectedUser.email}</span>.
@@ -382,8 +382,8 @@ export const AdminUsersPage: React.FC = () => {
                   key={r.role}
                   className={`flex items-start space-x-3 p-3 rounded-xl border cursor-pointer transition-all ${
                     newRole === r.role
-                      ? 'border-[#F05A3C] bg-[#F05A3C]/5'
-                      : 'border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5'
+                      ? 'border-[#F05A3C] bg-[#F05A3C]/10'
+                      : 'border-slate-200/50 dark:border-white/10 hover:bg-white/40 dark:hover:bg-white/5'
                   }`}
                 >
                   <input
@@ -423,8 +423,8 @@ export const AdminUsersPage: React.FC = () => {
 
       {/* Suspend / Reactivate Confirmation Modal */}
       {suspendConfirmModal && userToSuspend && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white dark:bg-[#1a1b1e] rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-white/10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fadeIn">
+          <div className="liquid-glass-card rounded-2xl max-w-sm w-full p-6 shadow-2xl">
             <div className="flex items-center space-x-3 text-red-500 mb-3">
               <AlertTriangle className="w-6 h-6" />
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">

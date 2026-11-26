@@ -67,7 +67,7 @@ export const AdminProvidersPage: React.FC = () => {
 
         <button
           onClick={fetchProviders}
-          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-[#1a1b1e] border border-slate-200 dark:border-white/10 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-all self-start sm:self-auto"
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl liquid-glass text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all self-start sm:self-auto"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#F05A3C]' : ''}`} />
           <span>Refresh Matrix</span>
@@ -87,7 +87,7 @@ export const AdminProvidersPage: React.FC = () => {
             return (
               <div
                 key={p.id}
-                className="p-6 rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm hover:border-[#F05A3C]/30 transition-all flex flex-col justify-between"
+                className="p-6 rounded-2xl liquid-glass-card hover:border-[#F05A3C]/40 transition-all flex flex-col justify-between"
               >
                 <div>
                   {/* Top Header */}
@@ -117,7 +117,7 @@ export const AdminProvidersPage: React.FC = () => {
                   </div>
 
                   {/* Telemetry Matrix */}
-                  <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 text-xs mb-4">
+                  <div className="grid grid-cols-2 gap-3 p-3 rounded-xl liquid-glass border border-slate-200/40 dark:border-white/10 text-xs mb-4">
                     <div>
                       <div className="text-[10px] text-slate-400">Availability SLA</div>
                       <div className="font-mono font-bold text-emerald-500 text-sm mt-0.5">{p.successRate}</div>
@@ -155,7 +155,7 @@ export const AdminProvidersPage: React.FC = () => {
                   <button
                     onClick={() => handlePing(p.id)}
                     disabled={pingingId === p.id}
-                    className="flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 text-xs font-medium transition-all"
+                    className="flex items-center space-x-1.5 px-3 py-1 rounded-lg liquid-glass hover:bg-white/40 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 text-xs font-medium transition-all"
                   >
                     <Activity className={`w-3 h-3 ${pingingId === p.id ? 'animate-spin text-[#F05A3C]' : ''}`} />
                     <span>{pingingId === p.id ? 'Testing...' : 'Test Gateway'}</span>

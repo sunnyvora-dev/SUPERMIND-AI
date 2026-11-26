@@ -75,7 +75,7 @@ export const AdminOverviewPage: React.FC = () => {
 
         {/* Date Filter & Refresh */}
         <div className="flex items-center space-x-2">
-          <div className="flex items-center p-1 bg-white dark:bg-[#1a1b1e] border border-slate-200 dark:border-white/10 rounded-xl">
+          <div className="flex items-center p-1 liquid-glass rounded-xl">
             {[
               { label: '24h', val: 1 },
               { label: '7d', val: 7 },
@@ -99,7 +99,7 @@ export const AdminOverviewPage: React.FC = () => {
           <button
             onClick={() => fetchOverview()}
             title="Refresh Metrics"
-            className="p-2 rounded-xl bg-white dark:bg-[#1a1b1e] border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+            className="p-2 rounded-xl liquid-glass text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#F05A3C]' : ''}`} />
           </button>
@@ -115,7 +115,7 @@ export const AdminOverviewPage: React.FC = () => {
       {/* KPI Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Users */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm hover:border-[#F05A3C]/30 transition-all">
+        <div className="p-5 rounded-2xl liquid-glass-card hover:border-[#F05A3C]/40 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Registered Users</span>
             <div className="p-2 rounded-xl bg-blue-500/10 text-blue-500">
@@ -137,7 +137,7 @@ export const AdminOverviewPage: React.FC = () => {
         </div>
 
         {/* Card 2: AI Token Consumption */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm hover:border-[#F05A3C]/30 transition-all">
+        <div className="p-5 rounded-2xl liquid-glass-card hover:border-[#F05A3C]/40 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Tokens Processed</span>
             <div className="p-2 rounded-xl bg-[#F05A3C]/10 text-[#F05A3C]">
@@ -159,7 +159,7 @@ export const AdminOverviewPage: React.FC = () => {
         </div>
 
         {/* Card 3: Monthly Revenue */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm hover:border-[#F05A3C]/30 transition-all">
+        <div className="p-5 rounded-2xl liquid-glass-card hover:border-[#F05A3C]/40 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Est. Subscription Revenue</span>
             <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500">
@@ -181,7 +181,7 @@ export const AdminOverviewPage: React.FC = () => {
         </div>
 
         {/* Card 4: Platform Health */}
-        <div className="p-5 rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm hover:border-[#F05A3C]/30 transition-all">
+        <div className="p-5 rounded-2xl liquid-glass-card hover:border-[#F05A3C]/40 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Platform Health</span>
             <div className="p-2 rounded-xl bg-violet-500/10 text-violet-500">
@@ -206,7 +206,7 @@ export const AdminOverviewPage: React.FC = () => {
       {/* Visual Analytics Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* User Tier Breakdown */}
-        <div className="p-6 rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm">
+        <div className="p-6 rounded-2xl liquid-glass-card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-bold text-slate-900 dark:text-white">Active Tier Distribution</h2>
             <Link to="/admin/billing" className="text-xs text-[#F05A3C] hover:underline font-medium">
@@ -256,7 +256,7 @@ export const AdminOverviewPage: React.FC = () => {
         </div>
 
         {/* AI Provider Share */}
-        <div className="p-6 rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm">
+        <div className="p-6 rounded-2xl liquid-glass-card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-bold text-slate-900 dark:text-white">AI Provider Utilization</h2>
             <Link to="/admin/providers" className="text-xs text-[#F05A3C] hover:underline font-medium">
@@ -275,7 +275,7 @@ export const AdminOverviewPage: React.FC = () => {
               return (
                 <div
                   key={p.provider}
-                  className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 flex items-center justify-between text-xs"
+                  className="p-3 rounded-xl liquid-glass border border-slate-200/40 dark:border-white/10 flex items-center justify-between text-xs hover:border-[#F05A3C]/30 transition-all"
                 >
                   <div className="flex items-center space-x-2.5">
                     <div className="w-7 h-7 rounded-lg bg-slate-200 dark:bg-white/10 flex items-center justify-center font-mono font-bold text-[10px] uppercase">
@@ -297,12 +297,12 @@ export const AdminOverviewPage: React.FC = () => {
         </div>
 
         {/* Quick Operations Actions */}
-        <div className="p-6 rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm">
+        <div className="p-6 rounded-2xl liquid-glass-card">
           <h2 className="text-sm font-bold text-slate-900 dark:text-white mb-4">Command Shortcuts</h2>
           <div className="space-y-2.5">
             <Link
               to="/admin/users"
-              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-100 dark:border-white/5 transition-all text-xs group"
+              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-[#F05A3C]/30 transition-all text-xs group"
             >
               <div className="flex items-center space-x-3">
                 <Users className="w-4 h-4 text-blue-500" />
@@ -318,7 +318,7 @@ export const AdminOverviewPage: React.FC = () => {
 
             <Link
               to="/admin/models"
-              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-100 dark:border-white/5 transition-all text-xs group"
+              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-[#F05A3C]/30 transition-all text-xs group"
             >
               <div className="flex items-center space-x-3">
                 <Cpu className="w-4 h-4 text-[#F05A3C]" />
@@ -334,7 +334,7 @@ export const AdminOverviewPage: React.FC = () => {
 
             <Link
               to="/admin/system-health"
-              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-100 dark:border-white/5 transition-all text-xs group"
+              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-[#F05A3C]/30 transition-all text-xs group"
             >
               <div className="flex items-center space-x-3">
                 <Activity className="w-4 h-4 text-emerald-500" />
@@ -350,7 +350,7 @@ export const AdminOverviewPage: React.FC = () => {
 
             <Link
               to="/admin/audit-logs"
-              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-100 dark:border-white/5 transition-all text-xs group"
+              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-[#F05A3C]/30 transition-all text-xs group"
             >
               <div className="flex items-center space-x-3">
                 <Clock className="w-4 h-4 text-amber-500" />

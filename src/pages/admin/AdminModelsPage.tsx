@@ -82,7 +82,7 @@ export const AdminModelsPage: React.FC = () => {
 
         <button
           onClick={fetchModels}
-          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-[#1a1b1e] border border-slate-200 dark:border-white/10 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-all self-start sm:self-auto"
+          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl liquid-glass text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all self-start sm:self-auto"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#F05A3C]' : ''}`} />
           <span>Refresh</span>
@@ -90,7 +90,7 @@ export const AdminModelsPage: React.FC = () => {
       </div>
 
       {/* Filter and Search */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-[#141518] border border-slate-200/80 dark:border-white/5 shadow-sm flex flex-col sm:flex-row gap-3 items-center justify-between">
+      <div className="p-4 rounded-2xl liquid-glass flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
@@ -98,7 +98,7 @@ export const AdminModelsPage: React.FC = () => {
             placeholder="Search model or ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#F05A3C] text-slate-900 dark:text-white placeholder:text-slate-400"
+            className="w-full pl-10 pr-4 py-2 text-xs liquid-glass-input rounded-xl focus:outline-none focus:ring-1 focus:ring-[#F05A3C] text-slate-900 dark:text-white placeholder:text-slate-400 transition-all"
           />
         </div>
 
@@ -106,7 +106,7 @@ export const AdminModelsPage: React.FC = () => {
           <select
             value={providerFilter}
             onChange={(e) => setProviderFilter(e.target.value)}
-            className="px-3 py-2 text-xs bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#F05A3C] w-full sm:w-auto"
+            className="px-3 py-2 text-xs liquid-glass-input rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#F05A3C] w-full sm:w-auto"
           >
             <option value="">All Providers</option>
             <option value="anthropic">Anthropic</option>
@@ -135,10 +135,10 @@ export const AdminModelsPage: React.FC = () => {
             return (
               <div
                 key={m.id}
-                className={`p-5 rounded-2xl bg-white dark:bg-[#141518] border transition-all flex flex-col justify-between ${
+                className={`p-5 rounded-2xl liquid-glass-card transition-all flex flex-col justify-between ${
                   isModelActive
-                    ? 'border-slate-200/80 dark:border-white/5 shadow-sm hover:border-[#F05A3C]/40'
-                    : 'border-dashed border-slate-300 dark:border-white/10 opacity-60 bg-slate-50/50'
+                    ? 'hover:border-[#F05A3C]/40'
+                    : 'border-dashed opacity-50'
                 }`}
               >
                 <div>
