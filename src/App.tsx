@@ -31,6 +31,7 @@ import { AdminBillingPage } from './pages/admin/AdminBillingPage';
 import { AdminHealthPage } from './pages/admin/AdminHealthPage';
 import { AdminAuditLogsPage } from './pages/admin/AdminAuditLogsPage';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
+import { AdminAccessDenied } from './components/admin/AdminAccessDenied';
 
 const FullPageLoader = () => (
   <div className="h-screen w-screen bg-[#030712] flex items-center justify-center text-indigo-400 select-none">
@@ -53,9 +54,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isAuthenticated, isLoading } = useAuth();
   if (isLoading) return <FullPageLoader />;
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
   const adminRoles = ['SUPER_ADMIN', 'ADMIN', 'SUPPORT', 'FINANCE', 'VIEWER'];
-  if (!user?.role || !adminRoles.includes(user.role)) return <Navigate to="/dashboard" replace />;
+  if (!isAuthenticated || !user?.role || !adminRoles.includes(user.role)) {
+    return <AdminAccessDenied />;
+  }
   return <>{children}</>;
 };
 

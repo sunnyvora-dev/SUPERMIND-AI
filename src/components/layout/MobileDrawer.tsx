@@ -20,7 +20,9 @@ export const MobileDrawer: React.FC = () => {
     { label: 'Analytics', path: '/analytics', icon: BarChart2 },
     { label: 'Settings', path: '/settings', icon: Settings },
     { label: 'Help', path: '/help', icon: HelpCircle },
-    { label: 'Admin Dashboard', path: '/admin', icon: ShieldAlert },
+    ...(user?.role && ['SUPER_ADMIN', 'ADMIN', 'SUPPORT', 'FINANCE', 'VIEWER'].includes(user.role)
+      ? [{ label: 'Admin Console', path: '/admin', icon: ShieldAlert }]
+      : []),
   ];
 
 

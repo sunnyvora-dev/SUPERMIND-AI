@@ -142,15 +142,15 @@ export const Sidebar: React.FC = () => {
             <span>Help & FAQ</span>
           </button>
 
-          {user?.role === 'ADMIN' && (
+          {user?.role && ['SUPER_ADMIN', 'ADMIN', 'SUPPORT', 'FINANCE', 'VIEWER'].includes(user.role) && (
             <button
               onClick={() => navigate('/admin')}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                location.pathname === '/admin' ? 'bg-[#FAF8F3] dark:bg-[#1E1E1C] text-[#171717] dark:text-[#F4F0E6] font-medium border-l-2 border-[#F05A3C] pl-2.5' : 'text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] hover:bg-[#FAF8F3]/60 dark:hover:bg-[#1E1E1C]/60'
+                location.pathname.startsWith('/admin') ? 'bg-[#FAF8F3] dark:bg-[#1E1E1C] text-[#171717] dark:text-[#F4F0E6] font-medium border-l-2 border-[#F05A3C] pl-2.5' : 'text-[#77736B] hover:text-[#171717] dark:hover:text-[#F4F0E6] hover:bg-[#FAF8F3]/60 dark:hover:bg-[#1E1E1C]/60'
               }`}
             >
               <ShieldAlert className="h-4 w-4 text-[#F05A3C]" />
-              <span>Admin Dashboard</span>
+              <span>Admin Console</span>
             </button>
           )}
         </div>
