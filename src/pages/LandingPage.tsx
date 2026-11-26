@@ -95,16 +95,17 @@ export const LandingPage: React.FC = () => {
     };
   }, []);
 
-  // 2. Render Frame to Canvas with Full-Bleed Cover Math
+  // 2. Render Frame to Canvas with Full-Bleed Cover Math & High-DPI Clarity
   const drawFrame = (frameIdx: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     if (canvas.width === 0 || canvas.height === 0) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = Math.round(window.innerWidth * dpr);
+      canvas.height = Math.round(window.innerHeight * dpr);
     }
 
     const frameImg = framesRef.current[frameIdx];
@@ -124,6 +125,10 @@ export const LandingPage: React.FC = () => {
     const nx = (cw - nw) / 2;
     const ny = (ch - nh) / 2;
 
+    // Enable high-definition anti-aliasing
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
     ctx.clearRect(0, 0, cw, ch);
     ctx.drawImage(frameImg, nx, ny, nw, nh);
   };
@@ -138,11 +143,12 @@ export const LandingPage: React.FC = () => {
       if (!canvas) return;
       const curW = window.innerWidth;
       const curH = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       // On mobile devices, ignore tiny vertical height shifts caused by address bar collapse
       if (Math.abs(curW - lastW) > 10 || Math.abs(curH - lastH) > 80 || canvas.width === 0) {
-        canvas.width = curW;
-        canvas.height = curH;
+        canvas.width = Math.round(curW * dpr);
+        canvas.height = Math.round(curH * dpr);
         lastW = curW;
         lastH = curH;
         drawFrame(frameIndexRef.current);
