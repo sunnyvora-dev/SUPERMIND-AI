@@ -21,6 +21,16 @@ import { HelpPage } from './pages/HelpPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { TermsPage } from './pages/TermsPage';
 import { PrivacyPage } from './pages/PrivacyPage';
+import { AdminLayout } from './components/admin/AdminLayout';
+import { AdminOverviewPage } from './pages/admin/AdminOverviewPage';
+import { AdminUsersPage } from './pages/admin/AdminUsersPage';
+import { AdminModelsPage } from './pages/admin/AdminModelsPage';
+import { AdminProvidersPage } from './pages/admin/AdminProvidersPage';
+import { AdminApiUsagePage } from './pages/admin/AdminApiUsagePage';
+import { AdminBillingPage } from './pages/admin/AdminBillingPage';
+import { AdminHealthPage } from './pages/admin/AdminHealthPage';
+import { AdminAuditLogsPage } from './pages/admin/AdminAuditLogsPage';
+import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 
 const FullPageLoader = () => (
   <div className="h-screen w-screen bg-[#030712] flex items-center justify-center text-indigo-400 select-none">
@@ -44,8 +54,9 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isAuthenticated, isLoading } = useAuth();
   if (isLoading) return <FullPageLoader />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (user?.role !== 'ADMIN') return <Navigate to="/dashboard" replace />;
-  return <AppShell>{children}</AppShell>;
+  const adminRoles = ['SUPER_ADMIN', 'ADMIN', 'SUPPORT', 'FINANCE', 'VIEWER'];
+  if (!user?.role || !adminRoles.includes(user.role)) return <Navigate to="/dashboard" replace />;
+  return <>{children}</>;
 };
 
 const PublicOnlyRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -91,7 +102,26 @@ export function App() {
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
               <Route path="/help" element={<ProtectedRoute><HelpPage /></ProtectedRoute>} />
-              <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
+              {/* Dedicated Secure Admin Panel Routes */}
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminLayout />
+                  </AdminRoute>
+                }
+              >
+                <Route index element={<AdminOverviewPage />} />
+                <Route path="overview" element={<AdminOverviewPage />} />
+                <Route path="users" element={<AdminUsersPage />} />
+                <Route path="models" element={<AdminModelsPage />} />
+                <Route path="providers" element={<AdminProvidersPage />} />
+                <Route path="api-usage" element={<AdminApiUsagePage />} />
+                <Route path="billing" element={<AdminBillingPage />} />
+                <Route path="system-health" element={<AdminHealthPage />} />
+                <Route path="audit-logs" element={<AdminAuditLogsPage />} />
+                <Route path="settings" element={<AdminSettingsPage />} />
+              </Route>
 
               {/* Fallback */}
               <Route path="*" element={<Navigate to="/" replace />} />

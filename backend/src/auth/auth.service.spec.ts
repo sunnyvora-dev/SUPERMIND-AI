@@ -36,6 +36,7 @@ describe('AuthService (Extreme Unit & Edge Suite)', () => {
 
     mailService = {
       sendOtpEmail: jest.fn().mockResolvedValue(true),
+      getIsConfigured: jest.fn().mockReturnValue(true),
     };
 
     const module: TestingModule = await Test.createTestingModule({

@@ -5,7 +5,7 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
-  role?: 'USER' | 'ADMIN';
+  role?: 'SUPER_ADMIN' | 'ADMIN' | 'SUPPORT' | 'FINANCE' | 'VIEWER' | 'USER';
   authProvider?: 'LOCAL' | 'GOOGLE' | 'FACEBOOK' | 'APPLE' | 'PHONE';
   providerId?: string;
   tier?: string;
