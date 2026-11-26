@@ -101,7 +101,7 @@ export const AdminOverviewPage: React.FC = () => {
             title="Refresh Metrics"
             className="p-2 rounded-xl liquid-glass text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#F05A3C]' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-sky-500' : ''}`} />
           </button>
         </div>
       </div>
@@ -115,15 +115,15 @@ export const AdminOverviewPage: React.FC = () => {
       {/* KPI Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Users */}
-        <div className="p-5 rounded-2xl liquid-glass-card hover:border-[#F05A3C]/40 transition-all">
+        <div className="p-5 rounded-2xl liquid-glass-card hover:border-sky-500/40 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Registered Users</span>
-            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-500">
+            <div className="p-2 rounded-xl bg-sky-500/10 text-sky-500">
               <Users className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-2xl font-bold font-display text-slate-900 dark:text-white tracking-tight">
+            <span className="text-2xl font-bold font-sans text-slate-900 dark:text-white tracking-tight">
               {formatNumber(kpis?.users.total || 0)}
             </span>
             <span className="text-[11px] font-mono text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">
@@ -137,15 +137,15 @@ export const AdminOverviewPage: React.FC = () => {
         </div>
 
         {/* Card 2: AI Token Consumption */}
-        <div className="p-5 rounded-2xl liquid-glass-card hover:border-[#F05A3C]/40 transition-all">
+        <div className="p-5 rounded-2xl liquid-glass-card hover:border-sky-500/40 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Tokens Processed</span>
-            <div className="p-2 rounded-xl bg-[#F05A3C]/10 text-[#F05A3C]">
+            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-500">
               <Cpu className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-2xl font-bold font-display text-slate-900 dark:text-white tracking-tight">
+            <span className="text-2xl font-bold font-sans text-slate-900 dark:text-white tracking-tight">
               {formatNumber(kpis?.aiUsage.totalTokens || 0)}
             </span>
             <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
@@ -159,7 +159,7 @@ export const AdminOverviewPage: React.FC = () => {
         </div>
 
         {/* Card 3: Monthly Revenue */}
-        <div className="p-5 rounded-2xl liquid-glass-card hover:border-[#F05A3C]/40 transition-all">
+        <div className="p-5 rounded-2xl liquid-glass-card hover:border-sky-500/40 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Est. Subscription Revenue</span>
             <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500">
@@ -167,7 +167,7 @@ export const AdminOverviewPage: React.FC = () => {
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-2xl font-bold font-display text-slate-900 dark:text-white tracking-tight">
+            <span className="text-2xl font-bold font-sans text-slate-900 dark:text-white tracking-tight">
               {formatCurrency(kpis?.financial.subscriptionRevenue || 0)}
             </span>
             <span className="text-[11px] font-mono text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">
@@ -181,15 +181,15 @@ export const AdminOverviewPage: React.FC = () => {
         </div>
 
         {/* Card 4: Platform Health */}
-        <div className="p-5 rounded-2xl liquid-glass-card hover:border-[#F05A3C]/40 transition-all">
+        <div className="p-5 rounded-2xl liquid-glass-card hover:border-sky-500/40 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Platform Health</span>
-            <div className="p-2 rounded-xl bg-violet-500/10 text-violet-500">
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500">
               <ShieldCheck className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-2xl font-bold font-display text-emerald-500 tracking-tight flex items-center gap-1.5">
+            <span className="text-2xl font-bold font-sans text-emerald-500 tracking-tight flex items-center gap-1.5">
               100%
             </span>
             <span className="text-[11px] font-mono text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">
@@ -209,7 +209,7 @@ export const AdminOverviewPage: React.FC = () => {
         <div className="p-6 rounded-2xl liquid-glass-card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-bold text-slate-900 dark:text-white">Active Tier Distribution</h2>
-            <Link to="/admin/billing" className="text-xs text-[#F05A3C] hover:underline font-medium">
+            <Link to="/admin/billing" className="text-xs text-sky-500 hover:underline font-medium">
               Details &rarr;
             </Link>
           </div>
@@ -223,17 +223,17 @@ export const AdminOverviewPage: React.FC = () => {
               {
                 tier: 'Starter ($9/mo)',
                 count: kpis?.users.tiers.STARTER || 0,
-                color: 'bg-blue-500',
+                color: 'bg-slate-600',
               },
               {
                 tier: 'Pro ($29/mo)',
                 count: kpis?.users.tiers.PRO || 0,
-                color: 'bg-[#F05A3C]',
+                color: 'bg-sky-500',
               },
               {
                 tier: 'Enterprise ($99/mo)',
                 count: kpis?.users.tiers.ENTERPRISE || 0,
-                color: 'bg-emerald-500',
+                color: 'bg-cyan-400',
               },
             ].map((t) => {
               const total = kpis?.users.total || 1;
@@ -259,7 +259,7 @@ export const AdminOverviewPage: React.FC = () => {
         <div className="p-6 rounded-2xl liquid-glass-card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-bold text-slate-900 dark:text-white">AI Provider Utilization</h2>
-            <Link to="/admin/providers" className="text-xs text-[#F05A3C] hover:underline font-medium">
+            <Link to="/admin/providers" className="text-xs text-sky-500 hover:underline font-medium">
               View Matrix &rarr;
             </Link>
           </div>
@@ -275,10 +275,10 @@ export const AdminOverviewPage: React.FC = () => {
               return (
                 <div
                   key={p.provider}
-                  className="p-3 rounded-xl liquid-glass border border-slate-200/40 dark:border-white/10 flex items-center justify-between text-xs hover:border-[#F05A3C]/30 transition-all"
+                  className="p-3 rounded-xl liquid-glass border border-slate-200/40 dark:border-white/10 flex items-center justify-between text-xs hover:border-sky-500/30 transition-all"
                 >
                   <div className="flex items-center space-x-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-slate-200 dark:bg-white/10 flex items-center justify-center font-mono font-bold text-[10px] uppercase">
+                    <div className="w-7 h-7 rounded-lg bg-slate-200 dark:bg-white/10 flex items-center justify-center font-mono font-bold text-[10px] uppercase text-sky-500">
                       {p.provider.substring(0, 2)}
                     </div>
                     <div>
@@ -302,66 +302,66 @@ export const AdminOverviewPage: React.FC = () => {
           <div className="space-y-2.5">
             <Link
               to="/admin/users"
-              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-[#F05A3C]/30 transition-all text-xs group"
+              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-sky-500/30 transition-all text-xs group"
             >
               <div className="flex items-center space-x-3">
-                <Users className="w-4 h-4 text-blue-500" />
+                <Users className="w-4 h-4 text-sky-500" />
                 <div>
-                  <div className="font-medium text-slate-800 dark:text-slate-200 group-hover:text-[#F05A3C] transition-colors">
+                  <div className="font-medium text-slate-800 dark:text-slate-200 group-hover:text-sky-500 transition-colors">
                     Manage User Directory
                   </div>
                   <div className="text-[10px] text-slate-400">Search, promote roles, suspend accounts</div>
                 </div>
               </div>
-              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#F05A3C] transition-colors" />
+              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-sky-500 transition-colors" />
             </Link>
 
             <Link
               to="/admin/models"
-              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-[#F05A3C]/30 transition-all text-xs group"
+              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-sky-500/30 transition-all text-xs group"
             >
               <div className="flex items-center space-x-3">
-                <Cpu className="w-4 h-4 text-[#F05A3C]" />
+                <Cpu className="w-4 h-4 text-cyan-400" />
                 <div>
-                  <div className="font-medium text-slate-800 dark:text-slate-200 group-hover:text-[#F05A3C] transition-colors">
+                  <div className="font-medium text-slate-800 dark:text-slate-200 group-hover:text-sky-500 transition-colors">
                     AI Model Registry
                   </div>
                   <div className="text-[10px] text-slate-400">Enable/disable models, inspect token costs</div>
                 </div>
               </div>
-              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#F05A3C] transition-colors" />
+              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-sky-500 transition-colors" />
             </Link>
 
             <Link
               to="/admin/system-health"
-              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-[#F05A3C]/30 transition-all text-xs group"
+              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-sky-500/30 transition-all text-xs group"
             >
               <div className="flex items-center space-x-3">
                 <Activity className="w-4 h-4 text-emerald-500" />
                 <div>
-                  <div className="font-medium text-slate-800 dark:text-slate-200 group-hover:text-[#F05A3C] transition-colors">
+                  <div className="font-medium text-slate-800 dark:text-slate-200 group-hover:text-sky-500 transition-colors">
                     Infrastructure Diagnostics
                   </div>
                   <div className="text-[10px] text-slate-400">Real-time DB ping, memory & provider SLA</div>
                 </div>
               </div>
-              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#F05A3C] transition-colors" />
+              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-sky-500 transition-colors" />
             </Link>
 
             <Link
               to="/admin/audit-logs"
-              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-[#F05A3C]/30 transition-all text-xs group"
+              className="flex items-center justify-between p-3 rounded-xl liquid-glass hover:bg-white/40 dark:hover:bg-white/10 border border-slate-200/40 dark:border-white/10 hover:border-sky-500/30 transition-all text-xs group"
             >
               <div className="flex items-center space-x-3">
                 <Clock className="w-4 h-4 text-amber-500" />
                 <div>
-                  <div className="font-medium text-slate-800 dark:text-slate-200 group-hover:text-[#F05A3C] transition-colors">
+                  <div className="font-medium text-slate-800 dark:text-slate-200 group-hover:text-sky-500 transition-colors">
                     Administrative Audit Ledger
                   </div>
                   <div className="text-[10px] text-slate-400">Trace operator actions and security logs</div>
                 </div>
               </div>
-              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#F05A3C] transition-colors" />
+              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-sky-500 transition-colors" />
             </Link>
           </div>
         </div>

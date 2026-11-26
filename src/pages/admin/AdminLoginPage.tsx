@@ -57,20 +57,19 @@ export const AdminLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#07080A] text-slate-200 flex flex-col justify-between p-4 sm:p-6 antialiased selection:bg-[#F05A3C]/30 relative overflow-hidden">
-      {/* Liquid Ambient Fluid Lighting Orbs */}
-      <div className="liquid-orb-1 w-[450px] h-[450px] -top-28 -left-28 bg-gradient-to-tr from-[#F05A3C] via-[#7C3AED] to-[#2457D6]" />
-      <div className="liquid-orb-2 w-[520px] h-[520px] -bottom-36 -right-36 bg-gradient-to-br from-[#2457D6] via-[#0EA5E9] to-[#F05A3C]" />
-      <div className="liquid-orb-1 w-80 h-80 top-1/3 left-1/4 bg-gradient-to-tr from-[#C7D83D]/15 to-[#F05A3C]/20" />
+    <div className="min-h-screen bg-[#07090D] text-slate-200 flex flex-col justify-between p-4 sm:p-6 antialiased selection:bg-sky-500/30 relative overflow-hidden font-sans">
+      {/* Precision Theme Base Ambient Lighting */}
+      <div className="liquid-orb-1 w-[500px] h-[500px] -top-28 -left-28" />
+      <div className="liquid-orb-2 w-[600px] h-[600px] -bottom-36 -right-36" />
 
       {/* Subtle Geometric Overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
 
       {/* Top Glass Header */}
       <header className="relative z-10 max-w-6xl w-full mx-auto flex items-center justify-between text-xs font-mono py-2.5 px-4 rounded-2xl liquid-glass border border-white/10 shadow-lg">
-        <div className="flex items-center space-x-2 text-[#F05A3C]">
-          <Radio className="w-3.5 h-3.5 animate-pulse text-[#F05A3C]" />
-          <span className="font-bold tracking-wider">SUPERMIND LIQUID CONTROL PLANE</span>
+        <div className="flex items-center space-x-2 text-sky-400">
+          <Radio className="w-3.5 h-3.5 animate-pulse text-sky-400" />
+          <span className="font-bold tracking-wider">SUPERMIND ADMIN GATEWAY</span>
         </div>
         <div className="hidden sm:flex items-center space-x-4 text-slate-400 text-[11px]">
           <span>GATEWAY: ISOLATED-V2</span>
@@ -94,21 +93,21 @@ export const AdminLoginPage: React.FC = () => {
 
       {/* Center Auth Card with Liquid Glass effect */}
       <main className="relative z-10 w-full max-w-md mx-auto my-auto py-8">
-        <div className="liquid-glass-card rounded-3xl p-7 sm:p-9 shadow-2xl relative overflow-hidden border border-white/20 space-y-6">
+        <div className="liquid-glass-card rounded-3xl p-7 sm:p-9 shadow-2xl relative overflow-hidden border border-white/15 space-y-6">
           {/* Specular Refraction Top Highlight */}
-          <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/70 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
 
           {/* Header & Icon */}
           <div className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl p-0.5 mx-auto shadow-xl shadow-[#F05A3C]/30 flex items-center justify-center relative group">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-[#F05A3C] via-[#2457D6] to-[#C7D83D] opacity-75 blur-xs" />
-              <div className="relative w-full h-full bg-[#121417]/80 backdrop-blur-md rounded-[14px] flex items-center justify-center border border-white/20">
-                <ShieldAlert className="w-7 h-7 text-[#F05A3C]" />
+            <div className="w-14 h-14 rounded-2xl p-0.5 mx-auto shadow-xl shadow-sky-500/20 flex items-center justify-center relative group">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-slate-900 via-sky-500 to-cyan-400 opacity-60 blur-xs" />
+              <div className="relative w-full h-full bg-[#0D1117] backdrop-blur-md rounded-[14px] flex items-center justify-center border border-white/10">
+                <ShieldAlert className="w-7 h-7 text-sky-400" />
               </div>
             </div>
 
             <div>
-              <h1 className="text-xl font-bold font-display text-white tracking-tight flex items-center justify-center gap-1.5">
+              <h1 className="text-xl font-bold text-white tracking-tight flex items-center justify-center gap-1.5">
                 Admin Gateway
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/30">
                   RESTRICTED
@@ -188,7 +187,7 @@ export const AdminLoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full pl-10 pr-10 py-2.5 liquid-glass-input rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#F05A3C] transition-all font-mono"
+                  className="w-full pl-10 pr-10 py-2.5 liquid-glass-input rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all font-mono"
                 />
                 <button
                   type="button"
@@ -214,7 +213,7 @@ export const AdminLoginPage: React.FC = () => {
                   value={securityPin}
                   onChange={(e) => setSecurityPin(e.target.value)}
                   placeholder="e.g. 992211"
-                  className="w-full pl-10 pr-4 py-2.5 liquid-glass-input rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#F05A3C] transition-all font-mono tracking-widest"
+                  className="w-full pl-10 pr-4 py-2.5 liquid-glass-input rounded-xl text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all font-mono tracking-widest"
                 />
               </div>
             </div>
@@ -223,7 +222,7 @@ export const AdminLoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading || authSuccess}
-              className="w-full mt-2 py-3 px-4 rounded-xl bg-gradient-to-r from-[#F05A3C] to-[#E04828] hover:opacity-95 text-white text-xs font-bold transition-all shadow-xl shadow-[#F05A3C]/25 flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer border border-white/20 active:scale-[0.99]"
+              className="w-full mt-2 py-3 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-cyan-600 hover:from-sky-400 hover:to-cyan-500 text-white text-xs font-bold transition-all shadow-xl shadow-sky-500/25 flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer border border-white/20 active:scale-[0.99]"
             >
               <span>{loading ? 'Authenticating Security Clearance...' : 'Authenticate & Enter Console'}</span>
               <ArrowRight className="w-4 h-4" />
@@ -236,7 +235,7 @@ export const AdminLoginPage: React.FC = () => {
             <button
               type="button"
               onClick={handleFillDemo}
-              className="text-[#F05A3C] hover:text-[#ff7459] font-semibold underline underline-offset-2 transition-colors cursor-pointer"
+              className="text-sky-400 hover:text-sky-300 font-semibold underline underline-offset-2 transition-colors cursor-pointer"
             >
               Auto-fill admin@supermind.ai
             </button>

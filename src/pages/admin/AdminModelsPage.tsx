@@ -71,7 +71,7 @@ export const AdminModelsPage: React.FC = () => {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold font-display text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
             AI Model Registry & Routing Matrix
-            <span className="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-[#F05A3C]/10 text-[#F05A3C] border border-[#F05A3C]/20">
+            <span className="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
               {models.length} Models
             </span>
           </h1>
@@ -84,7 +84,7 @@ export const AdminModelsPage: React.FC = () => {
           onClick={fetchModels}
           className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl liquid-glass text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all self-start sm:self-auto"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#F05A3C]' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-sky-500' : ''}`} />
           <span>Refresh</span>
         </button>
       </div>
@@ -98,7 +98,7 @@ export const AdminModelsPage: React.FC = () => {
             placeholder="Search model or ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs liquid-glass-input rounded-xl focus:outline-none focus:ring-1 focus:ring-[#F05A3C] text-slate-900 dark:text-white placeholder:text-slate-400 transition-all"
+            className="w-full pl-10 pr-4 py-2 text-xs liquid-glass-input rounded-xl focus:outline-none focus:ring-1 focus:ring-sky-500 text-slate-900 dark:text-white placeholder:text-slate-400 transition-all"
           />
         </div>
 
@@ -106,7 +106,7 @@ export const AdminModelsPage: React.FC = () => {
           <select
             value={providerFilter}
             onChange={(e) => setProviderFilter(e.target.value)}
-            className="px-3 py-2 text-xs liquid-glass-input rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#F05A3C] w-full sm:w-auto"
+            className="px-3 py-2 text-xs liquid-glass-input rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-sky-500 w-full sm:w-auto"
           >
             <option value="">All Providers</option>
             <option value="anthropic">Anthropic</option>
@@ -122,7 +122,7 @@ export const AdminModelsPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading && models.length === 0 ? (
           <div className="col-span-full py-16 text-center text-slate-400 font-mono">
-            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#F05A3C]" />
+            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-sky-500" />
             Inspecting model catalog...
           </div>
         ) : filteredModels.length === 0 ? (
@@ -137,7 +137,7 @@ export const AdminModelsPage: React.FC = () => {
                 key={m.id}
                 className={`p-5 rounded-2xl liquid-glass-card transition-all flex flex-col justify-between ${
                   isModelActive
-                    ? 'hover:border-[#F05A3C]/40'
+                    ? 'hover:border-sky-500/40'
                     : 'border-dashed opacity-50'
                 }`}
               >

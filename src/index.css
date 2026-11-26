@@ -3,57 +3,59 @@
 @tailwind utilities;
 
 @layer base {
-  /* Dark Mode: Coordinated Deep Ink & Warm Ivory */
+  /* Dark Mode: Obsidian & Precision Theme Base (Steel Cyan / Azure) */
   :root, html.dark {
-    --bg-body: #121212;
-    --bg-app: #171717;
-    --bg-surface: #1E1E1C;
-    --bg-subtle: #252421;
-    --bg-card: #1E1E1C;
-    --bg-hover: #292824;
-    --bg-selected: #312E27;
+    --bg-body: #080A0E;
+    --bg-app: #0D1117;
+    --bg-surface: #131822;
+    --bg-subtle: #19202D;
+    --bg-card: #131822;
+    --bg-hover: #1E2736;
+    --bg-selected: #253144;
 
-    --text-primary: #F4F0E6;
-    --text-secondary: #D2CFC7;
-    --text-muted: #8E8A81;
-    --border: #33312B;
-    --border-subtle: #262522;
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #64748B;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-subtle: rgba(255, 255, 255, 0.04);
 
-    --primary: #F05A3C;
-    --primary-hover: #D94528;
-    --cobalt: #2457D6;
-    --chartreuse: #C7D83D;
+    --primary: #06B6D4;
+    --primary-hover: #0891B2;
+    --theme-base: #06B6D4;
+    --theme-base-hover: #0891B2;
+    --theme-base-glow: rgba(6, 182, 212, 0.15);
 
-    --font-sans: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-display: 'Newsreader', 'Georgia', serif;
+    --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
     color-scheme: dark;
   }
 
-  /* Light Mode: Warm Ivory, Deep Ink, Secondary Sand & Vermilion */
+  /* Light Mode: Architectural Pure Studio Slate & Refined Base */
   html:not(.dark) {
-    --bg-body: #F4F0E6;
-    --bg-app: #FAF8F3;
+    --bg-body: #F8FAFC;
+    --bg-app: #FFFFFF;
     --bg-surface: #FFFFFF;
-    --bg-subtle: #EAE5D9;
-    --bg-card: #FAF8F3;
-    --bg-hover: #EAE5D9;
-    --bg-selected: #E2DDD0;
+    --bg-subtle: #F1F5F9;
+    --bg-card: #FFFFFF;
+    --bg-hover: #F1F5F9;
+    --bg-selected: #E2E8F0;
 
-    --text-primary: #171717;
-    --text-secondary: #3D3B36;
-    --text-muted: #77736B;
-    --border: #DCD6CA;
-    --border-subtle: #ECE7DC;
+    --text-primary: #0F172A;
+    --text-secondary: #334155;
+    --text-muted: #64748B;
+    --border: #E2E8F0;
+    --border-subtle: #F8FAFC;
 
-    --primary: #F05A3C;
-    --primary-hover: #D94528;
-    --cobalt: #2457D6;
-    --chartreuse: #C7D83D;
+    --primary: #0284C7;
+    --primary-hover: #0369A1;
+    --theme-base: #0284C7;
+    --theme-base-hover: #0369A1;
+    --theme-base-glow: rgba(2, 132, 199, 0.12);
 
-    --font-sans: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-display: 'Newsreader', 'Georgia', serif;
+    --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
     color-scheme: light;
@@ -184,84 +186,86 @@
 }
 
 /* -------------------------------------------------------------
- * LIQUID GLASS UI DESIGN SYSTEM
+ * LIQUID GLASS UI DESIGN SYSTEM (Precision Studio Standard)
  * ------------------------------------------------------------- */
 @keyframes liquidFloat {
   0% { transform: translate(0px, 0px) scale(1); }
-  50% { transform: translate(40px, -30px) scale(1.1); }
-  100% { transform: translate(-30px, 25px) scale(0.92); }
+  50% { transform: translate(25px, -20px) scale(1.05); }
+  100% { transform: translate(-20px, 15px) scale(0.96); }
 }
 
 @keyframes liquidFloatReverse {
   0% { transform: translate(0px, 0px) scale(1); }
-  50% { transform: translate(-35px, 35px) scale(1.08); }
-  100% { transform: translate(25px, -20px) scale(0.95); }
+  50% { transform: translate(-20px, 20px) scale(1.04); }
+  100% { transform: translate(15px, -15px) scale(0.97); }
 }
 
 .liquid-orb-1 {
   position: absolute;
   border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.35;
+  filter: blur(120px);
+  opacity: 0.18;
   pointer-events: none;
-  animation: liquidFloat 18s ease-in-out infinite alternate;
+  background: radial-gradient(circle, #0EA5E9 0%, transparent 70%);
+  animation: liquidFloat 24s ease-in-out infinite alternate;
 }
 
 .liquid-orb-2 {
   position: absolute;
   border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.3;
+  filter: blur(130px);
+  opacity: 0.12;
   pointer-events: none;
-  animation: liquidFloatReverse 22s ease-in-out infinite alternate;
+  background: radial-gradient(circle, #06B6D4 0%, transparent 70%);
+  animation: liquidFloatReverse 28s ease-in-out infinite alternate;
 }
 
 .liquid-glass {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(24px) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05), inset 0 1px 1px 0 rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
 .dark .liquid-glass {
-  background: rgba(18, 20, 24, 0.65);
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+  background: rgba(15, 20, 28, 0.72);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .liquid-glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%);
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
 .dark .liquid-glass-card {
-  background: linear-gradient(135deg, rgba(24, 27, 34, 0.75) 0%, rgba(12, 14, 18, 0.6) 100%);
-  backdrop-filter: blur(32px) saturate(190%);
-  -webkit-backdrop-filter: blur(32px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.18);
+  background: linear-gradient(135deg, rgba(20, 26, 37, 0.8) 0%, rgba(13, 17, 24, 0.7) 100%);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.09);
 }
 
 .liquid-glass-input {
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(248, 250, 252, 0.85);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 .dark .liquid-glass-input {
-  background: rgba(6, 8, 12, 0.55);
+  background: rgba(10, 14, 20, 0.65);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 

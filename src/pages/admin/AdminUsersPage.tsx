@@ -116,7 +116,7 @@ export const AdminUsersPage: React.FC = () => {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold font-display text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
             User Directory & Access Control
-            <span className="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20">
+            <span className="text-[10px] font-mono font-normal px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
               {totalCount} Total
             </span>
           </h1>
@@ -129,7 +129,7 @@ export const AdminUsersPage: React.FC = () => {
           onClick={() => fetchUsers()}
           className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl liquid-glass text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all self-start sm:self-auto"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#F05A3C]' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-sky-500' : ''}`} />
           <span>Refresh</span>
         </button>
       </div>
@@ -143,7 +143,7 @@ export const AdminUsersPage: React.FC = () => {
             placeholder="Search by email or name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs liquid-glass-input rounded-xl focus:outline-none focus:ring-1 focus:ring-[#F05A3C] text-slate-900 dark:text-white placeholder:text-slate-400 transition-all"
+            className="w-full pl-10 pr-4 py-2 text-xs liquid-glass-input rounded-xl focus:outline-none focus:ring-1 focus:ring-sky-500 text-slate-900 dark:text-white placeholder:text-slate-400 transition-all"
           />
         </form>
 
@@ -155,7 +155,7 @@ export const AdminUsersPage: React.FC = () => {
               setRoleFilter(e.target.value);
               setPage(1);
             }}
-            className="px-3 py-2 text-xs liquid-glass-input rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#F05A3C]"
+            className="px-3 py-2 text-xs liquid-glass-input rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-sky-500"
           >
             <option value="">All Roles</option>
             <option value="SUPER_ADMIN">SUPER_ADMIN</option>
@@ -173,7 +173,7 @@ export const AdminUsersPage: React.FC = () => {
               setTierFilter(e.target.value);
               setPage(1);
             }}
-            className="px-3 py-2 text-xs liquid-glass-input rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#F05A3C]"
+            className="px-3 py-2 text-xs liquid-glass-input rounded-xl text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-sky-500"
           >
             <option value="">All Tiers</option>
             <option value="FREE_TRIAL">Free Trial</option>
@@ -202,7 +202,7 @@ export const AdminUsersPage: React.FC = () => {
               {loading && users.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-slate-400 font-mono">
-                    <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-[#F05A3C]" />
+                    <RefreshCw className="w-5 h-5 animate-spin mx-auto mb-2 text-sky-500" />
                     Fetching user records...
                   </td>
                 </tr>
@@ -215,7 +215,7 @@ export const AdminUsersPage: React.FC = () => {
               ) : (
                 users.map((u) => {
                   return (
-                    <tr key={u.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <tr key={u.id} className="hover:bg-slate-500/5 dark:hover:bg-white/5 transition-colors">
                       {/* User Info */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center space-x-3">
@@ -243,7 +243,7 @@ export const AdminUsersPage: React.FC = () => {
                             u.role === 'SUPER_ADMIN'
                               ? 'bg-red-500/10 text-red-500 border-red-500/20 font-semibold'
                               : u.role === 'ADMIN'
-                              ? 'bg-blue-500/10 text-blue-500 border-blue-500/20 font-medium'
+                              ? 'bg-sky-500/10 text-sky-400 border-sky-500/20 font-medium'
                               : u.role === 'FINANCE'
                               ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
                               : u.role === 'SUPPORT'
@@ -262,7 +262,7 @@ export const AdminUsersPage: React.FC = () => {
                           value={u.tier || u.plan || 'FREE_TRIAL'}
                           onChange={(e) => handleTierChange(u.id, e.target.value)}
                           disabled={actionLoading === u.id}
-                          className="bg-transparent border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1 text-xs text-slate-800 dark:text-slate-200 font-medium focus:ring-1 focus:ring-[#F05A3C]"
+                          className="bg-transparent border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1 text-xs text-slate-800 dark:text-slate-200 font-medium focus:ring-1 focus:ring-sky-500"
                         >
                           <option value="FREE_TRIAL">Free Trial</option>
                           <option value="STARTER">Starter</option>
@@ -382,7 +382,7 @@ export const AdminUsersPage: React.FC = () => {
                   key={r.role}
                   className={`flex items-start space-x-3 p-3 rounded-xl border cursor-pointer transition-all ${
                     newRole === r.role
-                      ? 'border-[#F05A3C] bg-[#F05A3C]/10'
+                      ? 'border-sky-500 bg-sky-500/10'
                       : 'border-slate-200/50 dark:border-white/10 hover:bg-white/40 dark:hover:bg-white/5'
                   }`}
                 >
@@ -392,7 +392,7 @@ export const AdminUsersPage: React.FC = () => {
                     value={r.role}
                     checked={newRole === r.role}
                     onChange={() => setNewRole(r.role)}
-                    className="mt-0.5 text-[#F05A3C] focus:ring-[#F05A3C]"
+                    className="mt-0.5 text-sky-500 focus:ring-sky-500"
                   />
                   <div>
                     <div className="text-xs font-bold text-slate-900 dark:text-white">{r.role}</div>
@@ -412,7 +412,7 @@ export const AdminUsersPage: React.FC = () => {
               <button
                 onClick={handleUpdateRole}
                 disabled={actionLoading !== null}
-                className="px-4 py-2 rounded-xl bg-[#F05A3C] text-white text-xs font-semibold hover:bg-[#d9492e] transition-colors"
+                className="px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-semibold hover:bg-sky-500 transition-colors"
               >
                 {actionLoading ? 'Saving...' : 'Confirm Role Change'}
               </button>

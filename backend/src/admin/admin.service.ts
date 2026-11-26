@@ -235,38 +235,29 @@ export class AdminService implements OnModuleInit {
   // 1. DASHBOARD & OPERATIONAL OVERVIEW
   // -------------------------------------------------------------
   async getOverview(days = 30) {
-    const sinceDate = new Date();
-    sinceDate.setDate(sinceDate.getDate() - days);
+    try {
+      const daysNum = Number(days) || 30;
+      const sinceDate = new Date();
+      sinceDate.setDate(sinceDate.getDate() - daysNum);
 
-    const [
-      totalUsers,
-      activeUsers24h,
-      newRegistrations,
-      tierDistribution,
-      roleDistribution,
-      usageStats,
-      totalConversations,
-      totalMessages,
-      recentUsageRecords,
-    ] = await Promise.all([
-      this.prisma.user.count(),
-      this.prisma.user.count({
+      const totalUsers = await this.prisma.user.count();
+      const activeUsers24h = await this.prisma.user.count({
         where: {
           lastLoginAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
         },
-      }),
-      this.prisma.user.count({
+      });
+      const newRegistrations = await this.prisma.user.count({
         where: { createdAt: { gte: sinceDate } },
-      }),
-      this.prisma.user.groupBy({
+      });
+      const tierDistribution = await this.prisma.user.groupBy({
         by: ['tier'],
         _count: { id: true },
-      }),
-      this.prisma.user.groupBy({
+      });
+      const roleDistribution = await this.prisma.user.groupBy({
         by: ['role'],
         _count: { id: true },
-      }),
-      this.prisma.usageRecord.aggregate({
+      });
+      const usageStats = await this.prisma.usageRecord.aggregate({
         _count: { id: true },
         _sum: {
           promptTokens: true,
@@ -277,14 +268,13 @@ export class AdminService implements OnModuleInit {
         _avg: {
           latencyMs: true,
         },
-      }),
-      this.prisma.conversation.count(),
-      this.prisma.message.count(),
-      this.prisma.usageRecord.findMany({
+      });
+      const totalConversations = await this.prisma.conversation.count();
+      const totalMessages = await this.prisma.message.count();
+      const recentUsageRecords = await this.prisma.usageRecord.findMany({
         orderBy: { createdAt: 'desc' },
         take: 50,
-      }),
-    ]);
+      });
 
     // Provider & Model Distribution from real UsageRecord rows
     const providerCounts: Record<string, { requests: number; tokens: number; cost: number; latency: number }> = {};
@@ -375,7 +365,11 @@ export class AdminService implements OnModuleInit {
         timestamp: new Date().toISOString(),
       },
     };
+  } catch (err: any) {
+    this.logger.error(`Error in getOverview: ${err.message}`, err.stack);
+    throw err;
   }
+}
 
   // -------------------------------------------------------------
   // 2. USER MANAGEMENT

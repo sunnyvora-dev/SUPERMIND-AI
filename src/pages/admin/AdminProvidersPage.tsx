@@ -69,7 +69,7 @@ export const AdminProvidersPage: React.FC = () => {
           onClick={fetchProviders}
           className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl liquid-glass text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10 transition-all self-start sm:self-auto"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#F05A3C]' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-sky-500' : ''}`} />
           <span>Refresh Matrix</span>
         </button>
       </div>
@@ -78,7 +78,7 @@ export const AdminProvidersPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading && providers.length === 0 ? (
           <div className="col-span-full py-16 text-center text-slate-400 font-mono">
-            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#F05A3C]" />
+            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-sky-500" />
             Pinging provider endpoints...
           </div>
         ) : (
@@ -87,7 +87,7 @@ export const AdminProvidersPage: React.FC = () => {
             return (
               <div
                 key={p.id}
-                className="p-6 rounded-2xl liquid-glass-card hover:border-[#F05A3C]/40 transition-all flex flex-col justify-between"
+                className="p-6 rounded-2xl liquid-glass-card hover:border-sky-500/40 transition-all flex flex-col justify-between"
               >
                 <div>
                   {/* Top Header */}
@@ -157,7 +157,7 @@ export const AdminProvidersPage: React.FC = () => {
                     disabled={pingingId === p.id}
                     className="flex items-center space-x-1.5 px-3 py-1 rounded-lg liquid-glass hover:bg-white/40 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 text-xs font-medium transition-all"
                   >
-                    <Activity className={`w-3 h-3 ${pingingId === p.id ? 'animate-spin text-[#F05A3C]' : ''}`} />
+                    <Activity className={`w-3 h-3 ${pingingId === p.id ? 'animate-spin text-sky-500' : ''}`} />
                     <span>{pingingId === p.id ? 'Testing...' : 'Test Gateway'}</span>
                   </button>
                 </div>

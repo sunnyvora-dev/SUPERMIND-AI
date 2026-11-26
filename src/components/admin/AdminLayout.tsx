@@ -78,16 +78,15 @@ export const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F0E6] dark:bg-[#08090B] text-slate-800 dark:text-slate-200 flex flex-col antialiased selection:bg-[#F05A3C]/20 relative overflow-hidden">
-      {/* Liquid Ambient Fluid Lighting Mesh */}
+    <div className="min-h-screen bg-slate-50 dark:bg-[#080A0E] text-slate-800 dark:text-slate-200 flex flex-col antialiased selection:bg-sky-500/20 relative overflow-hidden font-sans">
+      {/* Precision Theme Base Ambient Lighting */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="liquid-orb-1 w-[500px] h-[500px] -top-32 -left-32 bg-gradient-to-tr from-[#F05A3C]/15 via-[#2457D6]/20 to-[#9333EA]/15" />
-        <div className="liquid-orb-2 w-[600px] h-[600px] -bottom-40 -right-40 bg-gradient-to-br from-[#2457D6]/20 via-[#06B6D4]/15 to-[#F05A3C]/15" />
-        <div className="liquid-orb-1 w-[350px] h-[350px] top-1/2 left-1/3 bg-gradient-to-tr from-[#C7D83D]/10 to-[#F05A3C]/15" />
+        <div className="liquid-orb-1 w-[600px] h-[600px] -top-32 -left-32" />
+        <div className="liquid-orb-2 w-[700px] h-[700px] -bottom-40 -right-40" />
       </div>
 
       {/* Top Banner Alert / Cluster Status */}
-      <div className="bg-[#171717] dark:bg-black/90 backdrop-blur-md text-slate-400 text-[11px] font-mono px-4 py-1.5 flex items-center justify-between border-b border-white/5 select-none relative z-20">
+      <div className="bg-[#0F1318] text-slate-400 text-[11px] font-mono px-4 py-1.5 flex items-center justify-between border-b border-white/5 select-none relative z-20">
         <div className="flex items-center space-x-3">
           <span className="flex items-center space-x-1.5 text-emerald-400">
             <Radio className="w-3 h-3 animate-pulse text-emerald-400" />
@@ -101,7 +100,7 @@ export const AdminLayout: React.FC = () => {
         <div className="flex items-center space-x-4">
           <Link
             to="/dashboard"
-            className="flex items-center space-x-1.5 text-[#F05A3C] hover:text-[#d9492e] transition-colors font-medium"
+            className="flex items-center space-x-1.5 text-sky-400 hover:text-sky-300 transition-colors font-medium"
           >
             <ArrowLeft className="w-3 h-3" />
             <span>Return to User Workspace</span>
@@ -115,12 +114,12 @@ export const AdminLayout: React.FC = () => {
           {/* Admin Header */}
           <div className="p-5 border-b border-slate-200/80 dark:border-white/5 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#171717] to-[#F05A3C] flex items-center justify-center shadow-lg shadow-[#F05A3C]/20 border border-white/20">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#0F172A] to-sky-500 flex items-center justify-center shadow-lg shadow-sky-500/20 border border-white/20">
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h1 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5 font-display">
-                  SuperMind <span className="text-[10px] bg-[#F05A3C]/10 text-[#F05A3C] font-mono px-1.5 py-0.5 rounded-full border border-[#F05A3C]/20 font-semibold">ADMIN</span>
+                <h1 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+                  SuperMind <span className="text-[10px] bg-sky-500/10 text-sky-400 font-mono px-1.5 py-0.5 rounded-full border border-sky-500/20 font-semibold">ADMIN</span>
                 </h1>
                 <p className="text-[10px] text-slate-400 font-mono">Control Plane v2.4</p>
               </div>
@@ -145,7 +144,7 @@ export const AdminLayout: React.FC = () => {
                   to={item.path}
                   className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all group ${
                     isActive
-                      ? 'bg-[#171717] dark:bg-white text-white dark:text-slate-900 shadow-sm font-semibold'
+                      ? 'bg-sky-500/10 border border-sky-500/30 text-sky-600 dark:text-sky-400 shadow-sm font-semibold'
                       : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
@@ -153,7 +152,7 @@ export const AdminLayout: React.FC = () => {
                     <Icon
                       className={`w-4 h-4 transition-transform group-hover:scale-110 ${
                         isActive
-                          ? 'text-[#F05A3C] dark:text-[#F05A3C]'
+                          ? 'text-sky-500 dark:text-sky-400'
                           : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                       }`}
                     />
@@ -171,7 +170,7 @@ export const AdminLayout: React.FC = () => {
 
           {/* Quick System Telemetry & Profile */}
           <div className="p-3 border-t border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-black/20">
-            <div className="p-2.5 rounded-xl bg-white dark:bg-[#1a1b1e] border border-slate-200/60 dark:border-white/5 mb-3">
+            <div className="p-2.5 rounded-xl liquid-glass border border-slate-200/60 dark:border-white/5 mb-3">
               <div className="flex items-center justify-between text-[11px] mb-1 font-mono">
                 <span className="text-slate-400 flex items-center gap-1.5">
                   <Database className="w-3 h-3 text-emerald-500" /> PostgreSQL DB
@@ -186,7 +185,7 @@ export const AdminLayout: React.FC = () => {
             {/* Admin Profile Chip */}
             <div className="flex items-center justify-between px-2 py-1.5">
               <div className="flex items-center space-x-2.5 overflow-hidden">
-                <div className="w-8 h-8 rounded-lg bg-[#2457D6] text-white flex items-center justify-center text-xs font-bold shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 text-sky-400 flex items-center justify-center text-xs font-bold shrink-0 font-mono">
                   {user?.name?.[0] || 'A'}
                 </div>
                 <div className="truncate">
@@ -315,7 +314,7 @@ export const AdminLayout: React.FC = () => {
                   placeholder="Quick command or filter..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-4 py-1.5 text-xs bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#F05A3C] w-48 md:w-64 transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
+                  className="pl-9 pr-4 py-1.5 text-xs liquid-glass-input rounded-xl focus:outline-none focus:ring-1 focus:ring-sky-500 w-48 md:w-64 transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
                 />
               </div>
 
@@ -335,7 +334,7 @@ export const AdminLayout: React.FC = () => {
                   className="p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 relative transition-colors"
                 >
                   <Bell className="w-4 h-4" />
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#F05A3C]" />
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-sky-500" />
                 </button>
 
                 {notificationsOpen && (

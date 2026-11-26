@@ -435,7 +435,7 @@ export const LandingPage: React.FC = () => {
             S
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="font-serif font-normal text-lg tracking-tight text-white">SuperMind</span>
+            <span className="font-sans font-bold text-lg tracking-tight text-white">SuperMind</span>
             <span className="hidden sm:inline-block px-2 py-0.5 rounded border border-white/15 bg-white/5 text-slate-400 text-[10px] font-mono tracking-wider uppercase">
               AI Orchestrator
             </span>
@@ -617,9 +617,9 @@ export const LandingPage: React.FC = () => {
             <span>All-In-One Unified AI Ecosystem</span>
           </div>
 
-          <h1 className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-normal tracking-tight text-white leading-tight sm:leading-[1.08] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] max-w-full">
+          <h1 className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-sans font-extrabold tracking-tight text-white leading-tight sm:leading-[1.08] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] max-w-full">
             One Unified Workspace.{' '}
-            <span className="italic text-cyan-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.5)] block sm:inline">
+            <span className="text-cyan-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.5)] block sm:inline">
               Every Leading AI Model.
             </span>
           </h1>
@@ -648,19 +648,19 @@ export const LandingPage: React.FC = () => {
         {/* Live Provider Latency Chips */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 w-full max-w-5xl pt-6 sm:pt-10">
           {[
-            { name: 'OpenAI GPT-4o', latency: '210ms', tag: 'Omnimodal', color: '#38BDF8' },
-            { name: 'Claude 3.5 Sonnet', latency: '240ms', tag: 'Reasoning', color: '#60A5FA' },
-            { name: 'Google Gemini 2.5', latency: '180ms', tag: 'High-Speed', color: '#00E5FF' },
-            { name: 'xAI Grok 2', latency: '220ms', tag: 'Realtime', color: '#22D3EE' },
-            { name: 'DeepSeek R1', latency: '290ms', tag: 'Consensus', color: '#818CF8' },
-            { name: 'Moonshot Kimi', latency: '250ms', tag: '2M Context', color: '#34D399' },
+            { name: 'OpenAI GPT-4o', latency: '210ms', tag: 'Omnimodal' },
+            { name: 'Claude 3.5 Sonnet', latency: '240ms', tag: 'Reasoning' },
+            { name: 'Google Gemini 2.5', latency: '180ms', tag: 'High-Speed' },
+            { name: 'xAI Grok 2', latency: '220ms', tag: 'Realtime' },
+            { name: 'DeepSeek R1', latency: '290ms', tag: 'Consensus' },
+            { name: 'Moonshot Kimi', latency: '250ms', tag: '2M Context' },
           ].map((item, idx) => (
             <div
               key={idx}
-              className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-black/50 border border-white/10 backdrop-blur-xl text-left space-y-1 shadow-sm hover:border-cyan-400 hover:scale-105 active:scale-98 transition-all cursor-pointer"
+              className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl liquid-glass border border-white/10 text-left space-y-1 shadow-sm hover:border-cyan-400 hover:scale-105 active:scale-98 transition-all cursor-pointer"
             >
               <div className="flex items-center justify-between gap-1">
-                <span className="font-serif text-[11px] sm:text-xs font-medium text-white truncate">{item.name}</span>
+                <span className="font-sans text-[11px] sm:text-xs font-semibold text-white truncate">{item.name}</span>
                 <span className="font-mono text-[9px] text-cyan-400 font-bold shrink-0">{item.latency}</span>
               </div>
               <div className="text-[9px] sm:text-[10px] font-mono text-slate-400">{item.tag}</div>
@@ -685,7 +685,7 @@ export const LandingPage: React.FC = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-black/40 backdrop-blur-md text-[10px] font-mono tracking-wider uppercase text-slate-300">
             Core Platform Architecture
           </div>
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-normal tracking-tight text-white">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-sans font-bold tracking-tight text-white">
             What SuperMind AI Does
           </h2>
           <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
@@ -699,23 +699,16 @@ export const LandingPage: React.FC = () => {
             return (
               <div
                 key={idx}
-                className="p-5 sm:p-7 rounded-2xl bg-black/45 border border-white/10 backdrop-blur-xl space-y-3 sm:space-y-4 shadow-sm hover:border-cyan-400 hover:scale-[1.02] active:scale-98 transition-all group"
+                className="p-5 sm:p-7 rounded-2xl liquid-glass-card space-y-3 sm:space-y-4 shadow-lg hover:border-cyan-400/50 hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
               >
-                <div
-                  className="h-10 w-10 rounded-xl flex items-center justify-center border transition-colors shadow-2xs"
-                  style={{
-                    backgroundColor: `${pillar.color}20`,
-                    borderColor: `${pillar.color}40`,
-                    color: pillar.color,
-                  }}
-                >
+                <div className="h-10 w-10 rounded-xl flex items-center justify-center border border-white/10 bg-white/5 text-slate-300 group-hover:border-cyan-400/40 group-hover:bg-cyan-400/10 group-hover:text-cyan-400 transition-all shadow-sm">
                   <Icon className="h-5 w-5" />
                 </div>
                 <div className="space-y-1">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 group-hover:text-cyan-300/80 transition-colors">
                     {pillar.subtitle}
                   </div>
-                  <h3 className="text-base sm:text-lg font-serif font-normal text-white">
+                  <h3 className="text-base sm:text-lg font-sans font-semibold text-white tracking-tight group-hover:text-cyan-200 transition-colors">
                     {pillar.title}
                   </h3>
                 </div>
@@ -736,7 +729,7 @@ export const LandingPage: React.FC = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-black/40 backdrop-blur-md text-[10px] font-mono tracking-wider uppercase text-slate-300">
             Model Intelligence Matrix
           </div>
-          <h2 className="text-2xl sm:text-4xl font-serif font-normal tracking-tight text-white">
+          <h2 className="text-2xl sm:text-4xl font-sans font-bold tracking-tight text-white">
             Compare Candidate Models in Real-Time
           </h2>
           <p className="text-xs sm:text-sm text-slate-300">
@@ -765,10 +758,10 @@ export const LandingPage: React.FC = () => {
         </div>
 
         {/* Selected Model Spec Card */}
-        <div className="max-w-4xl mx-auto p-4 sm:p-8 rounded-2xl bg-black/55 border border-white/15 backdrop-blur-2xl shadow-xl space-y-5 sm:space-y-6 text-left">
+        <div className="max-w-4xl mx-auto p-4 sm:p-8 rounded-2xl liquid-glass-card shadow-xl space-y-5 sm:space-y-6 text-left">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 border-b border-white/10 pb-4">
             <div>
-              <div className="text-lg sm:text-xl font-serif font-normal text-white">
+              <div className="text-lg sm:text-xl font-sans font-bold text-white">
                 {modelSpecs[activeModel].name}
               </div>
               <div className="text-xs text-slate-300 mt-1 leading-relaxed">
@@ -783,15 +776,15 @@ export const LandingPage: React.FC = () => {
           <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
             <div className="p-2.5 sm:p-4 rounded-xl bg-white/5 border border-white/10">
               <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400">Latency</div>
-              <div className="text-base sm:text-xl font-serif text-cyan-400 mt-1">{modelSpecs[activeModel].latency}</div>
+              <div className="text-base sm:text-xl font-mono font-bold text-cyan-400 mt-1">{modelSpecs[activeModel].latency}</div>
             </div>
             <div className="p-2.5 sm:p-4 rounded-xl bg-white/5 border border-white/10">
               <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400">Quality</div>
-              <div className="text-base sm:text-xl font-serif text-emerald-400 mt-1">{modelSpecs[activeModel].quality}</div>
+              <div className="text-base sm:text-xl font-mono font-bold text-emerald-400 mt-1">{modelSpecs[activeModel].quality}</div>
             </div>
             <div className="p-2.5 sm:p-4 rounded-xl bg-white/5 border border-white/10">
               <div className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400">Token Cost</div>
-              <div className="text-base sm:text-xl font-serif text-blue-400 mt-1">{modelSpecs[activeModel].cost}</div>
+              <div className="text-base sm:text-xl font-mono font-bold text-sky-400 mt-1">{modelSpecs[activeModel].cost}</div>
             </div>
           </div>
         </div>
@@ -806,7 +799,7 @@ export const LandingPage: React.FC = () => {
             Our Mission & Vision
           </div>
 
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-serif font-normal tracking-tight max-w-3xl mx-auto leading-snug sm:leading-tight text-white">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-sans font-bold tracking-tight max-w-3xl mx-auto leading-snug sm:leading-tight text-white">
             Build SuperMind AI into a premium, reliable, scalable platform that makes advanced artificial intelligence accessible through one beautifully designed application.
           </h2>
 
@@ -839,7 +832,7 @@ export const LandingPage: React.FC = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-black/40 backdrop-blur-md text-[10px] font-mono tracking-wider uppercase text-slate-300">
             Transparent Pricing
           </div>
-          <h2 className="text-2xl sm:text-4xl font-serif font-normal tracking-tight text-white">
+          <h2 className="text-2xl sm:text-4xl font-sans font-bold tracking-tight text-white">
             Choose Your Intelligence Capacity
           </h2>
           <p className="text-xs sm:text-sm text-slate-300">
@@ -849,10 +842,10 @@ export const LandingPage: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 items-stretch text-left">
           {/* Starter Plan */}
-          <div className="p-5 sm:p-8 rounded-2xl bg-black/50 border border-white/15 backdrop-blur-2xl space-y-6 flex flex-col justify-between shadow-sm hover:border-white/30 transition-all">
+          <div className="p-5 sm:p-8 rounded-2xl liquid-glass-card space-y-6 flex flex-col justify-between shadow-lg hover:border-white/30 transition-all">
             <div className="space-y-4">
               <div className="text-xs font-mono uppercase tracking-wider text-slate-400">Starter</div>
-              <div className="text-3xl font-serif text-white">$9 <span className="text-xs text-slate-400 font-normal">/ mo</span></div>
+              <div className="text-3xl font-sans font-bold text-white">$9 <span className="text-xs text-slate-400 font-normal">/ mo</span></div>
               <ul className="space-y-2.5 text-xs text-slate-300">
                 <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> 500k Monthly Tokens</li>
                 <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Gemini & DeepSeek Routing</li>
@@ -868,13 +861,13 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* Pro Intelligence Plan */}
-          <div className="p-5 sm:p-8 rounded-2xl bg-black/65 border-2 border-cyan-400 backdrop-blur-2xl shadow-xl shadow-cyan-500/10 space-y-6 flex flex-col justify-between relative overflow-hidden">
+          <div className="p-5 sm:p-8 rounded-2xl liquid-glass-card border-2 border-cyan-400 shadow-xl shadow-cyan-500/10 space-y-6 flex flex-col justify-between relative overflow-hidden">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-mono uppercase tracking-wider text-cyan-400 font-semibold">Pro Intelligence</span>
                 <span className="px-2 py-0.5 rounded-full bg-cyan-400 text-black text-[9px] font-mono font-bold uppercase">Popular</span>
               </div>
-              <div className="text-3xl font-serif text-white">$29 <span className="text-xs text-slate-400 font-normal">/ mo</span></div>
+              <div className="text-3xl font-sans font-bold text-white">$29 <span className="text-xs text-slate-400 font-normal">/ mo</span></div>
               <ul className="space-y-2.5 text-xs text-white">
                 <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> 5M Monthly Tokens</li>
                 <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Multi-Model Consensus Engine</li>
@@ -891,12 +884,12 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* Enterprise Plan */}
-          <div className="p-5 sm:p-8 rounded-2xl bg-black/50 border border-white/15 backdrop-blur-2xl space-y-6 flex flex-col justify-between shadow-sm hover:border-white/30 transition-all">
+          <div className="p-5 sm:p-8 rounded-2xl liquid-glass-card space-y-6 flex flex-col justify-between shadow-lg hover:border-white/30 transition-all">
             <div className="space-y-4">
               <div className="text-xs font-mono uppercase tracking-wider text-slate-400">Enterprise</div>
-              <div className="text-3xl font-serif text-white">$99 <span className="text-xs text-slate-400 font-normal">/ mo</span></div>
+              <div className="text-3xl font-sans font-bold text-white">$99 <span className="text-xs text-slate-400 font-normal">/ mo</span></div>
               <ul className="space-y-2.5 text-xs text-slate-300">
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> 50M Monthly Tokens</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> 500M Monthly Tokens</li>
                 <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Dedicated Supervisor SLA</li>
                 <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Custom Model Fine-Tuning & Admin</li>
               </ul>
@@ -922,7 +915,7 @@ export const LandingPage: React.FC = () => {
                 <div className="h-8 w-8 rounded-lg bg-cyan-400 text-black font-bold flex items-center justify-center text-sm shadow-sm shrink-0">
                   S
                 </div>
-                <span className="font-serif font-normal text-lg tracking-tight text-white">SuperMind AI</span>
+                <span className="font-sans font-bold text-lg tracking-tight text-white">SuperMind AI</span>
               </div>
 
               <p className="text-xs text-slate-300 max-w-sm leading-relaxed">
